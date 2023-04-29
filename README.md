@@ -10,9 +10,9 @@ SpringBoot를 이용한 게시판 프로젝트 작성
 
 스프링 시큐리티(Spring Security)를 이용한 로그인 처리, 로그아웃, 중복 로그인 처리, 로그인 정보 유지, 예외처리 등을 적용
 
-![image](https://user-images.githubusercontent.com/97299700/235300999-6d82bd5b-146a-41e3-9887-befb397866cf.png)
-![image](https://user-images.githubusercontent.com/97299700/235301252-c5d7c4b0-68f4-4a8c-a0ef-8ad2517b2fb2.png)
+![image](https://user-images.githubusercontent.com/97299700/235307359-cacc1ee6-3c83-4a0a-800a-2fd720e65549.png)
 
+![image](https://user-images.githubusercontent.com/97299700/235307389-66044c9e-a304-4fd9-885d-ca6050ee0fcf.png)
 
 ## 게시판 기능 구현
 
