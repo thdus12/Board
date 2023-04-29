@@ -5,6 +5,7 @@ import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.CredentialsExpiredException;
 import org.springframework.security.authentication.DisabledException;
 import org.springframework.security.core.AuthenticationException;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Component;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
@@ -26,6 +27,8 @@ public class AuthFailureHandler extends SimpleUrlAuthenticationFailureHandler {
             msg = "CredentialsExpiredException account";
         } else if (exception instanceof BadCredentialsException) {
             msg = "BadCredentialsException account";
+        } else if (exception instanceof UsernameNotFoundException) {
+            msg = "UsernameNotFoundException account";
         }
 
         setDefaultFailureUrl("/login?error=true&exception=" + msg);

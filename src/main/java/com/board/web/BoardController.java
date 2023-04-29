@@ -65,7 +65,6 @@ public class BoardController {
     // 게시글 작성을 처리하고 게시글 목록 페이지로 리다이렉트하는 메소드
     @PostMapping("/board/write/action")
 	public String boardWriteAction(Model model, BoardRequestDto boardRequestDto) throws Exception {
-    	System.out.println("asd");
     	System.out.println(boardRequestDto.toString());
 		
 		try {

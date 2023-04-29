@@ -56,7 +56,7 @@ public class Member extends BaseTimeEntity implements UserDetails {
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
         Set<GrantedAuthority> roles = new HashSet<>();
-        roles.add(new SimpleGrantedAuthority(role.getValue()));
+        roles.add(new SimpleGrantedAuthority(role.getRole()));
         return roles;
     }
 	

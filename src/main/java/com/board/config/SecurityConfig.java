@@ -15,7 +15,6 @@ import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 import com.board.service.member.MemberService;
 import com.board.member.handler.AuthFailureHandler;
 import com.board.member.handler.AuthSucessHandler;
-import com.board.member.handler.CustomLoginSuccessHandler;
 import com.board.service.member.MemberDetailServiceImpl;
 
 import lombok.RequiredArgsConstructor;
