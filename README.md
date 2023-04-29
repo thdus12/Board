@@ -29,6 +29,5 @@ BootStrap(Guide link), Thymeleaf를 사용
 
 ### ✅ 게시글 확인 및 수정
 
-Add additional notes about how to deploy this on a live system
 
 
