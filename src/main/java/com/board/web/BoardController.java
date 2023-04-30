@@ -20,7 +20,7 @@ public class BoardController {
 
     // BoardService를 주입 받음
     private final BoardService boardService;
-
+    
     // 게시글 목록 페이지를 반환하는 메소드
     @GetMapping("/board/list")
 	public String getBoardListPage(Model model

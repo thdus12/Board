@@ -30,22 +30,26 @@
 		    let frm = $("#frm");
 		    
 		    function fnSubmit() {
-		        $("#frm").submit();
+		    	frm.submit();
 		    }
 		    
 		    $(function() {
-		      frm.validate({
-		        messages: {
-		          // Message Custom..
-		          title: {
-		            required : "Custom required, Please enter a title."
-		          }
-		        },
-		        submitHandler: function (form) {
-		            // Submit Action..
-		            form.submit();
-		        }
-		      });
+		      	frm.validate({
+		        	messages: {
+					   	title: {
+					     	required : "title is required, Please enter a title."
+					   	},
+					   	content: {
+					   		required : "content is required, Please enter a content."
+						},
+						registerId: {
+					    	required : "writer is required, Please enter a writer."
+						}		   
+			        },
+			        submitHandler: function (form) {
+			            form.submit();
+			        }
+		      	});
 		    });
 		</script>
 	</th:block>

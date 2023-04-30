@@ -32,9 +32,9 @@
 			</form>
 		</div>
 	    <script th:inline="javascript">
+    		let frm = $("#frm");	
 		    function fnViewDelete() {
-	            if (confirm("Do you want to delete it?")) {
-	                let frm = $("#frm");
+	            if (confirm("Do you want to delete it?")) {	                
 	                frm.attr("action", "/board/view/delete");
 	                frm.submit();
 	            }
@@ -48,35 +48,22 @@
 		    
 		    $(function() {
 		    	frm.validate({
-		            messages: {
-		            	title: {
-		                    required : "Custom required, Please enter a title."
-		                }
-		            },
-		            submitHandler: function (form) {
-		            	if (deleteFileIdArr.length > 0) {
-		            		$.ajax({
-								url: "/file/delete.ajax",
-								type: "post",
-								data: { idArr: deleteFileIdArr },
-								dataType: "json",
-								success: function(r) {
-									if (r.result) {
-										form.submit();
-									} else {
-										alert("A problem occurred, and progress is interrupted. Try again in a few minutes.");
-									}
-								},
-								error: function(e) {
-									console.log(e);
-								}
-							});
-		            	} else {
-		            		form.submit();
-		            	}
-		            }
-		        });
-		    });
+		        	messages: {
+					   	title: {
+					     	required : "title is required, Please enter a title."
+					   	},
+					   	content: {
+					   		required : "content is required, Please enter a content."
+						},
+						registerId: {
+					    	required : "writer is required, Please enter a writer."
+						}		   
+			        },
+			        submitHandler: function (form) {
+			            form.submit();
+			        }
+		      	});
+	        });
 		</script>
 	</th:block>
 </html>
