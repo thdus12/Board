@@ -43,27 +43,15 @@
             });
 
             frm.validate({
-                rules: {
-                    email: {
-                        required: true,
-                        email: true
-                    },
-                    password: {
-                        required: true
-                    }
-                },
-                messages: {
-                    email: {
+            	messages: {
+	            	email: {
                         required: "이메일 주소를 입력해주세요.",
                         email: "올바른 이메일 주소를 입력해주세요."
                     },
                     password: {
                         required: "비밀번호를 입력해주세요."
                     }
-                },
-                errorPlacement: function(error, element) {
-                    error.appendTo(element.parent().next());
-                }
+	            }
             });
         });
     </script>
