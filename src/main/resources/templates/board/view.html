@@ -1,31 +1,31 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" layout:decorate="layout/default_layout">
-   	<th:block th:replace="fragments/header :: headerFragment"></th:block>
+<html xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="layout/default_layout">
    	<!-- layout Content -->
 	<th:block layout:fragment="content">
 		<div class="container">
 			<div class="card-header mb-3">
 		    	<h3 class="text-center font-weight-bold my-4">Board View.</h3>
 		    </div>
-			<form id="frm" action="/board/view/action" method="post" th:with="info=${resultMap.info}" enctype="multipart/form-data">
+			<form id="frm" action="/board/edit" method="get" th:with="info=${resultMap.info}" enctype="multipart/form-data">
 				<input type="hidden" name="id" th:value="${info.id}">
 				<div class="mb-3">
-				    <label class="form-label font-weight-bold"><span class="text-danger">* </span>Title.</label>
-				    <input type="text" class="form-control" name="title" th:value="${info.title}" required >
+				    <span class = "font-weight-bold" name="title" th:text="${info.title}"></span>				    
+				</div>		
+				<div class="board-id mb-3">
+					<span class = "text-secondary" name="registerId" th:text="${info.registerId}"></span>
+					<span> | </span>
+					<span class = "text-secondary" name="registerTime" th:text="${#temporals.format(info.registerTime, 'yyyy-MM-dd HH:mm:ss')}"></span>
 				</div>
-				<div class="mb-3">
-			    	<label class="form-label font-weight-bold"><span class="text-danger">* </span>Content.</label>
-			    	<textarea class="form-control" rows="5" name="content" th:text="${info.content}" required ></textarea>
-				</div>
+				<hr>
 				<div class="mb-5">
-				    <label class="form-label font-weight-bold"><span class="text-danger">* </span>Writer.</label>
-				    <input type="text" class="form-control" name="registerId" th:value="${info.registerId}" required >
+			    	<pre name="content" th:utext="${info.content}"></pre>
 				</div>
 				<div class="clearfix mt-5">
 					<div class="d-flex align-items-center">
 					    <button type="button" class="btn btn-success" onclick="javascript:location.href='/board/list'">Previous</button>
 					    <div class="ml-auto"></div>
-					    <button type="button" class="btn btn-primary mr-1" onclick="fnSubmit();">Edit</button>
+					    <button type="button" class="btn btn-primary mr-1" onclick="fnSubmit('${info.id}')">Edit</button>
 					    <button type="button" class="btn btn-danger" th:onclick="fnViewDelete()">Delete</button>
 					</div>
 				</div>
@@ -40,10 +40,11 @@
 	            }
 	        }
 		    
-		    function fnSubmit() {
-				if (confirm("Do you want to edit it?")) {
-					frm.submit();
-				}
+		    function fnSubmit(id) {
+		        if (confirm("Do you want to edit it?")) {
+		            $("#id").val(id);
+		            frm.submit();
+		        }
 		    }
 		    
 		    $(function() {

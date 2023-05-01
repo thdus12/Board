@@ -2,6 +2,8 @@ package com.board.web;
 
 import java.util.HashMap;
 
+import javax.servlet.http.HttpServletRequest;
+
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -48,6 +50,7 @@ public class BoardController {
 	public String getBoardViewPage(Model model, BoardRequestDto boardRequestDto) throws Exception {
     	
     	boardService.updateBoardReadCntInc(boardRequestDto.getId());
+    	System.out.println(boardRequestDto.toString());
 		
 		HashMap<String, Object> resultMap = new HashMap<String, Object>();
 		try {
@@ -61,11 +64,29 @@ public class BoardController {
 		
 		return "board/view";
 	}
+    
+    // 게시글 수정 페이지를 반환하는 메소드
+    @GetMapping("/board/edit")
+    public String getBoardEditPage(Model model, HttpServletRequest request) throws Exception {
+
+        HashMap<String, Object> resultMap = new HashMap<String, Object>();
+        try {
+            String idStr = request.getParameter("id");
+            if (idStr != null) {
+                Long id = Long.parseLong(idStr);
+                resultMap.put("info", boardService.findById(id));
+                model.addAttribute("resultMap", resultMap);
+            } 
+        } catch (Exception e) {
+            throw new Exception(e.getMessage()); 
+        }
+
+        return "board/edit";
+    }
 
     // 게시글 작성을 처리하고 게시글 목록 페이지로 리다이렉트하는 메소드
     @PostMapping("/board/write/action")
 	public String boardWriteAction(Model model, BoardRequestDto boardRequestDto) throws Exception {
-    	System.out.println(boardRequestDto.toString());
 		
 		try {
 			Long result = boardService.save(boardRequestDto);
@@ -80,7 +101,7 @@ public class BoardController {
 		return "redirect:/board/list";
 	}
     
-    @PostMapping("/board/view/action")
+    @PostMapping("/board/edit/action")
 	public String boardViewAction(Model model, BoardRequestDto boardRequestDto, MultipartHttpServletRequest multiRequest) throws Exception {
 		
 		try {
