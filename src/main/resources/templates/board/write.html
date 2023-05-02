@@ -18,7 +18,7 @@
 				</div>
 				<div class="mb-5">
 				    <label class="form-label font-weight-bold"><span class="text-danger">* </span>Writer.</label>
-				    <input type="text" class="form-control" name="registerId" required >
+				    <input type="text" class="form-control" name="registerId" th:value="${userEmail}" readonly >
 				</div>
 				<div class="d-flex align-items-center justify-content-between">
 					<button type="button" class="btn btn-success" onclick="javascript:location.href='/board/list'">Previous</button>

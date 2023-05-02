@@ -17,7 +17,7 @@ import lombok.extern.slf4j.Slf4j;
 @Slf4j
 public class MemberDetailServiceImpl implements UserDetailsService {
 	// 멤버 리포지토리를 주입
-    private final MemberRepository memberRepository;   
+    private final MemberRepository memberRepository;      
     
     @Override
     public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
@@ -28,7 +28,6 @@ public class MemberDetailServiceImpl implements UserDetailsService {
         // 사용자가 없으면 UsernameNotFoundException을 던짐
         if (member == null) throw new UsernameNotFoundException("Not Found account.");
         
-        System.out.println(member.toString());
         // 조회된 멤버 객체를 반환
         return member;
     }

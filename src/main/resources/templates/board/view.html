@@ -21,15 +21,37 @@
 				<div class="mb-5">
 			    	<pre name="content" th:utext="${info.content}"></pre>
 				</div>
-				<div class="clearfix mt-5">
+				<hr>
+				<div class="clearfix mt-3">
 					<div class="d-flex align-items-center">
 					    <button type="button" class="btn btn-success" onclick="javascript:location.href='/board/list'">Previous</button>
 					    <div class="ml-auto"></div>
-					    <button type="button" class="btn btn-primary mr-1" onclick="fnSubmit('${info.id}')">Edit</button>
+					    <button type="button" class="btn btn-primary mr-1" onclick="fnViewEdit('${info.id}')">Edit</button>
 					    <button type="button" class="btn btn-danger" th:onclick="fnViewDelete()">Delete</button>
 					</div>
 				</div>
 			</form>
+			<hr>
+			<div class="mt-5">			    
+			   	<label class="form-label font-weight-bold">Comment.</label>
+			    <hr>
+			    <div th:each="comment : ${comments}">
+			        <div class="comment">
+			            <span class="font-weight-bold" th:text="${comment.author}"></span>
+			            <span> | </span>
+			            <span class="text-secondary" th:text="${#temporals.format(comment.createdAt, 'yyyy-MM-dd HH:mm:ss')}"></span>
+			            <p class="mt-2" th:text="${comment.content}"></p>
+			        </div>
+			        <hr>
+			    </div>
+			</div>
+			<!-- <form id="commentForm" th:action="@{/board/view/comment}" method="post">
+			    <input type="hidden" name="id" th:value="${info.id}" />
+			    <div class="mb-6">
+			        <textarea class="form-control" rows="3" name="content"></textarea>
+			        <button type="button" class="btn float-right" onclick="fnCommentAdd()">Add</button>
+			    </div>
+			</form> -->
 		</div>
 	    <script th:inline="javascript">
     		let frm = $("#frm");	
@@ -40,11 +62,15 @@
 	            }
 	        }
 		    
-		    function fnSubmit(id) {
+		    function fnViewEdit(id) {
 		        if (confirm("Do you want to edit it?")) {
 		            $("#id").val(id);
 		            frm.submit();
 		        }
+		    
+		    function fnCommentAdd() {
+		    	let commentForm = document.getElementById("commentForm");
+		        commentForm.submit();
 		    }
 		    
 		    $(function() {

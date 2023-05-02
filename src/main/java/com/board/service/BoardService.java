@@ -2,7 +2,11 @@ package com.board.service;
 
 import lombok.RequiredArgsConstructor;
 import java.util.HashMap;
+import java.util.List;
+import java.util.NoSuchElementException;
 import java.util.stream.Collectors;
+
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
@@ -13,15 +17,28 @@ import com.board.dto.board.BoardRequestDto;
 import com.board.dto.board.BoardResponseDto;
 import com.board.entity.board.Board;
 import com.board.entity.board.BoardRepository;
+import com.board.entity.board.Comment;
+import com.board.entity.board.CommentRepository;
 
 // 생성자를 자동으로 생성하는 Lombok 어노테이션
 @RequiredArgsConstructor
 // 이 클래스를 스프링 서비스로 사용하도록 하는 어노테이션
 @Service
 public class BoardService {
-
-    // BoardRepository를 주입 받음
+	
+	@Autowired
+    private CommentRepository commentRepository;
+	
+	// BoardRepository를 주입 받음
     private final BoardRepository boardRepository;
+
+    public List<Comment> getCommentsByBoardId(Long boardId) {
+        return commentRepository.findByBoardId(boardId);
+    }
+    
+    public Comment saveComment(Comment comment) {
+        return commentRepository.save(comment);
+    }
 
     // 게시글 저장 메소드
     @Transactional
@@ -74,5 +91,10 @@ public class BoardService {
     
     public void deleteAll(Long[] deleteId) {
     	boardRepository.deleteBoard(deleteId);
+    }
+
+    public Board getBoardById(Long id) {
+        return boardRepository.findById(id)
+                .orElseThrow(() -> new NoSuchElementException("Could not find board with ID: " + id));
     }
 }

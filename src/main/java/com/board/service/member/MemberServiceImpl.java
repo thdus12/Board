@@ -1,5 +1,8 @@
 package com.board.service.member;
 
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.User;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -38,5 +41,12 @@ public class MemberServiceImpl implements MemberService{
                         .role(member.getRole())
                         .build();
     }
+
+	@Override
+	public Member getCurrentUser(MemberFormDto memberFormDto) {
+		Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        Member member = memberRepository.findByEmail(memberFormDto.getEmail());
+        return member;
+	}
 
 }

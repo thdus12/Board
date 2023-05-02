@@ -46,7 +46,6 @@ public class MemberController {
 	
 	@GetMapping("/member/signup")
 	public String getSignupPage(Model model) {
-		System.out.println("asd");
 		return "/member/signup";
     }
 

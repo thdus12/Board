@@ -1,17 +1,26 @@
 package com.board.web;
 
 import java.util.HashMap;
+import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpSession;
 
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.User;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.multipart.MultipartHttpServletRequest;
 import com.board.dto.board.BoardRequestDto;
 import com.board.service.BoardService;
+import com.board.entity.board.*;
+
 import lombok.RequiredArgsConstructor;
 
 // 생성자를 자동으로 생성하는 Lombok 어노테이션
@@ -21,7 +30,8 @@ import lombok.RequiredArgsConstructor;
 public class BoardController {
 
     // BoardService를 주입 받음
-    private final BoardService boardService;
+	@Autowired
+    private BoardService boardService;
     
     // 게시글 목록 페이지를 반환하는 메소드
     @GetMapping("/board/list")
@@ -40,9 +50,13 @@ public class BoardController {
 
     // 게시글 작성 페이지를 반환하는 메소드
     @GetMapping("/board/write")
-    public String getBoardWritePage(Model model, BoardRequestDto boardRequestDto) {
-    	System.out.println("asdddd");
-    	return "/board/write";
+    public String getBoardWritePage(Model model) {
+    	Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        String userEmail = authentication.getName();
+        
+        model.addAttribute("userEmail", userEmail);
+    	
+    	return "board/write";
     }
 
     // 게시글 조회 페이지를 반환하는 메소드
@@ -83,7 +97,25 @@ public class BoardController {
 
         return "board/edit";
     }
+    
+    @GetMapping("/board/view/{boardId}")
+    public String boardView(@PathVariable("boardId") Long id, Model model) {
 
+        List<Comment> comments = boardService.getCommentsByBoardId(id);
+        model.addAttribute("comments", comments);
+
+        return "board/view";
+    }
+    
+    @PostMapping("/board/view/comment")
+    public String addComment(@RequestParam("id") Long boardId, Comment comment, HttpSession session) {
+        Board board = boardService.getBoardById(boardId);
+        comment.setBoard(board);
+        comment.setRegisterId(session.getAttribute("userId").toString());
+        boardService.saveComment(comment);
+        return "redirect:/board/view?id=" + boardId;
+    }
+    
     // 게시글 작성을 처리하고 게시글 목록 페이지로 리다이렉트하는 메소드
     @PostMapping("/board/write/action")
 	public String boardWriteAction(Model model, BoardRequestDto boardRequestDto) throws Exception {
