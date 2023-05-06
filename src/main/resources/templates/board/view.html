@@ -45,16 +45,18 @@
 			        <hr>
 			    </div>
 			</div>
-			<!-- <form id="commentForm" th:action="@{/board/view/comment}" method="post">
-			    <input type="hidden" name="id" th:value="${info.id}" />
+			<form id="commentForm" th:action="@{/board/view/comment}" th:with="info=${resultMap.info}" method="post">
+			    <input type="hidden" name="boardId" th:value="${info.id}" />
 			    <div class="mb-6">
 			        <textarea class="form-control" rows="3" name="content"></textarea>
 			        <button type="button" class="btn float-right" onclick="fnCommentAdd()">Add</button>
 			    </div>
-			</form> -->
+			</form>
 		</div>
 	    <script th:inline="javascript">
-    		let frm = $("#frm");	
+    		let frm = $("#frm");
+    		let comment = $("#commentForm");
+    		
 		    function fnViewDelete() {
 	            if (confirm("Do you want to delete it?")) {	                
 	                frm.attr("action", "/board/view/delete");
@@ -67,10 +69,10 @@
 		            $("#id").val(id);
 		            frm.submit();
 		        }
+	        }
 		    
-		    function fnCommentAdd() {
-		    	let commentForm = document.getElementById("commentForm");
-		        commentForm.submit();
+		    function fnCommentAdd() {		    	
+		    	comment.submit();
 		    }
 		    
 		    $(function() {

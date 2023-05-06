@@ -2,14 +2,13 @@ package com.board.service.member;
 
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.core.userdetails.User;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
-import com.board.dto.member.MemberDto;
-import com.board.dto.member.MemberFormDto;
-import com.board.entity.board.member.Member;
-import com.board.entity.board.member.MemberRepository;
+import com.board.dto.member.MemberRequestDto;
+import com.board.dto.member.MemberResponseDto;
+import com.board.entity.member.MemberEntity;
+import com.board.entity.member.MemberRepository;
 import com.board.security.Role;
 
 import lombok.RequiredArgsConstructor;
@@ -22,19 +21,19 @@ public class MemberServiceImpl implements MemberService{
     private final BCryptPasswordEncoder bCryptPasswordEncoder;
 
     @Override
-    public MemberDto createUser(MemberFormDto memberFormDto) {
+    public MemberResponseDto createUser(MemberRequestDto memberRequestDto) {
 
         // 이메일 중복 확인
-        if(memberRepository.findByEmail(memberFormDto.getEmail()) != null){
+        if(memberRepository.findByEmail(memberRequestDto.getEmail()) != null){
             return null;
         }
         // 가입한 성공한 모든 유저는  "USER" 권한 부여
-        Member member = memberRepository.save(Member.builder()
-                                        .pwd(bCryptPasswordEncoder.encode(memberFormDto.getPassword()))
-                                        .email(memberFormDto.getEmail())
+        MemberEntity member = memberRepository.save(MemberEntity.builder()
+                                        .pwd(bCryptPasswordEncoder.encode(memberRequestDto.getPassword()))
+                                        .email(memberRequestDto.getEmail())
                                         .role(Role.USER)
                                         .build());
-        return MemberDto.builder()
+        return MemberResponseDto.builder()
                         .id(member.getId())
                         .email(member.getEmail())
                         .password(member.getPassword())
@@ -43,9 +42,9 @@ public class MemberServiceImpl implements MemberService{
     }
 
 	@Override
-	public Member getCurrentUser(MemberFormDto memberFormDto) {
+	public MemberEntity getCurrentUser(MemberRequestDto memberRequestDto) {
 		Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        Member member = memberRepository.findByEmail(memberFormDto.getEmail());
+        MemberEntity member = memberRepository.findByEmail(memberRequestDto.getEmail());
         return member;
 	}
 

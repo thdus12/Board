@@ -1,25 +1,20 @@
-package com.board.web;
+package com.board.controller;
 
 import java.util.HashMap;
-import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpSession;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.core.userdetails.User;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.multipart.MultipartHttpServletRequest;
 import com.board.dto.board.BoardRequestDto;
 import com.board.service.BoardService;
-import com.board.entity.board.*;
 
 import lombok.RequiredArgsConstructor;
 
@@ -41,11 +36,12 @@ public class BoardController {
 		
 		try {
 			model.addAttribute("resultMap", boardService.findAll(page, size));
+			
 		} catch (Exception e) {
 			throw new Exception(e.getMessage()); 
 		}
 		
-		return "/board/list";
+		return "board/list";
 	}
 
     // 게시글 작성 페이지를 반환하는 메소드
@@ -63,8 +59,8 @@ public class BoardController {
     @GetMapping("/board/view")
 	public String getBoardViewPage(Model model, BoardRequestDto boardRequestDto) throws Exception {
     	
+    	// 게시긓 조회수 증가
     	boardService.updateBoardReadCntInc(boardRequestDto.getId());
-    	System.out.println(boardRequestDto.toString());
 		
 		HashMap<String, Object> resultMap = new HashMap<String, Object>();
 		try {
@@ -98,24 +94,15 @@ public class BoardController {
         return "board/edit";
     }
     
-    @GetMapping("/board/view/{boardId}")
-    public String boardView(@PathVariable("boardId") Long id, Model model) {
-
-        List<Comment> comments = boardService.getCommentsByBoardId(id);
-        model.addAttribute("comments", comments);
-
-        return "board/view";
-    }
-    
-    @PostMapping("/board/view/comment")
-    public String addComment(@RequestParam("id") Long boardId, Comment comment, HttpSession session) {
-        Board board = boardService.getBoardById(boardId);
-        comment.setBoard(board);
-        comment.setRegisterId(session.getAttribute("userId").toString());
-        boardService.saveComment(comment);
-        return "redirect:/board/view?id=" + boardId;
-    }
-    
+//    @GetMapping("/board/view/{boardId}")
+//    public String boardView(@PathVariable("boardId") Long id, Model model) {
+//
+//        List<CommentEntity> comments = boardService.getCommentsByBoardId(id);
+//        model.addAttribute("comments", comments);
+//
+//        return "board/view";
+//    }
+        
     // 게시글 작성을 처리하고 게시글 목록 페이지로 리다이렉트하는 메소드
     @PostMapping("/board/write/action")
 	public String boardWriteAction(Model model, BoardRequestDto boardRequestDto) throws Exception {

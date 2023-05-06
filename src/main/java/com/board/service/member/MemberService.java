@@ -1,14 +1,12 @@
 package com.board.service.member;
 
-import org.springframework.security.core.userdetails.User;
-
-import com.board.dto.member.MemberDto;
-import com.board.dto.member.MemberFormDto;
-import com.board.entity.board.member.Member;
+import com.board.dto.member.MemberRequestDto ;
+import com.board.dto.member.MemberResponseDto;
+import com.board.entity.member.MemberEntity;
 
 
 public interface MemberService {
-	MemberDto createUser(MemberFormDto userFormDto);    
+	MemberResponseDto createUser(MemberRequestDto userFormDto);    
 	
-	Member getCurrentUser(MemberFormDto userFormDto);
+	MemberEntity getCurrentUser(MemberRequestDto userFormDto);
 }

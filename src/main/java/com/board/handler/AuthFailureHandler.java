@@ -1,4 +1,4 @@
-package com.board.member.handler;
+package com.board.handler;
 
 import org.springframework.security.web.authentication.SimpleUrlAuthenticationFailureHandler;
 import org.springframework.security.authentication.BadCredentialsException;

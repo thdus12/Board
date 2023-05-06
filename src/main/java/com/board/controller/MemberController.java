@@ -1,4 +1,4 @@
-package com.board.web;
+package com.board.controller;
 
 import java.io.IOException;
 
@@ -13,8 +13,8 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
-import com.board.dto.member.MemberDto;
-import com.board.dto.member.MemberFormDto;
+import com.board.dto.member.MemberResponseDto;
+import com.board.dto.member.MemberRequestDto ;
 import com.board.service.member.MemberService;
 
 import lombok.RequiredArgsConstructor;
@@ -28,12 +28,12 @@ public class MemberController {
 	private final MemberService memberService;
 	
 	@PostMapping("/member/signup")
-	public String createUser(MemberFormDto memberFormDto) {
-		MemberDto memberDto = memberService.createUser(memberFormDto);
-		if(memberDto == null){
+	public String createUser(MemberRequestDto memberRequestDto) {
+		MemberResponseDto memberResponseDto  = memberService.createUser(memberRequestDto);
+		if(memberResponseDto == null){
 	        return "/member/failsignup";
 	    }else{
-			System.out.println(memberDto.toString());
+			System.out.println(memberResponseDto.toString());
 	        return "/member/login";
 	    }
 	}

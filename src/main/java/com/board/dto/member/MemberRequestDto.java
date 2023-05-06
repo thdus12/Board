@@ -8,7 +8,7 @@ import lombok.Setter;
 
 @Getter
 @Setter
-public class MemberFormDto {
+public class MemberRequestDto {
     @NotNull
     @Email
     private String email;

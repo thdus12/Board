@@ -1,4 +1,4 @@
-package com.board.member.handler;
+package com.board.handler;
 
 import org.springframework.security.web.authentication.SimpleUrlAuthenticationSuccessHandler;
 import org.springframework.security.core.Authentication;
@@ -8,7 +8,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.time.LocalDateTime;
-import com.board.entity.board.member.MemberRepository;
+import com.board.entity.member.MemberRepository;
 import lombok.RequiredArgsConstructor;
 
 @RequiredArgsConstructor

@@ -1,4 +1,4 @@
-package com.board.entity.board.member;
+package com.board.entity.member;
 
 import java.util.Collection;
 import java.util.HashSet;
@@ -28,8 +28,8 @@ import lombok.NoArgsConstructor;
 // 멤버 변수에 대한 getter 메소드를 자동 생성
 @Getter
 // 이 클래스를 JPA 엔티티로 표시
-@Entity
-public class Member extends BaseTimeEntity implements UserDetails {
+@Entity(name = "member")
+public class MemberEntity extends BaseTimeEntity implements UserDetails {
 
 	private static final long serialVersionUID = 1L;
 	
@@ -44,7 +44,7 @@ public class Member extends BaseTimeEntity implements UserDetails {
 	
 	// 빌더 패턴을 이용한 객체 생성을 위한 생성자
 	@Builder
-	public Member(Long id, String email, String pwd, LocalDateTime lastLoginTime, Role role) {
+	public MemberEntity(Long id, String email, String pwd, LocalDateTime lastLoginTime, Role role) {
 	    this.id = id;
 	    this.email = email;
 	    this.pwd = pwd;

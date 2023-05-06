@@ -15,10 +15,10 @@ import org.springframework.data.domain.Sort;
 
 import com.board.dto.board.BoardRequestDto;
 import com.board.dto.board.BoardResponseDto;
-import com.board.entity.board.Board;
+import com.board.entity.board.BoardEntity;
 import com.board.entity.board.BoardRepository;
-import com.board.entity.board.Comment;
-import com.board.entity.board.CommentRepository;
+import com.board.entity.comment.CommentEntity;
+import com.board.entity.comment.CommentRepository;
 
 // 생성자를 자동으로 생성하는 Lombok 어노테이션
 @RequiredArgsConstructor
@@ -26,24 +26,14 @@ import com.board.entity.board.CommentRepository;
 @Service
 public class BoardService {
 	
-	@Autowired
-    private CommentRepository commentRepository;
-	
+	@Autowired	
 	// BoardRepository를 주입 받음
     private final BoardRepository boardRepository;
 
-    public List<Comment> getCommentsByBoardId(Long boardId) {
-        return commentRepository.findByBoardId(boardId);
-    }
-    
-    public Comment saveComment(Comment comment) {
-        return commentRepository.save(comment);
-    }
-
     // 게시글 저장 메소드
     @Transactional
-    public Long save(BoardRequestDto boardSaveDto) {
-        return boardRepository.save(boardSaveDto.toEntity()).getId();
+    public Long save(BoardRequestDto boardRequestDto) {
+        return boardRepository.save(boardRequestDto.toEntity()).getId();
     }
     
     /*
@@ -59,13 +49,16 @@ public class BoardService {
     	
         HashMap<String, Object> resultMap = new HashMap<String, Object>();
 
-        Page<Board> list = boardRepository.findAll(PageRequest.of(page, size, Sort.by(Sort.Direction.DESC, "registerTime")));
+        Page<BoardEntity> list = boardRepository.findAll(PageRequest.of(page, size, Sort.by(Sort.Direction.DESC, "registerTime")));
 
         resultMap.put("list", list.stream().map(BoardResponseDto::new).collect(Collectors.toList()));
         resultMap.put("paging", list.getPageable());
         resultMap.put("totalCnt", list.getTotalElements());
         resultMap.put("totalPage", list.getTotalPages());
-
+        
+        System.out.println("@@@@@@@@@");
+        System.out.println(resultMap);
+        
         return resultMap;
     }
 
@@ -93,7 +86,8 @@ public class BoardService {
     	boardRepository.deleteBoard(deleteId);
     }
 
-    public Board getBoardById(Long id) {
+    public BoardEntity getBoardById(Long id) {
+    	System.out.println("여기는 타냐");
         return boardRepository.findById(id)
                 .orElseThrow(() -> new NoSuchElementException("Could not find board with ID: " + id));
     }

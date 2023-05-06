@@ -1,4 +1,4 @@
-package com.board.entity.board.member;
+package com.board.entity.member;
 
 import java.time.LocalDateTime;
 
@@ -11,11 +11,11 @@ import org.springframework.transaction.annotation.Transactional;
 
 //Member 엔티티에 대한 JPA Repository 인터페이스
 @Repository
-public interface MemberRepository extends JpaRepository<Member, Long> {
+public interface MemberRepository extends JpaRepository<MemberEntity, Long> {
 
 	// 회원의 마지막 로그인 시간을 업데이트하는 쿼리
 	static final String UPDATE_MEMBER_LAST_LOGIN = 
-			"UPDATE Member SET LAST_LOGIN_TIME = :lastLoginTime WHERE EMAIL = :email";
+			"UPDATE member SET LAST_LOGIN_TIME = :lastLoginTime WHERE EMAIL = :email";
 	
 	// 트랜잭션을 사용하여 데이터베이스 작업을 수행
 	@Transactional
@@ -29,6 +29,6 @@ public interface MemberRepository extends JpaRepository<Member, Long> {
 	);
 	
 	// 이메일을 기준으로 회원을 찾는 메소드
-	public Member findByEmail(String email);
+	public MemberEntity findByEmail(String email);
  
 }

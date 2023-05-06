@@ -5,8 +5,8 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
-import com.board.entity.board.member.Member;
-import com.board.entity.board.member.MemberRepository;
+import com.board.entity.member.MemberEntity;
+import com.board.entity.member.MemberRepository;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -23,7 +23,7 @@ public class MemberDetailServiceImpl implements UserDetailsService {
     public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
     	log.info("check : " + email);
         // 이메일로 사용자를 조회
-        Member member = memberRepository.findByEmail(email);
+        MemberEntity member = memberRepository.findByEmail(email);
 
         // 사용자가 없으면 UsernameNotFoundException을 던짐
         if (member == null) throw new UsernameNotFoundException("Not Found account.");
