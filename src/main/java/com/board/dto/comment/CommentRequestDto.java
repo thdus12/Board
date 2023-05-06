@@ -13,6 +13,10 @@ public class CommentRequestDto {
     private String content;
     private String registerId;
     private BoardEntity board;
+    
+    public void setRegisterId(String registerId) {
+        this.registerId = registerId;
+    }
 
     public CommentEntity toEntity() {
         return CommentEntity.builder()

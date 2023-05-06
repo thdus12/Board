@@ -47,6 +47,7 @@
 			</div>
 			<form id="commentForm" th:action="@{/board/view/comment}" th:with="info=${resultMap.info}" method="post">
 			    <input type="hidden" name="boardId" th:value="${info.id}" />
+			    <input type="hidden" name="registerId" th:value="${info.registerId}" />
 			    <div class="mb-6">
 			        <textarea class="form-control" rows="3" name="content"></textarea>
 			        <button type="button" class="btn float-right" onclick="fnCommentAdd()">Add</button>

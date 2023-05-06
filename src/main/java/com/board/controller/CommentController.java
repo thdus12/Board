@@ -30,11 +30,12 @@ public class CommentController {
 	private BoardService boardService;
 	
 	@PostMapping("/board/view/comment")
-    public String addComment(@RequestParam("boardId") Long boardId, CommentRequestDto commentRequestDto) throws Exception {
+    public String addComment(@RequestParam("boardId") Long boardId,@RequestParam("registerId") String registerId, CommentRequestDto commentRequestDto) throws Exception {
 		try {
-			System.out.println("@@@@@@@@@boardId" + boardId);
+			System.out.println("@@@@@@@@@registerId" + registerId);
 	        BoardEntity board = boardService.getBoardById(boardId);
 	        commentRequestDto.setBoard(board);
+	        commentRequestDto.setRegisterId(registerId);
 	        Long result = commentService.createComment(commentRequestDto);
 	        
 			if (result < 0) {
