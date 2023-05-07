@@ -34,6 +34,14 @@
 				</div>
 			</form>
 			<hr>
+			<form id="commentForm" th:action="@{/board/view/comment}" th:with="info=${resultMap.info}" method="post">
+			    <input type="hidden" name="boardId" th:value="${info.id}" />
+			    <input type="hidden" name="registerId" th:value="${userEmail}"/>
+			    <div class="mb-6">
+			        <textarea class="form-control" rows="3" name="content"></textarea>
+			        <button type="button" class="btn float-right" onclick="fnCommentAdd()">Add</button>
+			    </div>
+			</form>
 			<div class="mt-5">			    
 			   	<label class="form-label font-weight-bold">Comment.</label>
 			    <hr>
@@ -45,15 +53,7 @@
 			        </div>
 			        <hr>
 			    </div>
-			</div>			
-			<form id="commentForm" th:action="@{/board/view/comment}" th:with="info=${resultMap.info}" method="post">
-			    <input type="hidden" name="boardId" th:value="${info.id}" />
-			    <input type="hidden" name="registerId" th:value="${userEmail}"/>
-			    <div class="mb-6">
-			        <textarea class="form-control" rows="3" name="content"></textarea>
-			        <button type="button" class="btn float-right" onclick="fnCommentAdd()">Add</button>
-			    </div>
-			</form>
+			</div>						
 		</div>
 	    <script th:inline="javascript">
     		let frm = $("#frm");

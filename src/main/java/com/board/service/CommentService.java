@@ -7,10 +7,10 @@ import java.util.stream.Collectors;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.data.domain.Sort;
 
 import com.board.dto.comment.CommentRequestDto;
 import com.board.dto.comment.CommentResponseDto;
-import com.board.entity.board.BoardEntity;
 import com.board.entity.comment.CommentEntity;
 import com.board.entity.comment.CommentRepository;
 
@@ -53,7 +53,7 @@ public class CommentService {
     
     @Transactional
     public List<CommentResponseDto> getCommentsByBoardId(Long boardId) {
-        List<CommentEntity> commentEntities = commentRepository.findByBoardId(boardId);
+        List<CommentEntity> commentEntities = commentRepository.findByBoardId(boardId, Sort.by(Sort.Direction.DESC, "registerTime"));
         return commentEntities.stream()
                 .map(CommentResponseDto::new)
                 .collect(Collectors.toList());
