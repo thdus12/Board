@@ -2,12 +2,14 @@ package com.board.service;
 
 import java.util.List;
 import java.util.NoSuchElementException;
+import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.board.dto.comment.CommentRequestDto;
+import com.board.dto.comment.CommentResponseDto;
 import com.board.entity.board.BoardEntity;
 import com.board.entity.comment.CommentEntity;
 import com.board.entity.comment.CommentRepository;
@@ -35,11 +37,6 @@ public class CommentService {
                 .orElseThrow(() -> new NoSuchElementException("Could not find comment with ID: " + commentId));
     }
 
-    // 게시글의 모든 댓글 조회
-    public List<CommentEntity> getCommentsByBoardId(Long boardId) {
-        return commentRepository.findByBoardId(boardId);
-    }
-
     // 댓글 수정
     @Transactional
     public CommentEntity updateComment(Long commentId, CommentEntity updatedComment) {
@@ -52,5 +49,13 @@ public class CommentService {
     @Transactional
     public void deleteComment(Long commentId) {
         commentRepository.deleteById(commentId);
+    }
+    
+    @Transactional
+    public List<CommentResponseDto> getCommentsByBoardId(Long boardId) {
+        List<CommentEntity> commentEntities = commentRepository.findByBoardId(boardId);
+        return commentEntities.stream()
+                .map(CommentResponseDto::new)
+                .collect(Collectors.toList());
     }
 }

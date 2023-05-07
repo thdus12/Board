@@ -13,6 +13,8 @@ public class CommentRequestDto {
     private String content;
     private String registerId;
     private BoardEntity board;
+    private Long parentId;
+    private Long depth;
     
     public void setRegisterId(String registerId) {
         this.registerId = registerId;
@@ -24,6 +26,8 @@ public class CommentRequestDto {
                 .content(content)
                 .registerId(registerId)
                 .board(board)
+                .parentId(parentId)
+                .depth(depth)
                 .build();
     }
 }

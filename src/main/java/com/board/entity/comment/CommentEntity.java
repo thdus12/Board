@@ -26,13 +26,17 @@ public class CommentEntity extends BaseTimeEntity{
     @ManyToOne(fetch = FetchType.LAZY)
     private BoardEntity board;
     private LocalDateTime updateTime;
+    private Long parentId;
+    private Long depth;
     
     @Builder
-    public CommentEntity(Long id, String content, String registerId, BoardEntity board, LocalDateTime updateTime) {
+    public CommentEntity(Long id, String content, String registerId, BoardEntity board, LocalDateTime updateTime, Long parentId, Long depth) {
     	this.id = id;
     	this.content = content;
     	this.registerId = registerId;
     	this.board = board;
     	this.updateTime = updateTime;
+    	this.parentId = parentId;
+    	this.depth = depth;
     }
 }

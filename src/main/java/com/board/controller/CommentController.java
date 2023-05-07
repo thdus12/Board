@@ -32,18 +32,20 @@ public class CommentController {
 	@PostMapping("/board/view/comment")
     public String addComment(@RequestParam("boardId") Long boardId,@RequestParam("registerId") String registerId, CommentRequestDto commentRequestDto) throws Exception {
 		try {
-			System.out.println("@@@@@@@@@registerId" + registerId);
-	        BoardEntity board = boardService.getBoardById(boardId);
+			BoardEntity board = boardService.getBoardById(boardId);
 	        commentRequestDto.setBoard(board);
 	        commentRequestDto.setRegisterId(registerId);
+	        commentRequestDto.setParentId((long) 0);
+	        commentRequestDto.setDepth((long) 1);
 	        Long result = commentService.createComment(commentRequestDto);
 	        
 			if (result < 0) {
 				throw new Exception("#Exception comment!");
 			}
-            return "redirect:/board/view?id=" + boardId;
 		} catch (Exception e) {
 			throw new Exception(e.getMessage()); 
-		}    	
+		}
+		
+        return "redirect:/board/view?id=" + boardId;		
     }
 }
