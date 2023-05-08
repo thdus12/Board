@@ -38,26 +38,108 @@
 			    <input type="hidden" name="boardId" th:value="${info.id}" />
 			    <input type="hidden" name="registerId" th:value="${userEmail}"/>
 			    <div class="mb-6">
-			        <textarea class="form-control" rows="3" name="content"></textarea>
-			        <button type="button" class="btn float-right" onclick="fnCommentAdd()">Add</button>
+			        <textarea class="form-control mb-1" rows="3" name="content"></textarea>
+			        <button type="button" class="btn btn-primary active float-right" onclick="fnCommentAdd()">Add</button>
 			    </div>
 			</form>
 			<div class="mt-5">			    
 			   	<label class="form-label font-weight-bold">Comment.</label>
 			    <hr>
-			    <div th:each="comment : ${commentList}" th:if="${comment.parentId} == 0">
-			        <div class="comment">
-			            <span class="font-weight-bold" th:text="${comment.registerId} + ' | '"></span>
-			            <span class="text-secondary" th:text="${#temporals.format(comment.registerTime, 'yyyy-MM-dd HH:mm:ss')}"></span>
-			            <p class="mt-2" th:text="${comment.content}"></p>
-			        </div>
-			        <hr>
-			    </div>
+			    <div th:each="comment : ${commentList}" th:if="${comment.parentId} == 0" th:id="'comment-' + ${comment.id}" th:attr="data-comment=${comment}">
+				    <div class="comment">
+				        <span class="font-weight-bold" th:text="${comment.registerId} + ' | '"></span>
+				        <span class="text-secondary" th:text="${#temporals.format(comment.registerTime, 'yyyy-MM-dd HH:mm:ss')}"></span>
+				        <p class="mt-2" th:text="${comment.content}"></p>			        
+				        <div class="reply-list mx-4">
+				            <div th:each="reply : ${commentList}" th:if="${reply.parentId} == ${comment.id}">
+				                <div class="reply">
+				                    <span class="font-weight-bold" th:text="'re. ' + ${reply.registerId} + ' | '"></span>
+				                    <span class="text-secondary" th:text="${#temporals.format(reply.registerTime, 'yyyy-MM-dd HH:mm:ss')}"></span>
+				                    <p class="mt-2" th:text="${reply.content}"></p>
+				                </div>
+				            </div>
+				        </div>		    
+					    <div class="reply-form-container" style="display: none;">
+					        <form id="replyForm" class="reply-form" th:action="@{/board/view/comment/reply}" th:with="info=${resultMap.info}" method="post">
+					            <input type="hidden" name="parentId" th:value="${comment.id}" />
+					            <input type="hidden" name="depth" th:value="0"/>
+					            <input type="hidden" name="boardId" th:value="${info.id}" />
+					            <input type="hidden" name="registerId" th:value="${userEmail}" />
+					            <div class="mb-6">
+					                <textarea class="form-control mb-1" rows="3" name="content"></textarea>
+				                    <button type="button" class="btn btn-primary active" onclick="fnReplyAdd(event)">Add Reply</button>
+					            </div>
+					        </form>
+					    </div>
+				    </div>
+				    <hr>
+				</div>
 			</div>						
 		</div>
 	    <script th:inline="javascript">
     		let frm = $("#frm");
     		let comment = $("#commentForm");
+	        let commentList = /*[[${commentList}]]*/ null;
+	        let parentId = 0;
+	        	  		
+    		$(document).ready(function() {
+			  	// 댓글 div 클릭 이벤트
+				$('div.comment').click(function() {
+				    // 대댓글 입력폼 보이기
+				    let replyFormContainer = $(this).parent().find('.reply-form-container');
+				    if(replyFormContainer.is(':visible')) {
+				        // 대댓글 입력폼이 이미 보이는 경우, 숨기기
+				        replyFormContainer.hide();
+				    } else {
+				    	parentId = $(this).find('input[name="parentId"]').val();
+				        console.log(parentId);
+				    	let depth = calculateDepth(commentList, parentId);
+						replyFormContainer.find('input[name="depth"]').val(Number(depth));					  	
+				        // 대댓글 입력폼이 보이지 않는 경우, 보이기
+				        replyFormContainer.show();
+				    }
+				});
+			  	
+				// textarea 클릭 이벤트
+				$('.reply-form-container textarea').click(function(event) {
+				  	// 부모 요소로 이벤트 전파되지 않도록 처리
+				  	event.stopPropagation();
+				});
+				
+				// 입력폼 바깥쪽 클릭 이벤트
+				$(document).click(function(event) { 
+				  	if(!$(event.target).closest('div[id^="comment-"]').length) {
+					    // 대댓글 입력폼 숨기기
+					    $('.reply-form-container').hide();       
+				  	}        
+				});
+			});
+    		
+    		function calculateDepth(comments, parentId) {
+   			  	// 댓글의 depth 값을 저장할 배열
+   			  	const depths = [];
+   			  	
+   			  	console.log(comments);
+
+   			  	// 댓글 리스트를 순회하며 depth 값을 계산하여 배열에 저장
+   			  	comments.forEach(c => {
+   			    	if (c.parentId === 0) {
+   			      		depths[c.id] = 0;
+   			    	} else {
+   			      		depths[c.id] = c.depth;
+   			    	}
+   			  	});
+   			  	
+   			 	console.log(depths);
+
+   			  	// 대댓글 depth 
+   			  	const result = depths[parentId] + 1;
+   			  	
+   			 	console.log(result);
+
+   			  	// 결과 반환
+   			  	return result;
+   			}
     		
 		    function fnViewDelete() {
 	            if (confirm("Do you want to delete it?")) {
@@ -76,6 +158,12 @@
 		    
 		    function fnCommentAdd() {		    	
 		    	comment.submit();
+		    }
+		    
+		    function fnReplyAdd(event) {
+		    	// 현재 클릭됝 버튼을 기준으로 폼을 찾음
+		    	const currentReplyForm = $(event.target).closest('.reply-form');
+		    	currentReplyForm.submit();
 		    }
 		    
 		    $(function() {

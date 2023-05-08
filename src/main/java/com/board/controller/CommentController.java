@@ -30,17 +30,44 @@ public class CommentController {
 	private BoardService boardService;
 	
 	@PostMapping("/board/view/comment")
-    public String addComment(@RequestParam("boardId") Long boardId,@RequestParam("registerId") String registerId, CommentRequestDto commentRequestDto) throws Exception {
+    public String addComment(@RequestParam("boardId") Long boardId, @RequestParam("registerId") String registerId, CommentRequestDto commentRequestDto) throws Exception {
 		try {
 			BoardEntity board = boardService.getBoardById(boardId);
 	        commentRequestDto.setBoard(board);
 	        commentRequestDto.setRegisterId(registerId);
 	        commentRequestDto.setParentId((long) 0);
-	        commentRequestDto.setDepth((long) 1);
+	        commentRequestDto.setDepth((long) 0);
 	        Long result = commentService.createComment(commentRequestDto);
 	        
 			if (result < 0) {
 				throw new Exception("#Exception comment!");
+			}
+		} catch (Exception e) {
+			throw new Exception(e.getMessage()); 
+		}
+		
+        return "redirect:/board/view?id=" + boardId;		
+    }
+	
+	@PostMapping("/board/view/comment/reply")
+    public String addReply(@RequestParam("parentId") Long parentId,
+    					   @RequestParam("depth") Long depth,
+    					   @RequestParam("boardId") Long boardId, 
+    					   @RequestParam("registerId") String registerId, 
+    					   CommentRequestDto commentRequestDto) throws Exception {
+		try {
+			System.out.println("@@@@@parentId="+parentId);
+			System.out.println("@@@@@depth="+depth);
+			
+			BoardEntity board = boardService.getBoardById(boardId);
+	        commentRequestDto.setBoard(board);
+	        commentRequestDto.setRegisterId(registerId);
+	        commentRequestDto.setParentId(parentId);
+	        commentRequestDto.setDepth(depth);
+	        Long result = commentService.createComment(commentRequestDto);
+	        
+			if (result < 0) {
+				throw new Exception("#Exception reply!");
 			}
 		} catch (Exception e) {
 			throw new Exception(e.getMessage()); 
