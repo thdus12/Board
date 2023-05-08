@@ -40,7 +40,7 @@ public class CommentService {
     // 댓글 수정
     @Transactional
     public CommentEntity updateComment(Long commentId, CommentEntity updatedComment) {
-    	CommentEntity comment = getCommentById(commentId);
+        CommentEntity comment = getCommentById(commentId);
         comment.setContent(updatedComment.getContent());
         return comment;
     }
@@ -51,6 +51,12 @@ public class CommentService {
         commentRepository.deleteById(commentId);
     }
     
+    // 댓글의 대댓글 찾기
+    public List<CommentEntity> findRepliesByParentId(Long parentId) {
+        return commentRepository.findByParentId(parentId);
+    }
+    
+    // 게시물에 달린 댓글 조회
     @Transactional
     public List<CommentResponseDto> getCommentsByBoardId(Long boardId) {
         List<CommentEntity> commentEntities = commentRepository.findByBoardId(boardId, Sort.by(Sort.Direction.DESC, "registerTime"));

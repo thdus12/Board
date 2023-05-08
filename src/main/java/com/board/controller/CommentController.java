@@ -1,5 +1,7 @@
 package com.board.controller;
 
+import java.util.List;
+
 import javax.servlet.http.HttpSession;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -29,6 +31,35 @@ public class CommentController {
 	@Autowired
 	private BoardService boardService;
 	
+	// 댓글 수정
+	@PostMapping("/board/view/comment/update")
+	public String updateComment(@RequestParam("commentId") Long commentId,
+	                            @RequestParam("boardId") Long boardId,
+	                            @ModelAttribute("comment") CommentRequestDto commentRequestDto) {
+	    CommentEntity updatedComment = commentRequestDto.toEntity();
+	    commentService.updateComment(commentId, updatedComment);
+	    return "redirect:/board/view?id=" + boardId;
+	}
+	
+	// 댓글 삭제
+	@PostMapping("/board/view/comment/delete")
+	public String deleteComment(@RequestParam("commentId") Long commentId,
+	                            @RequestParam("boardId") Long boardId) {
+		// 댓글의 대댓글 찾기
+	    List<CommentEntity> replies = commentService.findRepliesByParentId(commentId);
+
+	    // 대댓글 삭제
+	    for (CommentEntity reply : replies) {
+	        commentService.deleteComment(reply.getId());
+	    }
+
+	    // 댓글 삭제
+	    commentService.deleteComment(commentId);
+	    
+	    return "redirect:/board/view?id=" + boardId;
+	}
+	
+	// 댓글 추가
 	@PostMapping("/board/view/comment")
     public String addComment(@RequestParam("boardId") Long boardId, @RequestParam("registerId") String registerId, CommentRequestDto commentRequestDto) throws Exception {
 		try {
@@ -49,16 +80,18 @@ public class CommentController {
         return "redirect:/board/view?id=" + boardId;		
     }
 	
+	// 대댓글 추가
 	@PostMapping("/board/view/comment/reply")
     public String addReply(@RequestParam("parentId") Long parentId,
     					   @RequestParam("depth") Long depth,
     					   @RequestParam("boardId") Long boardId, 
     					   @RequestParam("registerId") String registerId, 
     					   CommentRequestDto commentRequestDto) throws Exception {
-		try {
-			System.out.println("@@@@@parentId="+parentId);
-			System.out.println("@@@@@depth="+depth);
-			
+		try {			
+			System.out.println(parentId);
+			System.out.println(depth);
+			System.out.println(boardId);
+			System.out.println(registerId);
 			BoardEntity board = boardService.getBoardById(boardId);
 	        commentRequestDto.setBoard(board);
 	        commentRequestDto.setRegisterId(registerId);

@@ -56,9 +56,6 @@ public class BoardService {
         resultMap.put("totalCnt", list.getTotalElements());
         resultMap.put("totalPage", list.getTotalPages());
         
-        System.out.println("@@@@@@@@@");
-        System.out.println(resultMap);
-        
         return resultMap;
     }
 
