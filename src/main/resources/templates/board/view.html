@@ -3,11 +3,11 @@
       layout:decorate="layout/default_layout">
    	<!-- layout Content -->
 	<th:block layout:fragment="content">
-		<div class="container">
+		<div class="container" th:with="info=${resultMap.info}">
 			<div class="card-header mb-3">
 		    	<h3 class="text-center font-weight-bold my-4">Board View.</h3>
 		    </div>
-			<form id="frm" action="/board/edit" method="get" th:with="info=${resultMap.info}" enctype="multipart/form-data">
+			<form id="frm" action="/board/edit" method="get" enctype="multipart/form-data">
 				<input type="hidden" name="id" th:value="${info.id}">
 				<div class="mb-3">
 				    <span class = "font-weight-bold" name="title" th:text="${info.title}"></span>				    
@@ -35,7 +35,7 @@
 			</form>
 			<hr>
 			<!-- 댓글 작성 폼 -->
-			<form id="commentForm" th:action="@{/board/view/comment}" th:with="info=${resultMap.info}" method="post">
+			<form id="commentForm" th:action="@{/board/view/comment}" method="post">
 			    <input type="hidden" name="boardId" th:value="${info.id}" />
 			    <input type="hidden" name="registerId" th:value="${userEmail}"/>
 			    <div class="mb-6">
@@ -74,21 +74,29 @@
 				            </form>
 				        </div>			   
 				        <!-- 대댓글 리스트 -->     
-				        <div class="reply-list mx-4">
+				        <div class="reply-list ml-4">
 				            <div th:each="reply : ${commentList}" th:if="${reply.parentId} == ${comment.id}">
-				                <div class="reply">
-				                    <span class="font-weight-bold" th:text="'re. ' + ${reply.registerId} + ' | '"></span>
-				                    <span class="text-secondary" th:text="${#temporals.format(reply.registerTime, 'yyyy-MM-dd HH:mm:ss')}"></span>
-				                    <p class="mt-2" th:text="${reply.content}"></p>
+				                <div class="reply card p-1 mb-1 bg-light">
+				                	<div class="d-flex justify-content-between align-items-center">
+					                	<div class="pl-2">
+						                    <span class="font-weight-bold" th:text="'re. ' + ${reply.registerId} + ' | '"></span>
+						                    <span class="text-secondary" th:text="${#temporals.format(reply.registerTime, 'yyyy-MM-dd HH:mm:ss')}"></span>
+					                    </div>
+								        <div>
+								        	<button type="button" class="btn btn-outline-secondary btn-sm" th:onclick="'editReply(' + event + ', ' + ${reply.id} + ')'">Edit</button>
+								            <button type="button" class="btn btn-outline-secondary btn-sm" th:onclick="'deleteReply(' + ${reply.id} + ', ' + ${info.id} + ')'">Delete</button>
+								        </div>					                    
+				                	</div>
+				                	<p class="pl-2 mt-2" th:text="${reply.content}"></p>
 				                </div>
 				            </div>
 				        </div>		    
 				        <!-- 대댓글 작성 폼 -->
 					    <div class="reply-form-container" style="display: none;">
-					        <form id="replyForm" class="reply-form" th:action="@{/board/view/comment/reply}" th:with="board=${resultMap.info}" method="post">
+					        <form id="replyForm" class="reply-form" th:action="@{/board/view/reply}" method="post">
 					            <input type="hidden" id="reply_parentId" name="parentId" th:value="${comment.id}" />
 					            <input type="hidden" id="reply_depth" name="depth" th:value="0"/>
-					            <input type="hidden" id="reply_boardId" name="boardId" th:value="${board.id}" />
+					            <input type="hidden" id="reply_boardId" name="boardId" th:value="${info.id}" />
 					            <input type="hidden" id="reply_registerId" name="registerId" th:value="${userEmail}" />
 					            <div class="mb-6">
 					                <textarea class="form-control mb-1" rows="3" name="content"></textarea>
@@ -195,6 +203,31 @@
 	                form.submit();
 	            }
 	        }
+	        
+	     	// 대댓글 삭제
+	        function deleteReply(replyId, boardId) {
+	            if (confirm("대댓글을 삭제하시겠습니까?")) {
+	                let form = document.createElement("form");
+	                form.setAttribute("charset", "UTF-8");
+	                form.setAttribute("method", "POST");
+	                form.setAttribute("action", "/board/view/reply/delete");
+
+	                let hiddenReplyId = document.createElement("input");
+	                hiddenReplyId.setAttribute("type", "hidden");
+	                hiddenReplyId.setAttribute("name", "replyId");
+	                hiddenReplyId.setAttribute("value", replyId);
+	                form.appendChild(hiddenReplyId);
+
+	                let hiddenBoardId = document.createElement("input");
+	                hiddenBoardId.setAttribute("type", "hidden");
+	                hiddenBoardId.setAttribute("name", "boardId");
+	                hiddenBoardId.setAttribute("value", boardId);
+	                form.appendChild(hiddenBoardId);
+
+	                document.body.appendChild(form);
+	                form.submit();
+	            }
+	        }
 	        	  		
     		$(document).ready(function() {
 			  	// 댓글 div 클릭 이벤트
@@ -205,7 +238,7 @@
 				        // 대댓글 입력폼이 이미 보이는 경우, 숨기기
 				        replyFormContainer.hide();
 				    } else {
-				    	parentId = $(this).find('#reply_parentId').val();
+				    	parentId = $(this).parent().find('#reply_parentId').val();
 				        console.log(parentId);
 				    	let depth = calculateDepth(commentList, parentId);
 						replyFormContainer.find('input[name="depth"]').val(Number(depth));					  	
@@ -271,12 +304,7 @@
 		    function fnReplyAdd(event) {
 		    	// 현재 클릭된 버튼을 기준으로 폼을 찾음
 		    	const currentReplyForm = $(event.target).closest('.reply-form');
-		    	/* currentReplyForm.submit(); */
-		    	
-		    	console.log(document.querySelector('#reply_parentId').value);
-		    	console.log(document.querySelector('#reply_depth').value);
-		    	console.log(document.querySelector('#reply_boardId').value);
-		    	console.log(document.querySelector('#reply_registerId').value);
+		    	currentReplyForm.submit();
 		    }
 		    
 		    $(function() {

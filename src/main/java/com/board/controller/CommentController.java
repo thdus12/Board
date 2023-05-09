@@ -80,18 +80,24 @@ public class CommentController {
         return "redirect:/board/view?id=" + boardId;		
     }
 	
+	// 대댓글 삭제
+	@PostMapping("/board/view/reply/delete")
+	public String deleteRelply(@RequestParam("replyId") Long replyId,
+	                            @RequestParam("boardId") Long boardId) {
+	    // 댓글 삭제
+	    commentService.deleteComment(replyId);
+	    
+	    return "redirect:/board/view?id=" + boardId;
+	}
+	
 	// 대댓글 추가
-	@PostMapping("/board/view/comment/reply")
+	@PostMapping("/board/view/reply")
     public String addReply(@RequestParam("parentId") Long parentId,
     					   @RequestParam("depth") Long depth,
     					   @RequestParam("boardId") Long boardId, 
     					   @RequestParam("registerId") String registerId, 
     					   CommentRequestDto commentRequestDto) throws Exception {
 		try {			
-			System.out.println(parentId);
-			System.out.println(depth);
-			System.out.println(boardId);
-			System.out.println(registerId);
 			BoardEntity board = boardService.getBoardById(boardId);
 	        commentRequestDto.setBoard(board);
 	        commentRequestDto.setRegisterId(registerId);
