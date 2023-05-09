@@ -66,10 +66,12 @@
 				                <input type="hidden" name="commentId" th:value="${comment.id}" />
 				                <input type="hidden" name="boardId" th:value="${info.id}" />
 				                <input type="hidden" name="registerId" th:value="${userEmail}" />
-				                <div class="mb-6">
+				                <div class="mb-6 mt-1">
 				                    <textarea class="form-control mb-1" rows="3" name="content" th:text="${comment.content}"></textarea>
-				                    <button type="button" class="btn btn-primary active" onclick="fnCommentUpdate(this)">Update</button>
-				                    <button type="button" class="btn btn-outline-secondary" onclick="fnCommentEdit(this)">Cancel</button>
+				                    <div align="right" class="mb-1">
+					                    <button type="button" class="btn btn-primary active" onclick="fnCommentUpdate(this)">Update</button>
+					                    <button type="button" class="btn btn-outline-secondary" onclick="fnCommentEdit(this)">Cancel</button>
+				                    </div>
 				                </div>
 				            </form>
 				        </div>			   
@@ -100,7 +102,9 @@
 					            <input type="hidden" id="reply_registerId" name="registerId" th:value="${userEmail}" />
 					            <div class="mb-6">
 					                <textarea class="form-control mb-1" rows="3" name="content"></textarea>
-				                    <button type="button" class="btn btn-primary active" onclick="fnReplyAdd(event)">Add Reply</button>
+					                <div align="right">
+				                    	<button type="button" class="btn btn-primary active" onclick="fnReplyAdd(event)">Add Reply</button>
+					            	</div>
 					            </div>
 					        </form>
 					    </div>
@@ -161,6 +165,7 @@
 	            currentCommentDiv.find('.reply-form-container').hide();
 	            currentCommentDiv.find('.edit-form-container').hide();
 	            currentCommentDiv.find('p').show();
+	            currentCommentDiv.find('.reply-list').show();
 	        }
 	        
 	        // 댓글 수정폼 보여주기
@@ -171,6 +176,7 @@
 	            // 댓글 내용 출력 영역을 숨기고, 댓글 수정 입력창 영역을 보이도록 변경
 	            currentCommentDiv.find('.reply-form-container').hide();
 	            currentCommentDiv.find('p').hide();
+	            currentCommentDiv.find('.reply-list').hide();
 	            currentCommentDiv.find('.edit-form-container').show();
 
 	            // 대댓글 입력 폼 숨기기
