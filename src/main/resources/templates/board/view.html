@@ -26,7 +26,7 @@
 				<hr>
 				<div class="clearfix mt-3">
 					<div class="d-flex align-items-center">
-					    <button type="button" class="btn btn-success" onclick="javascript:location.href='/board/list'">Previous</button>
+					    <button type="button" class="btn btn-outline-primary" onclick="javascript:location.href='/board/list'">Previous</button>
 					    <div class="ml-auto"></div>
 					    <button type="button" class="btn btn-primary mr-1" onclick="fnViewEdit('${info.id}')">Edit</button>
 					    <button type="button" class="btn btn-danger" th:onclick="fnViewDelete()">Delete</button>
@@ -36,12 +36,12 @@
 			<hr>
 			<!-- 댓글 작성 폼 -->
 			<form id="commentForm" th:action="@{/board/view/comment}" method="post">
-			    <input type="hidden" name="boardId" th:value="${info.id}" />
-			    <input type="hidden" name="registerId" th:value="${userEmail}"/>
-			    <div class="mb-6">
-			        <textarea class="form-control mb-1" rows="3" name="content"></textarea>
-			        <button type="button" class="btn btn-primary active float-right" onclick="fnCommentAdd()">Add</button>
-			    </div>
+			  	<input type="hidden" name="boardId" th:value="${info.id}" />
+			  	<input type="hidden" name="registerId" th:value="${userEmail}"/>
+			  	<div class="d-flex mb-6">
+			    	<textarea class="form-control flex-grow-1 mr-1" rows="3" name="content"></textarea>
+			    	<button type="button" class="btn btn-success active p-3" onclick="fnCommentAdd()">Add</button>
+			  	</div>
 			</form>
 			<div class="mt-5">			    
 			   	<label class="form-label font-weight-bold">Comment.</label>
@@ -49,7 +49,7 @@
 			    <!-- 댓글 리스트 -->
 			    <div th:each="comment : ${commentList}" th:if="${comment.parentId} == 0" th:id="'comment-' + ${comment.id}" th:attr="data-comment=${comment}" th:with="info=${resultMap.info}">
 				    <div class="comment">
-				        <div class="d-flex justify-content-between align-items-center">
+				        <div class="d-flex justify-content-between align-items-center p-1">
 					        <div>
 					            <span class="font-weight-bold" th:text="${comment.registerId} + ' | '"></span>
 					            <span class="text-secondary" th:text="${#temporals.format(comment.registerTime, 'yyyy-MM-dd HH:mm:ss')}"></span>
@@ -94,17 +94,15 @@
 				            </div>
 				        </div>		    
 				        <!-- 대댓글 작성 폼 -->
-					    <div class="reply-form-container" style="display: none;">
+					    <div class="reply-form-container ml-4" style="display: none;">
 					        <form id="replyForm" class="reply-form" th:action="@{/board/view/reply}" method="post">
 					            <input type="hidden" id="reply_parentId" name="parentId" th:value="${comment.id}" />
 					            <input type="hidden" id="reply_depth" name="depth" th:value="0"/>
 					            <input type="hidden" id="reply_boardId" name="boardId" th:value="${info.id}" />
 					            <input type="hidden" id="reply_registerId" name="registerId" th:value="${userEmail}" />
-					            <div class="mb-6">
-					                <textarea class="form-control mb-1" rows="3" name="content"></textarea>
-					                <div align="right">
-				                    	<button type="button" class="btn btn-primary active" onclick="fnReplyAdd(event)">Add Reply</button>
-					            	</div>
+					            <div class="d-flex mb-6">
+					                <textarea class="form-control flex-grow-1 mr-1" rows="3" name="content"></textarea>
+			                    	<button type="button" class="btn btn-success active" onclick="fnReplyAdd(event)">Add Reply</button>
 					            </div>
 					        </form>
 					    </div>
