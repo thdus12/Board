@@ -7,7 +7,7 @@
 			<div class="card-header mb-3">
 		    	<h3 class="text-center font-weight-bold my-4">Board View.</h3>
 		    </div>
-			<form id="frm" action="/board/edit" method="get" enctype="multipart/form-data">
+			<form id="boardViewForm" action="/board/edit" method="get" enctype="multipart/form-data">
 				<input type="hidden" name="id" th:value="${info.id}">
 				<div class="mb-3">
 				    <span class = "font-weight-bold" name="title" th:text="${info.title}"></span>				    
@@ -55,14 +55,14 @@
 					            <span class="text-secondary" th:text="${#temporals.format(comment.registerTime, 'yyyy-MM-dd HH:mm:ss')}"></span>
 					        </div>
 					        <div>
-					        	<button type="button" class="btn btn-outline-secondary btn-sm" th:onclick="'editComment(' + event + ', ' + ${comment.id} + ')'">Edit</button>
+					        	<button type="button" class="btn btn-outline-secondary btn-sm" th:onclick="'editComment(' + ${comment.id} + ')'">Edit</button>
 					            <button type="button" class="btn btn-outline-secondary btn-sm" th:onclick="'deleteComment(' + ${comment.id} + ', ' + ${info.id} + ')'">Delete</button>
 					        </div>
 					    </div>
 					    <p id="commentContent" class="mt-2" th:text="${comment.content}"></p>
-					    <!-- 수정 폼 -->
-					    <div class="edit-form-container" style="display: none;">
-				            <form class="edit-form" th:action="@{/board/view/comment/update}" th:with="info=${resultMap.info}" method="post">
+					    <!-- 댓글 수정 폼 -->
+					    <div class="edit-form-container" th:id="'edit-form-container-' + ${comment.id}" style="display: none;">
+				            <form class="edit-form" th:action="@{/board/view/comment/update}" method="post">
 				                <input type="hidden" name="commentId" th:value="${comment.id}" />
 				                <input type="hidden" name="boardId" th:value="${info.id}" />
 				                <input type="hidden" name="registerId" th:value="${userEmail}" />
@@ -74,7 +74,7 @@
 				                    </div>
 				                </div>
 				            </form>
-				        </div>			   
+				        </div>	   
 				        <!-- 대댓글 리스트 -->     
 				        <div class="reply-list ml-4">
 				            <div th:each="reply : ${commentList}" th:if="${reply.parentId} == ${comment.id}">
@@ -85,14 +85,29 @@
 						                    <span class="text-secondary" th:text="${#temporals.format(reply.registerTime, 'yyyy-MM-dd HH:mm:ss')}"></span>
 					                    </div>
 								        <div>
-								        	<button type="button" class="btn btn-outline-secondary btn-sm" th:onclick="'editReply(' + event + ', ' + ${reply.id} + ')'">Edit</button>
+								        	<button type="button" class="btn btn-outline-secondary btn-sm" th:onclick="'editReply(' + ${reply.id} + ')'">Edit</button>
 								            <button type="button" class="btn btn-outline-secondary btn-sm" th:onclick="'deleteReply(' + ${reply.id} + ', ' + ${info.id} + ')'">Delete</button>
 								        </div>					                    
 				                	</div>
-				                	<p class="pl-2 mt-2" th:text="${reply.content}"></p>
+				                	<p id="replyContent" class="pl-2 mt-2" th:text="${reply.content}"></p>				                	
+				                	<!-- 대댓글 수정 폼 -->
+								    <div class="editReply-form-container" th:id="'editReply-form-container-' + ${reply.id}" style="display: none;">
+							            <form class="editReply-form" th:action="@{/board/view/reply/update}" method="post">
+							                <input type="hidden" name="replyId" th:value="${reply.id}" />
+							                <input type="hidden" name="boardId" th:value="${info.id}" />
+							                <input type="hidden" name="registerId" th:value="${userEmail}" />
+							                <div class="mb-6 mt-1">
+							                    <textarea class="form-control mb-1" rows="3" name="content" th:text="${reply.content}"></textarea>
+							                    <div align="right" class="mb-1">
+								                    <button type="button" class="btn btn-primary active" onclick="fnReplyUpdate(this)">Update</button>
+								                    <button type="button" class="btn btn-outline-secondary" onclick="fnReplyEdit(this)">Cancel</button>
+							                    </div>
+							                </div>
+							            </form>
+							        </div>
 				                </div>
 				            </div>
-				        </div>		    
+				        </div>				        
 				        <!-- 대댓글 작성 폼 -->
 					    <div class="reply-form-container ml-4" style="display: none;">
 					        <form id="replyForm" class="reply-form" th:action="@{/board/view/reply}" method="post">
@@ -111,224 +126,5 @@
 				</div>
 			</div>						
 		</div>
-	    <script th:inline="javascript">
-    		let frm = $("#frm");
-    		let comment = $("#commentForm");
-	        let commentList = /*[[${commentList}]]*/ null;
-	        let parentId = 0;
-	        
-	        // 댓글 수정 폼의 update 버튼 이벤트
-	        function fnCommentUpdate(button) {
-        	  	// 현재 클릭된 버튼을 기준으로 댓글 수정 폼을 찾음
-        	  	const currentEditForm = $(button).closest('.edit-form');
-        	  	const commentContent = currentEditForm.parent().find('#commentContent');
-        	  	const currentCommentDiv = $(button).closest('.comment')
-        	  	
-        	  	// 수정된 내용을 가져와서 서버로 전송
-        	  	const content = currentEditForm.find('textarea[name="content"]').val();
-        	  	const commentId = currentEditForm.find('input[name="commentId"]').val();
-        	  	const boardId = currentEditForm.find('input[name="boardId"]').val();
-        	  	const registerId = currentEditForm.find('input[name="registerId"]').val();
-        	  
-        	  	$.ajax({
-        	    	url: "/board/view/comment/update",
-        	    	method: "POST",
-        	    	data: {
-        	      		commentId: commentId,
-        	      		boardId: boardId,
-        	      		content: content,
-        	      		registerId: registerId
-        	    	},
-        	    	success: function(data) {
-	        	      	// 수정된 댓글 내용을 출력 영역에 적용하고 수정 폼을 숨김
-	        	      	commentContent.text(content);
-	        	      	currentEditForm.hide();
-	        	      	currentCommentDiv.find('p').show();
-	        	      	
-	        	      	$('html').html(data);
-        	    	},
-        	    	error: function(xhr, status, error) {
-	        	      	console.error(error);
-	        	      	alert("댓글 수정 중 오류가 발생했습니다.");
-        	    	}
-        	  	});
-        	}
-	        
-	        // 수정폼의 cancel 버튼 이벤트
-	        function fnCommentEdit(button) {
-	            // 현재 클릭된 버튼을 기준으로 댓글 div를 찾음
-	            const currentCommentDiv = $(button).closest('.comment');
-
-	            // 댓글 내용 출력 영역을 보이도록 변경
-	            currentCommentDiv.find('.reply-form-container').hide();
-	            currentCommentDiv.find('.edit-form-container').hide();
-	            currentCommentDiv.find('p').show();
-	            currentCommentDiv.find('.reply-list').show();
-	        }
-	        
-	        // 댓글 수정폼 보여주기
-	        function editComment(event, commentId) {
-	            // 현재 클릭된 버튼을 기준으로 댓글 div를 찾음
-	            const currentCommentDiv = $(event.target).closest('.comment');
-
-	            // 댓글 내용 출력 영역을 숨기고, 댓글 수정 입력창 영역을 보이도록 변경
-	            currentCommentDiv.find('.reply-form-container').hide();
-	            currentCommentDiv.find('p').hide();
-	            currentCommentDiv.find('.reply-list').hide();
-	            currentCommentDiv.find('.edit-form-container').show();
-
-	            // 대댓글 입력 폼 숨기기
-	            if (currentCommentDiv.find('.reply-form-container').css('display') !== 'none') {
-	                currentCommentDiv.find('.reply-form-container').hide();
-	            }
-	        }
-	        
-	        // 댓글 삭제
-	        function deleteComment(commentId, boardId) {
-	            if (confirm("댓글을 삭제하시겠습니까?")) {
-	                let form = document.createElement("form");
-	                form.setAttribute("charset", "UTF-8");
-	                form.setAttribute("method", "POST");
-	                form.setAttribute("action", "/board/view/comment/delete");
-
-	                let hiddenCommentId = document.createElement("input");
-	                hiddenCommentId.setAttribute("type", "hidden");
-	                hiddenCommentId.setAttribute("name", "commentId");
-	                hiddenCommentId.setAttribute("value", commentId);
-	                form.appendChild(hiddenCommentId);
-
-	                let hiddenBoardId = document.createElement("input");
-	                hiddenBoardId.setAttribute("type", "hidden");
-	                hiddenBoardId.setAttribute("name", "boardId");
-	                hiddenBoardId.setAttribute("value", boardId);
-	                form.appendChild(hiddenBoardId);
-
-	                document.body.appendChild(form);
-	                form.submit();
-	            }
-	        }
-	        
-	     	// 대댓글 삭제
-	        function deleteReply(replyId, boardId) {
-	            if (confirm("대댓글을 삭제하시겠습니까?")) {
-	                let form = document.createElement("form");
-	                form.setAttribute("charset", "UTF-8");
-	                form.setAttribute("method", "POST");
-	                form.setAttribute("action", "/board/view/reply/delete");
-
-	                let hiddenReplyId = document.createElement("input");
-	                hiddenReplyId.setAttribute("type", "hidden");
-	                hiddenReplyId.setAttribute("name", "replyId");
-	                hiddenReplyId.setAttribute("value", replyId);
-	                form.appendChild(hiddenReplyId);
-
-	                let hiddenBoardId = document.createElement("input");
-	                hiddenBoardId.setAttribute("type", "hidden");
-	                hiddenBoardId.setAttribute("name", "boardId");
-	                hiddenBoardId.setAttribute("value", boardId);
-	                form.appendChild(hiddenBoardId);
-
-	                document.body.appendChild(form);
-	                form.submit();
-	            }
-	        }
-	        	  		
-    		$(document).ready(function() {
-			  	// 댓글 div 클릭 이벤트
-				$('p#commentContent').click(function() {
-				    // 대댓글 입력폼 보이기
-				    let replyFormContainer = $(this).parent().find('.reply-form-container');
-				    if(replyFormContainer.is(':visible')) {
-				        // 대댓글 입력폼이 이미 보이는 경우, 숨기기
-				        replyFormContainer.hide();
-				    } else {
-				    	parentId = $(this).parent().find('#reply_parentId').val();
-				        console.log(parentId);
-				    	let depth = calculateDepth(commentList, parentId);
-						replyFormContainer.find('input[name="depth"]').val(Number(depth));					  	
-				        // 대댓글 입력폼이 보이지 않는 경우, 보이기
-				        replyFormContainer.show();
-				    }
-				});
-			  	
-				// textarea 클릭 이벤트
-				$('.reply-form-container textarea').click(function(event) {
-				  	// 부모 요소로 이벤트 전파되지 않도록 처리
-				  	event.stopPropagation();
-				});
-				
-				// 입력폼 바깥쪽 클릭 이벤트
-				$(document).click(function(event) { 
-				  	if(!$(event.target).closest('div[id^="comment-"]').length) {
-					    // 대댓글 입력폼 숨기기
-					    $('.reply-form-container').hide();       
-				  	}        
-				});
-			});
-    		
-    		function calculateDepth(comments, parentId) {
-   			  	// 댓글의 depth 값을 저장할 배열
-   			  	const depths = [];
-
-   			  	// 댓글 리스트를 순회하며 depth 값을 계산하여 배열에 저장
-   			  	comments.forEach(c => {
-   			    	if (c.parentId === 0) {
-   			      		depths[c.id] = 0;
-   			    	} else {
-   			      		depths[c.id] = c.depth;
-   			    	}
-   			  	});
-
-   			  	// 대댓글 depth 
-   			  	const result = depths[parentId] + 1;
-
-   			  	// 결과 반환
-   			  	return result;
-   			}
-    		
-		    function fnViewDelete() {
-	            if (confirm("Do you want to delete it?")) {
-	                frm.attr("action", "/board/view/delete");
-					frm.attr("method","post");
-					frm.submit();
-	            }
-	        }
-		    
-		    function fnViewEdit(id) {
-		        if (confirm("Do you want to edit it?")) {
-		            $("#id").val(id);
-		            frm.submit();
-		        }
-	        }
-		    
-		    function fnCommentAdd() {		    	
-		    	comment.submit();
-		    }
-		    
-		    function fnReplyAdd(event) {
-		    	// 현재 클릭된 버튼을 기준으로 폼을 찾음
-		    	const currentReplyForm = $(event.target).closest('.reply-form');
-		    	currentReplyForm.submit();
-		    }
-		    
-		    $(function() {
-		    	frm.validate({
-		        	messages: {
-					   	title: {
-					     	required : "title is required, Please enter a title."
-					   	},
-					   	content: {
-					   		required : "content is required, Please enter a content."
-						},
-						registerId: {
-					    	required : "writer is required, Please enter a writer."
-						}		   
-			        },
-			        submitHandler: function (form) {
-			            form.submit();
-			        }
-		      	});
-	        });
-		</script>
 	</th:block>
 </html>

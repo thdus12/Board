@@ -80,6 +80,16 @@ public class CommentController {
         return "redirect:/board/view?id=" + boardId;		
     }
 	
+	// 대댓글 수정
+	@PostMapping("/board/view/reply/update")
+	public String updateReply(@RequestParam("replyId") Long replyId,
+	                            @RequestParam("boardId") Long boardId,
+	                            @ModelAttribute("comment") CommentRequestDto commentRequestDto) {
+	    CommentEntity updatedComment = commentRequestDto.toEntity();
+	    commentService.updateComment(replyId, updatedComment);
+	    return "redirect:/board/view?id=" + boardId;
+	}
+	
 	// 대댓글 삭제
 	@PostMapping("/board/view/reply/delete")
 	public String deleteRelply(@RequestParam("replyId") Long replyId,
