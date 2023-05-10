@@ -22,18 +22,29 @@ SpringBoot를 이용한 게시판 프로젝트 작성
 
 게시글 등록하는 화면. 유효성 검사를 하여 빈값일 경우 게시글 등록이 불가함
 
-![image](https://user-images.githubusercontent.com/97299700/235337555-ce0d2cc5-c98c-4bb9-afa9-320f9569e666.png)
+![image](https://github.com/thdus12/Board/assets/97299700/3d3d921a-92c9-4845-9c50-2267915a6d2d)
 
-![image](https://user-images.githubusercontent.com/97299700/235337425-6d3191d3-514f-458f-a7cd-f6394993e6cd.png)
-
+![image](https://github.com/thdus12/Board/assets/97299700/a1337fa4-dd26-4706-aa34-3b14ccccb8b8)
 
 ### ✅ 게시글 리스트 확인 및 삭제, 페이징
 
 게시글 리스트를 확인하고 체크박스로 다중 선택하여 게시글 삭제가 가능함
 
-![image](https://user-images.githubusercontent.com/97299700/235337462-ac1d3e82-afb9-4974-9727-66509097afd3.png)
+![image](https://github.com/thdus12/Board/assets/97299700/0ab2526c-8bd0-4315-8017-b7ed6dc184e8)
 
 ### ✅ 게시글 확인 및 수정
 
+게시글 내용 및 댓글을 확인하고 수정 및 삭제가 가능함.
 
+![image](https://github.com/thdus12/Board/assets/97299700/40b4bf70-313c-40f7-b342-be64fa0cfdb7)
+
+![image](https://github.com/thdus12/Board/assets/97299700/654a5427-cc29-491b-949c-956c9fdbfa72)
+
+### ✅ 게시글 댓글 추가, 수정, 삭제
+
+게시글 내에 댓글, 대댓글을 추가, 수정, 삭제가 가능함.
+
+![image](https://github.com/thdus12/Board/assets/97299700/9cf8790a-1d5a-4e2f-be12-9a2a99cdcf0d)
+
+![image](https://github.com/thdus12/Board/assets/97299700/06e4320f-cbb6-44f5-b9bb-3f60c1d8e0c5)
 
