@@ -30,7 +30,7 @@ SpringBoot를 이용한 게시판 프로젝트 작성
 
 게시글 리스트를 확인하고 체크박스로 다중 선택하여 게시글 삭제가 가능함
 
-![image](https://github.com/thdus12/Board/assets/97299700/0ab2526c-8bd0-4315-8017-b7ed6dc184e8)
+![image](https://github.com/thdus12/Board/assets/97299700/50716119-574a-4329-a164-fbb51106a306)
 
 ### ✅ 게시글 확인 및 수정
 
