@@ -16,6 +16,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.multipart.MultipartHttpServletRequest;
 import com.board.dto.board.BoardRequestDto;
 import com.board.dto.comment.CommentResponseDto;
+import com.board.entity.comment.CommentEntity;
 import com.board.service.BoardService;
 import com.board.service.CommentService;
 
@@ -27,10 +28,8 @@ import lombok.RequiredArgsConstructor;
 @Controller
 public class BoardController {
 
-    // BoardService를 주입 받음
 	@Autowired
-    private BoardService boardService;
-	
+    private BoardService boardService;	
 	@Autowired
     private CommentService commentService;
 	
@@ -140,11 +139,22 @@ public class BoardController {
 		return "redirect:/board/list";
 	}
     
+    // view.html에서 게시글 삭제
     @PostMapping("/board/view/delete")
 	public String boardViewDeleteAction(Model model, @RequestParam() Long id) throws Exception {
-		
 		try {
-			boardService.deleteById(id);
+			// 댓글 및 대댓글 삭제
+	        List<CommentEntity> comments = commentService.getCommentEntitiesByBoardId(id);
+	        for (CommentEntity comment : comments) {
+	            List<CommentEntity> replies = commentService.findRepliesByParentId(comment.getId());
+	            for (CommentEntity reply : replies) {
+	                commentService.deleteComment(reply.getId());
+	            }
+	            commentService.deleteComment(comment.getId());
+	        }
+
+	        // 게시글 삭제
+	        boardService.deleteById(id);
 		} catch (Exception e) {
 			throw new Exception(e.getMessage()); 
 		}
@@ -152,11 +162,24 @@ public class BoardController {
 		return "redirect:/board/list";
 	}
 	
+    // 게시글 다중 삭제
 	@PostMapping("/board/delete")
-	public String boardDeleteAction(Model model, @RequestParam() Long[] deleteId) throws Exception {
-		
+	public String boardDeleteAction(Model model, @RequestParam() Long[] deleteId) throws Exception {	
 		try {
-			boardService.deleteAll(deleteId);
+			for (Long id : deleteId) {
+	            // 댓글 및 대댓글 삭제
+	            List<CommentEntity> comments = commentService.getCommentEntitiesByBoardId(id);
+	            for (CommentEntity comment : comments) {
+	                List<CommentEntity> replies = commentService.findRepliesByParentId(comment.getId());
+	                for (CommentEntity reply : replies) {
+	                    commentService.deleteComment(reply.getId());
+	                }
+	                commentService.deleteComment(comment.getId());
+	            }
+	        }
+	        // 다중 게시글 삭제
+	        boardService.deleteAll(deleteId);
+	        
 		} catch (Exception e) {
 			throw new Exception(e.getMessage()); 
 		}
