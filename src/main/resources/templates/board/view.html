@@ -28,8 +28,8 @@
 					<div class="d-flex align-items-center">
 					    <button type="button" class="btn btn-outline-primary" onclick="javascript:location.href='/board/list'">Previous</button>
 					    <div class="ml-auto"></div>
-					    <button type="button" class="btn btn-primary mr-1" onclick="fnViewEdit('${info.id}')">Edit</button>
-					    <button type="button" class="btn btn-danger" th:onclick="fnViewDelete()">Delete</button>
+					    <button type="button" class="btn btn-primary mr-1" th:if="${info.registerId} == ${userEmail}" onclick="fnViewEdit('${info.id}')">Edit</button>
+					    <button type="button" class="btn btn-danger" th:if="${info.registerId} == ${userEmail}" th:onclick="fnViewDelete()">Delete</button>
 					</div>
 				</div>
 			</form>
@@ -55,8 +55,8 @@
 					            <span class="text-secondary" th:text="${#temporals.format(comment.registerTime, 'yyyy-MM-dd HH:mm:ss')}"></span>
 					        </div>
 					        <div>
-					        	<button type="button" class="btn btn-outline-secondary btn-sm" th:onclick="'editComment(' + ${comment.id} + ')'">Edit</button>
-					            <button type="button" class="btn btn-outline-secondary btn-sm" th:onclick="'deleteComment(' + ${comment.id} + ', ' + ${info.id} + ')'">Delete</button>
+					        	<button type="button" class="btn btn-outline-secondary btn-sm" th:if="${comment.registerId} == ${userEmail}" th:onclick="'editComment(' + ${comment.id} + ')'">Edit</button>
+					            <button type="button" class="btn btn-outline-secondary btn-sm" th:if="${comment.registerId} == ${userEmail}" th:onclick="'deleteComment(' + ${comment.id} + ', ' + ${info.id} + ')'">Delete</button>
 					        </div>
 					    </div>
 					    <p id="commentContent" class="mt-2" th:text="${comment.content}"></p>
@@ -69,8 +69,8 @@
 				                <div class="mb-6 mt-1">
 				                    <textarea class="form-control mb-1" rows="3" name="content" th:text="${comment.content}"></textarea>
 				                    <div align="right" class="mb-1">
-					                    <button type="button" class="btn btn-primary active" onclick="fnCommentUpdate(this)">Update</button>
-					                    <button type="button" class="btn btn-outline-secondary" onclick="fnCommentEdit(this)">Cancel</button>
+					                    <button type="button" class="btn btn-primary active" th:if="${comment.registerId} == ${userEmail}" onclick="fnCommentUpdate(this)">Update</button>
+					                    <button type="button" class="btn btn-outline-secondary" th:if="${comment.registerId} == ${userEmail}" onclick="fnCommentEdit(this)">Cancel</button>
 				                    </div>
 				                </div>
 				            </form>
@@ -85,8 +85,8 @@
 						                    <span class="text-secondary" th:text="${#temporals.format(reply.registerTime, 'yyyy-MM-dd HH:mm:ss')}"></span>
 					                    </div>
 								        <div>
-								        	<button type="button" class="btn btn-outline-secondary btn-sm" th:onclick="'editReply(' + ${reply.id} + ')'">Edit</button>
-								            <button type="button" class="btn btn-outline-secondary btn-sm" th:onclick="'deleteReply(' + ${reply.id} + ', ' + ${info.id} + ')'">Delete</button>
+								        	<button type="button" class="btn btn-outline-secondary btn-sm" th:if="${reply.registerId} == ${userEmail}" th:onclick="'editReply(' + ${reply.id} + ')'">Edit</button>
+								            <button type="button" class="btn btn-outline-secondary btn-sm" th:if="${reply.registerId} == ${userEmail}" th:onclick="'deleteReply(' + ${reply.id} + ', ' + ${info.id} + ')'">Delete</button>
 								        </div>					                    
 				                	</div>
 				                	<p id="replyContent" class="pl-2 mt-2" th:text="${reply.content}"></p>				                	
@@ -126,5 +126,66 @@
 				</div>
 			</div>						
 		</div>
+		<script th:inline="javascript">
+			let commentList = /*[[${commentList}]]*/ null;
+			
+			$(document).ready(function() {	
+			  	// 댓글 div 클릭 이벤트
+				$('p#commentContent').click(function() {
+				    // 대댓글 입력폼 보이기
+				    let replyFormContainer = $(this).parent().find('.reply-form-container');
+				    if(replyFormContainer.is(':visible')) {
+				        // 대댓글 입력폼이 이미 보이는 경우, 숨기기
+				        replyFormContainer.hide();
+				    } else {
+				    	parentId = $(this).parent().find('#reply_parentId').val();
+				        console.log(parentId);
+				    	let depth = calculateDepth(commentList, parentId);
+						replyFormContainer.find('input[name="depth"]').val(Number(depth));					  	
+				        // 대댓글 입력폼이 보이지 않는 경우, 보이기
+				        replyFormContainer.show();
+				    }
+				});
+			  	
+				// textarea 클릭 이벤트
+				$('.reply-form-container textarea').click(function(event) {
+				  	// 부모 요소로 이벤트 전파되지 않도록 처리
+				  	event.stopPropagation();
+				});
+				
+				// 입력폼 바깥쪽 클릭 이벤트
+				$(document).click(function(event) { 
+				  	if(!$(event.target).closest('div[id^="comment-"]').length) {
+					    // 대댓글 입력폼 숨기기
+					    $('.reply-form-container').hide();       
+				  	}        
+				});
+			});
+			
+			// 댓글 삭제
+			function deleteComment(commentId, boardId) {
+			    if (confirm("Do you want to delete it?")) {
+			        let form = document.createElement("form");
+			        form.setAttribute("charset", "UTF-8");
+			        form.setAttribute("method", "POST");
+			        form.setAttribute("action", "/board/view/comment/delete");
+
+			        let hiddenCommentId = document.createElement("input");
+			        hiddenCommentId.setAttribute("type", "hidden");
+			        hiddenCommentId.setAttribute("name", "commentId");
+			        hiddenCommentId.setAttribute("value", commentId);
+			        form.appendChild(hiddenCommentId);
+
+			        let hiddenBoardId = document.createElement("input");
+			        hiddenBoardId.setAttribute("type", "hidden");
+			        hiddenBoardId.setAttribute("name", "boardId");
+			        hiddenBoardId.setAttribute("value", boardId);
+			        form.appendChild(hiddenBoardId);
+
+			        document.body.appendChild(form);
+			        form.submit();
+			    }
+			}
+		</script>
 	</th:block>
 </html>
