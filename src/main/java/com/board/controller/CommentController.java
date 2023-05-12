@@ -94,6 +94,7 @@ public class CommentController {
 	@PostMapping("/board/view/reply/delete")
 	public String deleteRelply(@RequestParam("replyId") Long replyId,
 	                            @RequestParam("boardId") Long boardId) {
+	    // 댓글 삭제
 	    commentService.deleteComment(replyId);
 	    
 	    return "redirect:/board/view?id=" + boardId;
