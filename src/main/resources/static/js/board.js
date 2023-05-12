@@ -1,7 +1,6 @@
 let boardWriteForm = $("#boardWriteForm");
 let boardViewForm = $("#boardViewForm");
 let comment = $("#commentForm");
-let commentList = /*[[${commentList}]]*/ null;
 let parentId = 0;
 let frm = $("#frm");
 	    
@@ -22,39 +21,6 @@ $(function() {
             form.submit();
         }
   	});
-});
-
-$(document).ready(function() {	
-  	// 댓글 div 클릭 이벤트
-	$('p#commentContent').click(function() {
-	    // 대댓글 입력폼 보이기
-	    let replyFormContainer = $(this).parent().find('.reply-form-container');
-	    if(replyFormContainer.is(':visible')) {
-	        // 대댓글 입력폼이 이미 보이는 경우, 숨기기
-	        replyFormContainer.hide();
-	    } else {
-	    	parentId = $(this).parent().find('#reply_parentId').val();
-	        console.log(parentId);
-	    	let depth = calculateDepth(commentList, parentId);
-			replyFormContainer.find('input[name="depth"]').val(Number(depth));					  	
-	        // 대댓글 입력폼이 보이지 않는 경우, 보이기
-	        replyFormContainer.show();
-	    }
-	});
-  	
-	// textarea 클릭 이벤트
-	$('.reply-form-container textarea').click(function(event) {
-	  	// 부모 요소로 이벤트 전파되지 않도록 처리
-	  	event.stopPropagation();
-	});
-	
-	// 입력폼 바깥쪽 클릭 이벤트
-	$(document).click(function(event) { 
-	  	if(!$(event.target).closest('div[id^="comment-"]').length) {
-		    // 대댓글 입력폼 숨기기
-		    $('.reply-form-container').hide();       
-	  	}        
-	});
 });
 
 // 댓글 수정 폼의 update 버튼 이벤트
@@ -109,32 +75,17 @@ function fnCommentEdit(button) {
 // 댓글 수정폼 보여주기
 function editComment(commentId) {
   	const editFormContainer = document.getElementById(`edit-form-container-${commentId}`);
-  	editFormContainer.style.display = editFormContainer.style.display === 'none' ? 'block' : 'none';
-}
-
-// 댓글 삭제
-function deleteComment(commentId, boardId) {
-    if (confirm("댓글을 삭제하시겠습니까?")) {
-        let form = document.createElement("form");
-        form.setAttribute("charset", "UTF-8");
-        form.setAttribute("method", "POST");
-        form.setAttribute("action", "/board/view/comment/delete");
-
-        let hiddenCommentId = document.createElement("input");
-        hiddenCommentId.setAttribute("type", "hidden");
-        hiddenCommentId.setAttribute("name", "commentId");
-        hiddenCommentId.setAttribute("value", commentId);
-        form.appendChild(hiddenCommentId);
-
-        let hiddenBoardId = document.createElement("input");
-        hiddenBoardId.setAttribute("type", "hidden");
-        hiddenBoardId.setAttribute("name", "boardId");
-        hiddenBoardId.setAttribute("value", boardId);
-        form.appendChild(hiddenBoardId);
-
-        document.body.appendChild(form);
-        form.submit();
+  	const commentContent = document.getElementById(`commentContent`);
+  	
+  	if (editFormContainer.style.display === 'none') {
+        editFormContainer.style.display = 'block';
+        commentContent.style.display = 'none';
+    } else {
+        editFormContainer.style.display = 'none';
+        commentContent.style.display = 'block';
     }
+  	
+  	/*editFormContainer.style.display = editFormContainer.style.display === 'none' ? 'block' : 'none';*/
 }
 
 // 대댓글 수정 폼의 update 버튼 이벤트
@@ -189,12 +140,22 @@ function fnReplyEdit(button) {
 // 대댓글 수정폼 보여주기
 function editReply(replyId) {
   	const editReplyFormContainer = document.getElementById(`editReply-form-container-${replyId}`);
-  	editReplyFormContainer.style.display = editReplyFormContainer.style.display === 'none' ? 'block' : 'none';
+  	const replyContent = document.getElementById(`replyContent`);
+  	
+  	if (editReplyFormContainer.style.display === 'none') {
+        editReplyFormContainer.style.display = 'block';
+        replyContent.style.display = 'none';
+    } else {
+        editReplyFormContainer.style.display = 'none';
+        replyContent.style.display = 'block';
+    }
+  	
+  	/*editReplyFormContainer.style.display = editReplyFormContainer.style.display === 'none' ? 'block' : 'none';*/
 }
 
 // 대댓글 삭제
 function deleteReply(replyId, boardId) {
-    if (confirm("대댓글을 삭제하시겠습니까?")) {
+    if (confirm("Do you want to delete it?")) {
         let form = document.createElement("form");
         form.setAttribute("charset", "UTF-8");
         form.setAttribute("method", "POST");
