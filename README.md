@@ -44,7 +44,7 @@ SpringBoot를 이용한 게시판 프로젝트 작성
 
 게시글 내에 댓글, 대댓글을 추가, 수정, 삭제가 가능함.
 
-![image](https://github.com/thdus12/Board/assets/97299700/9cf8790a-1d5a-4e2f-be12-9a2a99cdcf0d)
+![image](https://github.com/thdus12/Board/assets/97299700/300c1d6b-b685-4313-ac03-5b2f3ca48601)
 
-![image](https://github.com/thdus12/Board/assets/97299700/06e4320f-cbb6-44f5-b9bb-3f60c1d8e0c5)
+![image](https://github.com/thdus12/Board/assets/97299700/8bb1faea-aa44-4312-ba6e-fc04c8186b51)
 
