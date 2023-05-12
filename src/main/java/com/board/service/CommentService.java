@@ -64,8 +64,4 @@ public class CommentService {
                 .map(CommentResponseDto::new)
                 .collect(Collectors.toList());
     }
-    
-    public List<CommentEntity> getCommentEntitiesByBoardId(Long boardId) {
-        return commentRepository.findByBoardId(boardId, Sort.by(Sort.Direction.DESC, "registerTime"));
-    }
 }
