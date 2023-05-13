@@ -229,16 +229,53 @@ function replyAdd(event) {
 	currentReplyForm.submit();
 }
 
+// 쿠키 설정
+function setCookie(name, value, days) {
+    var expires = "";
+    if (days) {
+        var date = new Date();
+        date.setTime(date.getTime() + (days * 24 * 60 * 60 * 1000));
+        expires = "; expires=" + date.toUTCString();
+    }
+    document.cookie = name + "=" + (value || "") + expires + "; path=/";
+}
+
+// 쿠키 가져오기
+function getCookie(name) {
+    var nameEQ = name + "=";
+    var ca = document.cookie.split(';');
+    for (var i = 0; i < ca.length; i++) {
+        var c = ca[i];
+        while (c.charAt(0) == ' ') c = c.substring(1, c.length);
+        if (c.indexOf(nameEQ) == 0) return c.substring(nameEQ.length, c.length);
+    }
+    return null;
+}
+
 // 게시글 추천수 업데이트
-function updateUpvote() {
-	boardViewForm.attr("action", "/board/view/updateUpvote");
-	boardViewForm.attr("method","post");
-	boardViewForm.submit();
+function updateUpvote(boardId) {
+	var cookieName = 'upvoted_' + boardId;
+    if (getCookie(cookieName)) {
+        alert('You have already upvoted this post.');
+    } else {
+		boardViewForm.attr("action", "/board/view/updateUpvote");
+		boardViewForm.attr("method","post");
+		boardViewForm.submit();
+		
+		setCookie(cookieName, 'true', 365); // Expires in 365 days
+    }
 }
 
 // 게시글 비추천수 업데이트
-function updateDownvote() {
-	boardViewForm.attr("action", "/board/view/updateDownvote");
-	boardViewForm.attr("method","post");
-	boardViewForm.submit();
+function updateDownvote(boardId) {
+	var cookieName = 'downvoted_' + boardId;
+    if (getCookie(cookieName)) {
+        alert('You have already downvoted this post.');
+    } else {
+		boardViewForm.attr("action", "/board/view/updateDownvote");
+		boardViewForm.attr("method","post");
+		boardViewForm.submit();
+		
+		setCookie(cookieName, 'true', 365); // Expires in 365 days
+    }
 }

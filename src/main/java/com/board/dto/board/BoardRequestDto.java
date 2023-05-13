@@ -5,7 +5,7 @@ import com.board.entity.board.BoardEntity;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-// 기능 : 게시판 게시물에 대한 정보를 전달하는 Data Transfer Object 클래스
+// 기능 : 게시판 게시글에 대한 정보를 전달하는 Data Transfer Object 클래스
 @Data
 @NoArgsConstructor
 public class BoardRequestDto {

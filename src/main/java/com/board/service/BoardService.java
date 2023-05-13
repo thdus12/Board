@@ -50,7 +50,7 @@ public class BoardService {
 
         resultMap.put("list", list.stream().map(board -> {
             BoardResponseDto boardResponseDto = new BoardResponseDto(board);
-            boardResponseDto.setCommentCount(commentService.countCommentsByBoardId(board.getId())); // 댓글 수를 게시물에 추가
+            boardResponseDto.setCommentCount(commentService.countCommentsByBoardId(board.getId())); // 댓글 수를 게시글에 추가
             return boardResponseDto;
         }).collect(Collectors.toList()));
         resultMap.put("paging", list.getPageable());

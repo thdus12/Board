@@ -2,17 +2,13 @@ package com.board.controller;
 
 import java.util.List;
 
-import javax.servlet.http.HttpSession;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestParam;
 
 import com.board.dto.comment.CommentRequestDto;
-import com.board.dto.comment.CommentResponseDto;
 import com.board.entity.board.BoardEntity;
 import com.board.entity.comment.CommentEntity;
 import com.board.service.BoardService;

@@ -56,7 +56,7 @@ public class CommentService {
         return commentRepository.findByParentId(parentId);
     }
     
-    // 게시물에 달린 댓글 조회
+    // 게시글에 달린 댓글 조회
     @Transactional
     public List<CommentResponseDto> getCommentsByBoardId(Long boardId) {
         List<CommentEntity> commentEntities = commentRepository.findByBoardId(boardId, Sort.by(Sort.Direction.DESC, "registerTime"));

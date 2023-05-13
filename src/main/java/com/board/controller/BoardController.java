@@ -85,7 +85,10 @@ public class BoardController {
 				model.addAttribute("resultMap", resultMap);
 				
 				List<CommentResponseDto> commentList = commentService.getCommentsByBoardId(boardRequestDto.getId());
-	            model.addAttribute("commentList", commentList);   
+	            model.addAttribute("commentList", commentList);  
+	            
+	            Long commentCount = commentService.countCommentsByBoardId(boardId);
+	            model.addAttribute("commentCount", commentCount);
 	            
 	            int upvoteCount = boardService.getUpvoteCount(boardId);
 	            model.addAttribute("upvoteCount", upvoteCount);
