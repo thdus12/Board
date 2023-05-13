@@ -14,6 +14,8 @@ public class BoardResponseDto {
     private String registerId;
     private int readCnt;
     private LocalDateTime registerTime;
+    private Long commentCount; // 댓글 수를 저장할 필드 추가
+    
 
     public BoardResponseDto(BoardEntity board) {
         this.id = board.getId();
@@ -22,16 +24,23 @@ public class BoardResponseDto {
         this.readCnt = board.getReadCnt();
         this.registerId = board.getRegisterId();
         this.registerTime = board.getRegisterTime();
+        
+    }
+
+    // 댓글 수를 설정하는 메소드 추가
+    public void setCommentCount(Long commentCount) {
+        this.commentCount = commentCount;
     }
 
     @Override
     public String toString() {
         return "BoardListDto ["
-        		+ "id=" + id 
-        		+ ", title=" + title 
-        		+ ", content=" + content 
-        		+ ", readCnt=" + readCnt 
-        		+ ", registerId=" + registerId 
-        		+ ", registerTime=" + registerTime + "]";
+                + "id=" + id
+                + ", title=" + title
+                + ", content=" + content
+                + ", readCnt=" + readCnt
+                + ", registerId=" + registerId
+                + ", registerTime=" + registerTime
+                + ", commentCount=" + commentCount + "]";
     }
 }

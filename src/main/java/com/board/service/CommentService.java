@@ -64,4 +64,9 @@ public class CommentService {
                 .map(CommentResponseDto::new)
                 .collect(Collectors.toList());
     }
+    
+    // 게시글에 달린 댓글 수 조회
+    public Long countCommentsByBoardId(Long boardId) {
+        return commentRepository.countCommentsByBoardId(boardId);
+    }
 }

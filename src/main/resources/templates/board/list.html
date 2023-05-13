@@ -33,7 +33,10 @@
 										<span th:text="${(resultMap.totalCnt - index.index) - (paging.pageNumber * paging.pageSize)}"></span>
 									</td>
 									<td>
-										<a th:href="@{./view(id=${list.id})}"><span th:text="${list.title}"></span></a>
+										<a th:href="@{./view(id=${list.id})}">
+											<span th:text="${list.title}"></span>
+											<span th:text="'[' + ${list.commentCount} + ']'"></span>
+										</a>										
 									</td>
 									<td>
 										<span th:text="${list.registerId}"></span>
@@ -48,7 +51,7 @@
 				            </tbody>
 				        </table>
 				        <div class="d-flex align-items-center justify-content-between">
-					        <button type="button" class="btn btn-danger" onclick="fnDelete()">Delete</button>
+					        <button type="button" class="btn btn-danger" onclick="multipleDelete()">Delete</button>
 				        	<button type="button" class="btn btn-primary" onclick="javascript:location.href='/board/write'">New Board</button>
 				        </div>
 				        <div class="row">
@@ -90,7 +93,7 @@
 	    		}
 	    	});
 	    
-			function fnDelete() {
+			function multipleDelete() {
 				let delInpChkLen = $("input[name='deleteId']:checked").length;
 				
 				if (delInpChkLen > 0) {

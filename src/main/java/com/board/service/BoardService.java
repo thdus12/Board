@@ -2,7 +2,6 @@ package com.board.service;
 
 import lombok.RequiredArgsConstructor;
 import java.util.HashMap;
-import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.stream.Collectors;
 
@@ -17,8 +16,6 @@ import com.board.dto.board.BoardRequestDto;
 import com.board.dto.board.BoardResponseDto;
 import com.board.entity.board.BoardEntity;
 import com.board.entity.board.BoardRepository;
-import com.board.entity.comment.CommentEntity;
-import com.board.entity.comment.CommentRepository;
 
 // 생성자를 자동으로 생성하는 Lombok 어노테이션
 @RequiredArgsConstructor
@@ -27,8 +24,9 @@ import com.board.entity.comment.CommentRepository;
 public class BoardService {
 	
 	@Autowired	
-	// BoardRepository를 주입 받음
     private final BoardRepository boardRepository;
+	@Autowired
+	private final CommentService commentService;
 
     // 게시글 저장 메소드
     @Transactional
@@ -51,7 +49,11 @@ public class BoardService {
 
         Page<BoardEntity> list = boardRepository.findAll(PageRequest.of(page, size, Sort.by(Sort.Direction.DESC, "registerTime")));
 
-        resultMap.put("list", list.stream().map(BoardResponseDto::new).collect(Collectors.toList()));
+        resultMap.put("list", list.stream().map(board -> {
+            BoardResponseDto boardResponseDto = new BoardResponseDto(board);
+            boardResponseDto.setCommentCount(commentService.countCommentsByBoardId(board.getId())); // 댓글 수를 게시물에 추가
+            return boardResponseDto;
+        }).collect(Collectors.toList()));
         resultMap.put("paging", list.getPageable());
         resultMap.put("totalCnt", list.getTotalElements());
         resultMap.put("totalPage", list.getTotalPages());
@@ -79,13 +81,13 @@ public class BoardService {
         boardRepository.deleteById(id);
     }
     
+    // 게시글 다중 삭제 메소드
     public void deleteAll(Long[] deleteId) {
     	boardRepository.deleteBoard(deleteId);
     }
 
     public BoardEntity getBoardById(Long id) {
-    	System.out.println("여기는 타냐");
         return boardRepository.findById(id)
                 .orElseThrow(() -> new NoSuchElementException("Could not find board with ID: " + id));
-    }
+    }   
 }
