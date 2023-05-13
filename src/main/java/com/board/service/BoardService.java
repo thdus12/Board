@@ -21,8 +21,7 @@ import com.board.entity.board.BoardRepository;
 @RequiredArgsConstructor
 // 이 클래스를 스프링 서비스로 사용하도록 하는 어노테이션
 @Service
-public class BoardService {
-	
+public class BoardService {	
 	@Autowired	
     private final BoardRepository boardRepository;
 	@Autowired
@@ -89,5 +88,34 @@ public class BoardService {
     public BoardEntity getBoardById(Long id) {
         return boardRepository.findById(id)
                 .orElseThrow(() -> new NoSuchElementException("Could not find board with ID: " + id));
-    }   
+    }  
+    
+    // 게시글 추천 메소드
+    public void updateUpvote(Long id) {
+        boardRepository.updateUpvote(id);
+    }
+
+    // 게시글 비추천 메소드
+    public void updateDownvote(Long id) {
+        boardRepository.updateDownvote(id);
+    }
+    
+    // 게시글 추천수 가져오는 메소드
+	public int getUpvoteCount(Long boardId) {
+		BoardEntity board = boardRepository.findById(boardId).orElse(null);
+	    if (board != null) {
+	        return board.getUpvoteCount();
+	    } else {
+	        return 0;
+	    }
+	}
+
+	public int getDownvoteCount(Long boardId) {
+		BoardEntity board = boardRepository.findById(boardId).orElse(null);
+	    if (board != null) {
+	        return board.getDownvoteCount();
+	    } else {
+	        return 0;
+	    }
+	}
 }

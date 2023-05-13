@@ -7,29 +7,39 @@
 			<div class="card-header mb-3">
 		    	<h3 class="text-center font-weight-bold my-4">Board View.</h3>
 		    </div>
+		    <!-- 게시글 폼 -->
 			<form id="boardViewForm" action="/board/edit" method="get" enctype="multipart/form-data">
 				<input type="hidden" name="id" th:value="${info.id}">
 				<div class="mb-3">
 				    <span class = "font-weight-bold" name="title" th:text="${info.title}"></span>				    
 				</div>		
 				<div class="board-id mb-3 d-flex justify-content-between">
+					<!-- 게시글 제목, 작성자 -->
 					<span>
 						<span class = "text-secondary" name="registerId" th:text="${info.registerId} + ' | '"></span>
 						<span class = "text-secondary" name="registerTime" th:text="${#temporals.format(info.registerTime, 'yyyy-MM-dd HH:mm:ss')}"></span>
 					</span>
+					<!-- 조회수 -->
 					<span class="flex-grow-1 text-right" th:text="'view : ' + ${info.readCnt}"></span>
 				</div>
 				<hr>
+				<!-- 게시글 내용 -->
 				<div class="mb-5">
 			    	<pre name="content" th:utext="${info.content}"></pre>
 				</div>
+				<!-- 추천 비추천 버튼 -->
+				<div class="d-flex justify-content-center">
+					<button type="button" class="btn btn-outline-success mr-1" th:onclick="updateUpvote()">Upvote <span th:text="${upvoteCount}"></span></button>
+					<button type="button" class="btn btn-outline-danger" th:onclick="updateDownvote()">Downvote <span th:text="${downvoteCount}"></span></button>
+				</div>				
 				<hr>
+				<!-- 이전, 수정 ,섹제 버튼 -->
 				<div class="clearfix mt-3">
 					<div class="d-flex align-items-center">
 					    <button type="button" class="btn btn-outline-primary" onclick="javascript:location.href='/board/list'">Previous</button>
 					    <div class="ml-auto"></div>
-					    <button type="button" class="btn btn-primary mr-1" th:if="${info.registerId} == ${userEmail}" onclick="fnViewEdit('${info.id}')">Edit</button>
-					    <button type="button" class="btn btn-danger" th:if="${info.registerId} == ${userEmail}" th:onclick="fnViewDelete()">Delete</button>
+					    <button type="button" class="btn btn-primary mr-1" th:if="${info.registerId} == ${userEmail}" onclick="boardViewEdit('${info.id}')">Edit</button>
+					    <button type="button" class="btn btn-danger" th:if="${info.registerId} == ${userEmail}" th:onclick="boardViewDelete()">Delete</button>
 					</div>
 				</div>
 			</form>
@@ -40,7 +50,7 @@
 			  	<input type="hidden" name="registerId" th:value="${userEmail}"/>
 			  	<div class="d-flex mb-6">
 			    	<textarea class="form-control flex-grow-1 mr-1" rows="3" name="content"></textarea>
-			    	<button type="button" class="btn btn-success active p-3" onclick="fnCommentAdd()">Add</button>
+			    	<button type="button" class="btn btn-success active p-3" onclick="commentAdd()">Add</button>
 			  	</div>
 			</form>
 			<div class="mt-5">			    
@@ -117,7 +127,7 @@
 					            <input type="hidden" id="reply_registerId" name="registerId" th:value="${userEmail}" />
 					            <div class="d-flex mb-6">
 					                <textarea class="form-control flex-grow-1 mr-1" rows="3" name="content"></textarea>
-			                    	<button type="button" class="btn btn-success active" onclick="fnReplyAdd(event)">Add Reply</button>
+			                    	<button type="button" class="btn btn-success active" onclick="replyAdd(event)">Add Reply</button>
 					            </div>
 					        </form>
 					    </div>

@@ -4,6 +4,7 @@ let comment = $("#commentForm");
 let parentId = 0;
 let frm = $("#frm");
 	    
+// 개시글 작성시 유효성 검사
 $(function() {
 	boardWriteForm.validate({
     	messages: {
@@ -178,6 +179,7 @@ function deleteReply(replyId, boardId) {
     }
 }
 
+// 댓글의 깊이 계산
 function calculateDepth(comments, parentId) {
   	// 댓글의 depth 값을 저장할 배열
   	const depths = [];
@@ -198,7 +200,8 @@ function calculateDepth(comments, parentId) {
   	return result;
 }
 
-function fnViewDelete() {
+// 게시글 삭제
+function boardViewDelete() {
     if (confirm("Do you want to delete it?")) {
         boardViewForm.attr("action", "/board/view/delete");
 		boardViewForm.attr("method","post");
@@ -206,19 +209,36 @@ function fnViewDelete() {
     }
 }
 
-function fnViewEdit(id) {
+// 게시글 수정
+function boardViewEdit(id) {
     if (confirm("Do you want to edit it?")) {
         $("#id").val(id);
         boardViewForm.submit();
     }
 }
 
-function fnCommentAdd() {		    	
+// 댓글 추가
+function commentAdd() {		    	
 	comment.submit();
 }
 
-function fnReplyAdd(event) {
+// 대댓글 추가
+function replyAdd(event) {
 	// 현재 클릭된 버튼을 기준으로 폼을 찾음
 	const currentReplyForm = $(event.target).closest('.reply-form');
 	currentReplyForm.submit();
+}
+
+// 게시글 추천수 업데이트
+function updateUpvote() {
+	boardViewForm.attr("action", "/board/view/updateUpvote");
+	boardViewForm.attr("method","post");
+	boardViewForm.submit();
+}
+
+// 게시글 비추천수 업데이트
+function updateDownvote() {
+	boardViewForm.attr("action", "/board/view/updateDownvote");
+	boardViewForm.attr("method","post");
+	boardViewForm.submit();
 }

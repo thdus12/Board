@@ -26,15 +26,25 @@ public class BoardEntity extends BaseTimeEntity {
 	private String content;	 	 // 게시물의 내용
 	private String registerId;   // 게시물을 등록한 사용자의 식별자
 	private int readCnt; 		 // 게시물의 조회수
-	 
+	private int upvoteCount;	 // 게시물의 추천수
+	private int downvoteCount;	 // 게시물의 비추천수
 	
 	// Lombok 라이브러리를 사용하여 빌더 패턴을 적용한 생성자를 생성
 	@Builder
-	public BoardEntity(Long id, String title, String content, int readCnt, String registerId) {
+	public BoardEntity(Long id, 
+					   String title, 
+					   String content, 
+					   int readCnt, 
+					   String registerId,
+					   int upvoteCount,
+					   int downvoteCount
+					   ) {
 	    this.id = id;
 	    this.title = title;
 	    this.content = content;
 	    this.readCnt = readCnt;
 	    this.registerId = registerId;
+	    this.upvoteCount = upvoteCount;
+	    this.downvoteCount = downvoteCount;
 	}
 }

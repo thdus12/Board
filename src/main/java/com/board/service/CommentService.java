@@ -69,4 +69,8 @@ public class CommentService {
     public Long countCommentsByBoardId(Long boardId) {
         return commentRepository.countCommentsByBoardId(boardId);
     }
+    
+    public List<CommentEntity> getCommentEntitiesByBoardId(Long boardId) {
+        return commentRepository.findByBoardId(boardId, Sort.by(Sort.Direction.DESC, "registerTime"));
+    }
 }

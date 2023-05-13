@@ -13,19 +13,27 @@ public interface BoardRepository extends JpaRepository<BoardEntity, Long> {
 	
     // 게시글 업데이트를 위한 쿼리 문자열
     static final String UPDATE_BOARD = "UPDATE board "
-            + "SET TITLE = :#{#boardRequestDto.title}, "
-            + "CONTENT = :#{#boardRequestDto.content}, "
-            + "UPDATE_TIME = NOW() "
-            + "WHERE ID = :#{#boardRequestDto.id}";
+            + "SET title = :#{#boardRequestDto.title}, "
+            + "content = :#{#boardRequestDto.content}, "
+            + "update_time = NOW() "
+            + "WHERE id = :#{#boardRequestDto.id}";
 
     // 게시글 조회수 증가를 위한 쿼리 문자열
     static final String UPDATE_BOARD_READ_CNT_INC = "UPDATE board "
-            + "SET READ_CNT = READ_CNT + 1 "
-            + "WHERE ID = :id";
+            + "SET READ_CNT = read_cnt + 1 "
+            + "WHERE id = :id";
     
     // 게시글 삭제를 위한 쿼리 문자열
     static final String DELETE_BOARD = "DELETE FROM board "
-			+ "WHERE ID IN (:deleteList)";
+			+ "WHERE id IN (:deleteList)";
+    
+    static final String UPDATE_BOARD_UPVOTECOUNT = "UPDATE board "
+    		+ "SET upvote_count = upvote_count + 1 "
+    		+ "WHERE id = :id";
+    
+    static final String UPDATE_BOARD_DOWNVOTECOUNT = "UPDATE board "
+    		+ "SET downvote_count = downvote_count + 1 "
+    		+ "WHERE id = :id";
 
     // 게시글 업데이트를 위한 메소드
     @Transactional
@@ -44,4 +52,16 @@ public interface BoardRepository extends JpaRepository<BoardEntity, Long> {
     @Modifying
     @Query(value = DELETE_BOARD, nativeQuery = true)
     public int deleteBoard(@Param("deleteList") Long[] deleteList);
+    
+    // 게시글 추천수를 업데이트 하기 위한 메소드
+    @Transactional
+    @Modifying
+    @Query(value = UPDATE_BOARD_UPVOTECOUNT, nativeQuery = true)
+    void updateUpvote(@Param("id") Long id);
+
+    // 게시글 비추천수를 업데이트 하기 위한 메소드
+    @Transactional
+    @Modifying
+    @Query(value = UPDATE_BOARD_DOWNVOTECOUNT, nativeQuery = true)
+    void updateDownvote(@Param("id") Long id);
 }
