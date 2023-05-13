@@ -12,7 +12,12 @@ SpringBoot를 이용한 게시판 프로젝트 작성
 
 ![image](https://user-images.githubusercontent.com/97299700/235307359-cacc1ee6-3c83-4a0a-800a-2fd720e65549.png)
 
+![image](https://github.com/thdus12/Board/assets/97299700/124f3d45-7842-4457-9fef-f833fc32f588)
+
 ![image](https://user-images.githubusercontent.com/97299700/235307389-66044c9e-a304-4fd9-885d-ca6050ee0fcf.png)
+
+![image](https://github.com/thdus12/Board/assets/97299700/13657422-000b-4a22-834b-ff01ca543702)
+
 
 ## 게시판 기능 구현
 
@@ -22,9 +27,9 @@ SpringBoot를 이용한 게시판 프로젝트 작성
 
 게시글 등록하는 화면. 유효성 검사를 하여 빈값일 경우 게시글 등록이 불가함
 
-![image](https://github.com/thdus12/Board/assets/97299700/3d3d921a-92c9-4845-9c50-2267915a6d2d)
+![image](https://github.com/thdus12/Board/assets/97299700/6cc12ee1-85fc-4eec-a1bd-44e7f182250f)
 
-![image](https://github.com/thdus12/Board/assets/97299700/a1337fa4-dd26-4706-aa34-3b14ccccb8b8)
+![image](https://github.com/thdus12/Board/assets/97299700/37ebf3e2-03e7-4f0d-a509-d904f0d43e38)
 
 ### ✅ 게시글 리스트 확인 및 삭제, 페이징
 
@@ -44,7 +49,7 @@ SpringBoot를 이용한 게시판 프로젝트 작성
 
 게시글 내에 댓글, 대댓글을 추가, 수정, 삭제가 가능함.
 
-![image](https://github.com/thdus12/Board/assets/97299700/300c1d6b-b685-4313-ac03-5b2f3ca48601)
+![image](https://github.com/thdus12/Board/assets/97299700/ebe0c63e-9fd1-479c-8780-8d1fadd7c9e0)
 
-![image](https://github.com/thdus12/Board/assets/97299700/8bb1faea-aa44-4312-ba6e-fc04c8186b51)
+![image](https://github.com/thdus12/Board/assets/97299700/763a49f0-2064-4ca6-9618-eb2f946acc70)
 
