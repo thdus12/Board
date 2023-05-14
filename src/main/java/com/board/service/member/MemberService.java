@@ -6,7 +6,6 @@ import com.board.entity.member.MemberEntity;
 
 
 public interface MemberService {
-	MemberResponseDto createUser(MemberRequestDto userFormDto);    
-	
-	MemberEntity getCurrentUser(MemberRequestDto userFormDto);
+	MemberResponseDto createUser(MemberRequestDto memberFormDto);	
+	MemberEntity getCurrentUser(MemberRequestDto memberFormDto);
 }

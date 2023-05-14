@@ -1,5 +1,7 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+<html xmlns:th="http://www.thymeleaf.org" 
+	  xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+	  xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity5"
       layout:decorate="layout/default_layout">
     <th:block layout:fragment="content">
         <div id="wrapper">        	
@@ -16,26 +18,28 @@
 				    		</div>
 				    		<button type="button" class="btn btn-outline-danger" onclick="javascript:location.href='/logout'"><i class="bi bi-box-arrow-left"></i> Logout</button>
 				    	</div>			   
-				        <table class="table table-striped table-horizontal table-bordered mt-3">
+				        <table class="table table-striped table-horizontal table-bordered text-center mt-3">
 				            <thead class="thead-strong">
 				                <tr>
-				                    <th width="5%"><input type="checkbox" id="chkAll"></th>
+				                    <th width="5%" th:if="${isAdmin}"><input type="checkbox" id="chkAll"></th>
 				                    <th width="10%">No.</th>
-				                    <th width="">Title.</th>
-				                    <th width="20%">Writer.</th>
-				                    <th width="10%">Views.</th>
-				                    <th width="20%">Reg Time.</th>
+				                    <th width="">Title</th>
+				                    <th width="20%">Writer</th>
+				                    <th width="10%">Views</th>
+				                    <th width="10%">Upvote</th>
+				                    <th width="20%">Reg Time</th>
 				                </tr>
 				            </thead>
 				            <tbody id="tbody">
 				            	<tr th:each="list,index : ${resultMap.list}" th:with="paging=${resultMap.paging}">
-									<td>
+									<td th:if="${isAdmin}">
 										<input type="checkbox" name="deleteId" th:value="${list.id}">
 									</td>
 									<td>
-										<span th:text="${(resultMap.totalCnt - index.index) - (paging.pageNumber * paging.pageSize)}"></span>
+										<!-- <span th:text="${(resultMap.totalCnt - index.index) - (paging.pageNumber * paging.pageSize)}"></span> -->
+										<span th:text="${list.id}"></span>
 									</td>
-									<td>
+									<td class="text-left">
 										<a th:href="@{./view(id=${list.id})}">
 											<span th:text="${list.title}"></span>
 											<span th:text="'[' + ${list.commentCount} + ']'"></span>
@@ -48,13 +52,17 @@
 										<span th:text="${list.readCnt}"></span>
 									</td>
 									<td>
+										<span th:text="${list.upvoteCount}"></span>
+									</td>
+									<td>
 										<span th:text="${#temporals.format(list.registerTime, 'yyyy-MM-dd HH:mm:ss')}"></span>
 									</td>
 								<tr>
 				            </tbody>
 				        </table>
 				        <div class="d-flex align-items-center justify-content-between">
-					        <button type="button" class="btn btn-danger" onclick="multipleDelete()"><i class="bi bi-trash3-fill"></i> Delete</button>
+					        <button type="button" class="btn btn-danger" th:if="${isAdmin}" onclick="multipleDelete()"><i class="bi bi-trash3-fill"></i> Delete</button>
+				        	<div></div>
 				        	<button type="button" class="btn btn-primary" onclick="javascript:location.href='/board/write'"><i class="bi bi-plus-lg"></i> New Board</button>
 				        </div>
 				        <div class="row">

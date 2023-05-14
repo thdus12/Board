@@ -14,7 +14,8 @@ public class BoardResponseDto {
     private String registerId;
     private int readCnt;
     private LocalDateTime registerTime;
-    private Long commentCount; // 댓글 수를 저장할 필드 추가
+    private Long commentCount; // 게시글 댓글 수를 저장할 필드 추가
+    private int upvoteCount;   // 게시글 추천수
     
 
     public BoardResponseDto(BoardEntity board) {
@@ -30,6 +31,11 @@ public class BoardResponseDto {
     // 댓글 수를 설정하는 메소드 추가
     public void setCommentCount(Long commentCount) {
         this.commentCount = commentCount;
+    }
+    
+    // 게시글 추천 수를 설정하는 메소드 추가
+    public void setUpvoteCount(int upvoteCount) {
+        this.upvoteCount = upvoteCount;
     }
 
     @Override

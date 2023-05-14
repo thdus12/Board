@@ -12,7 +12,9 @@ import com.board.entity.member.MemberRepository;
 import com.board.security.Role;
 
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 
+@Slf4j
 @Service
 @RequiredArgsConstructor
 public class MemberServiceImpl implements MemberService{
@@ -27,11 +29,14 @@ public class MemberServiceImpl implements MemberService{
         if(memberRepository.findByEmail(memberRequestDto.getEmail()) != null){
             return null;
         }
-        // 가입한 성공한 모든 유저는  "USER" 권한 부여
+        
+        log.info("Role: {}", Role.MEMBER);
+        
+        // 가입한 성공한 모든 유저는  "MEMBER" 권한 부여
         MemberEntity member = memberRepository.save(MemberEntity.builder()
                                         .pwd(bCryptPasswordEncoder.encode(memberRequestDto.getPassword()))
                                         .email(memberRequestDto.getEmail())
-                                        .role(Role.USER)
+                                        .role(Role.MEMBER)
                                         .build());
         return MemberResponseDto.builder()
                         .id(member.getId())
@@ -43,9 +48,18 @@ public class MemberServiceImpl implements MemberService{
 
 	@Override
 	public MemberEntity getCurrentUser(MemberRequestDto memberRequestDto) {
-		Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        MemberEntity member = memberRepository.findByEmail(memberRequestDto.getEmail());
+		 MemberEntity member = memberRepository.findByEmail(memberRequestDto.getEmail());
         return member;
+	}
+
+	public boolean isAdmin(String name) {
+		Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        if (authentication != null && authentication.getPrincipal() instanceof MemberEntity) {
+        	MemberEntity memberEntity = (MemberEntity) authentication.getPrincipal();
+            return memberEntity.getAuthorities().stream()
+                    .anyMatch(authority -> authority.getAuthority().equals("ROLE_ADMIN"));
+        }
+        return false;
 	}
 
 }

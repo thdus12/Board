@@ -33,7 +33,6 @@ public class MemberController {
 		if(memberResponseDto == null){
 	        return "/member/failsignup";
 	    }else{
-			System.out.println(memberResponseDto.toString());
 	        return "/member/login";
 	    }
 	}

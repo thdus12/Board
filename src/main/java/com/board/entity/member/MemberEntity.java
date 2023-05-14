@@ -5,7 +5,11 @@ import java.util.HashSet;
 import java.util.Set;
 
 import java.time.LocalDateTime;
+
+import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
@@ -40,6 +44,7 @@ public class MemberEntity extends BaseTimeEntity implements UserDetails {
 	private String email; // 멤버의 이메일
 	private String pwd;   // 멤버의 비밀번호
 	private LocalDateTime lastLoginTime; // 멤버의 마지막 로그인 시간
+	@Enumerated(EnumType.STRING)
 	private Role role;
 	
 	// 빌더 패턴을 이용한 객체 생성을 위한 생성자

@@ -76,7 +76,7 @@ function fnCommentEdit(button) {
 // 댓글 수정폼 보여주기
 function editComment(commentId) {
   	const editFormContainer = document.getElementById(`edit-form-container-${commentId}`);
-  	const commentContent = document.getElementById(`commentContent`);
+  	const commentContent = document.getElementById(`commentContent-${commentId}`);
   	
   	if (editFormContainer.style.display === 'none') {
         editFormContainer.style.display = 'block';
@@ -141,7 +141,7 @@ function fnReplyEdit(button) {
 // 대댓글 수정폼 보여주기
 function editReply(replyId) {
   	const editReplyFormContainer = document.getElementById(`editReply-form-container-${replyId}`);
-  	const replyContent = document.getElementById(`replyContent`);
+  	const replyContent = document.getElementById(`replyContent-${replyId}`);
   	
   	if (editReplyFormContainer.style.display === 'none') {
         editReplyFormContainer.style.display = 'block';

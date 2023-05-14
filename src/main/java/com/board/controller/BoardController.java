@@ -19,6 +19,8 @@ import com.board.dto.comment.CommentResponseDto;
 import com.board.entity.comment.CommentEntity;
 import com.board.service.BoardService;
 import com.board.service.CommentService;
+import com.board.service.member.MemberService;
+import com.board.service.member.MemberServiceImpl;
 
 import lombok.RequiredArgsConstructor;
 
@@ -35,6 +37,9 @@ public class BoardController {
 	@Autowired
     private CommentService commentService;
 	
+	@Autowired
+    private MemberServiceImpl memberService;
+	
 	private String getAuthenticatedUserEmail() {
 	    Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
 	    return authentication.getName();
@@ -46,10 +51,15 @@ public class BoardController {
 			, @RequestParam(required = false, defaultValue = "0") Integer page
 			, @RequestParam(required = false, defaultValue = "5") Integer size) throws Exception {
 		
-		try {
+		try {			
+			Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+	        boolean isAdmin = memberService.isAdmin(auth.getName());
+	        model.addAttribute("isAdmin", isAdmin);
+			
 			String userEmail = getAuthenticatedUserEmail();
 	        model.addAttribute("userEmail", userEmail);
-			model.addAttribute("resultMap", boardService.findAll(page, size));
+			
+	        model.addAttribute("resultMap", boardService.findAll(page, size));
 			
 		} catch (Exception e) {
 			throw new Exception(e.getMessage()); 

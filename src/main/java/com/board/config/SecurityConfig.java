@@ -41,6 +41,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     protected void configure(HttpSecurity http) throws Exception {
     	http.csrf().disable() 	 // csrf 토큰을 비활성화
 	        .authorizeRequests() // 요청 URL에 따라 접근 권한을 설정
+	        .antMatchers("/admin/**").hasRole("ADMIN")
 	        .antMatchers("/", "/login/**", "/js/**", "/css/**", "/image/**").permitAll() // 해당 경로들은 접근을 허용
 	        .and()
 	        .formLogin() 		 // 로그인 폼
@@ -51,18 +52,18 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 	        .and()
 	        .logout()
 	        .logoutRequestMatcher(new AntPathRequestMatcher("/logout")) // 로그아웃 URL
-	        .logoutSuccessUrl("/login") // 성공시 리턴 URL
+	        .logoutSuccessUrl("/login")  // 성공시 리턴 URL
 	        .invalidateHttpSession(true) // 인증정보를 지우하고 세션을 무효화
 	        .deleteCookies("JSESSIONID","remember-me") // JSESSIONID, remember-me 쿠키 삭제
 	        .permitAll()
 	        .and()
 	        .sessionManagement()
-	        .maximumSessions(1) // 세션 최대 허용 수 1, -1인 경우 무제한 세션 허용
+	        .maximumSessions(1) 			 // 세션 최대 허용 수 1, -1인 경우 무제한 세션 허용
 	        .maxSessionsPreventsLogin(false) // true면 중복 로그인을 막고, false면 이전 로그인의 세션을 해제
 	        .expiredUrl("/login?error=true&exception=Have been attempted to login from a new place. or session expired") // 세션이 만료된 경우 이동 할 페이지를 지정
 	        .and()
-	        .and().rememberMe() // 로그인 유지
-	        .alwaysRemember(false) // 항상 기억할 것인지 여부
+	        .and().rememberMe()    		 // 로그인 유지
+	        .alwaysRemember(false) 		 // 항상 기억할 것인지 여부
 	        .tokenValiditySeconds(43200) // in seconds, 12시간 유지
 	        .rememberMeParameter("remember-me");
     }
