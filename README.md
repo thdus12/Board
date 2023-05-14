@@ -45,7 +45,7 @@
 ![image](https://github.com/thdus12/Board/assets/97299700/17e46888-ed94-4428-831b-949b5a16f981)
 
 **<관리자 권한을 가진 사용자 경우 화면>**
-![image](https://github.com/thdus12/Board/assets/97299700/97f69c9e-dc72-41e7-b77a-7dbed0eb0b35)
+![image](https://github.com/thdus12/Board/assets/97299700/62e8ccc8-5059-49c6-860f-ae1d8db3d083)
 
 #### ✨ 게시글 상세 화면
 
