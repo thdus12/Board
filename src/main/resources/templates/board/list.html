@@ -25,9 +25,9 @@
 				                    <th width="10%">No.</th>
 				                    <th width="">Title</th>
 				                    <th width="20%">Writer</th>
+				                    <th width="20%">Reg Time</th>
 				                    <th width="10%">Views</th>
 				                    <th width="10%">Upvote</th>
-				                    <th width="20%">Reg Time</th>
 				                </tr>
 				            </thead>
 				            <tbody id="tbody">
@@ -48,14 +48,15 @@
 									<td>
 										<span th:text="${list.registerId}"></span>
 									</td>
+									
+									<td>
+										<span th:text="${#temporals.format(list.registerTime, 'yyyy-MM-dd HH:mm:ss')}"></span>
+									</td>
 									<td>
 										<span th:text="${list.readCnt}"></span>
 									</td>
 									<td>
 										<span th:text="${list.upvoteCount}"></span>
-									</td>
-									<td>
-										<span th:text="${#temporals.format(list.registerTime, 'yyyy-MM-dd HH:mm:ss')}"></span>
 									</td>
 								<tr>
 				            </tbody>

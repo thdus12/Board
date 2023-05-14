@@ -21,8 +21,7 @@ repositories {
 }
 
 dependencies {
-	//implementation 'org.hibernate.validator:hibernate-validator:6.2.0.Final'
-	//implementation 'javax.validation:validation-api:2.0.1.Final'
+	implementation 'io.jsonwebtoken:jjwt:0.9.1'
 	implementation 'org.apache.commons:commons-lang3'
 	implementation 'nz.net.ultraq.thymeleaf:thymeleaf-layout-dialect'
 	implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
