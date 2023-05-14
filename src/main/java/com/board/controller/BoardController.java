@@ -88,6 +88,10 @@ public class BoardController {
 		HashMap<String, Object> resultMap = new HashMap<String, Object>();
 		try {
 			if (boardRequestDto.getId() != null) {
+				Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+		        boolean isAdmin = memberService.isAdmin(auth.getName());
+		        model.addAttribute("isAdmin", isAdmin);
+				
 				String userEmail = getAuthenticatedUserEmail();
 		        model.addAttribute("userEmail", userEmail);
 				

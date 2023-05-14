@@ -38,8 +38,8 @@
 					<div class="d-flex align-items-center">
 					    <button type="button" class="btn btn-outline-primary" onclick="javascript:location.href='/board/list'"><i class="bi bi-arrow-left"></i></button>
 					    <div class="ml-auto"></div>
-					    <button type="button" class="btn btn-primary mr-1" th:if="${info.registerId} == ${userEmail}" onclick="boardViewEdit('${info.id}')"><i class="bi bi-pencil-square"></i> Edit</button>
-					    <button type="button" class="btn btn-danger" th:if="${info.registerId} == ${userEmail}" th:onclick="boardViewDelete()"><i class="bi bi-trash3-fill"></i> Delete</button>
+					    <button type="button" class="btn btn-primary mr-1" th:if="${info.registerId == userEmail}" onclick="boardViewEdit('${info.id}')"><i class="bi bi-pencil-square"></i> Edit</button>
+					    <button type="button" class="btn btn-danger" th:if="${info.registerId == userEmail or isAdmin}" th:onclick="boardViewDelete()"><i class="bi bi-trash3-fill"></i> Delete</button>
 					</div>
 				</div>
 			</form>
@@ -70,8 +70,8 @@
 					            <span class="text-secondary" th:text="${#temporals.format(comment.registerTime, 'yyyy-MM-dd HH:mm:ss')}"></span>
 					        </div>
 					        <div>
-					        	<button type="button" class="btn btn-outline-secondary btn-sm" th:if="${comment.registerId} == ${userEmail}" th:onclick="'editComment(' + ${comment.id} + ')'"><i class="bi bi-pencil-square"></i></button>
-					            <button type="button" class="btn btn-outline-secondary btn-sm" th:if="${comment.registerId} == ${userEmail}" th:onclick="'deleteComment(' + ${comment.id} + ', ' + ${info.id} + ')'"><i class="bi bi-trash3-fill"></i></button>
+					        	<button type="button" class="btn btn-outline-secondary btn-sm" th:if="${comment.registerId == userEmail}" th:onclick="'editComment(' + ${comment.id} + ')'"><i class="bi bi-pencil-square"></i></button>
+					            <button type="button" class="btn btn-outline-secondary btn-sm" th:if="${comment.registerId == userEmail or isAdmin}" th:onclick="'deleteComment(' + ${comment.id} + ', ' + ${info.id} + ')'"><i class="bi bi-trash3-fill"></i></button>
 					        </div>
 					    </div>
 					    <p th:id="'commentContent-' + ${comment.id}" class="mt-2" th:text="${comment.content}"></p>
@@ -84,8 +84,8 @@
 				                <div class="mb-6 mt-1">
 				                    <textarea class="form-control mb-1" rows="3" name="content" th:text="${comment.content}"></textarea>
 				                    <div align="right" class="mb-1">
-					                    <button type="button" class="btn btn-primary active" th:if="${comment.registerId} == ${userEmail}" onclick="fnCommentUpdate(this)">Update</button>
-					                    <button type="button" class="btn btn-outline-secondary" th:if="${comment.registerId} == ${userEmail}" onclick="fnCommentEdit(this)">Cancel</button>
+					                    <button type="button" class="btn btn-primary active" th:if="${comment.registerId == userEmail}" onclick="fnCommentUpdate(this)">Update</button>
+					                    <button type="button" class="btn btn-outline-secondary" th:if="${comment.registerId == userEmail}" onclick="fnCommentEdit(this)">Cancel</button>
 				                    </div>
 				                </div>
 				            </form>
@@ -101,8 +101,8 @@
 						                    <span class="text-secondary" th:text="${#temporals.format(reply.registerTime, 'yyyy-MM-dd HH:mm:ss')}"></span>
 					                    </div>
 								        <div>
-								        	<button type="button" class="btn btn-outline-secondary btn-sm" th:if="${reply.registerId} == ${userEmail}" th:onclick="'editReply(' + ${reply.id} + ')'"><i class="bi bi-pencil-square"></i></button>
-								            <button type="button" class="btn btn-outline-secondary btn-sm" th:if="${reply.registerId} == ${userEmail}" th:onclick="'deleteReply(' + ${reply.id} + ', ' + ${info.id} + ')'"><i class="bi bi-trash3-fill"></i></button>
+								        	<button type="button" class="btn btn-outline-secondary btn-sm" th:if="${reply.registerId == userEmail}" th:onclick="'editReply(' + ${reply.id} + ')'"><i class="bi bi-pencil-square"></i></button>
+								            <button type="button" class="btn btn-outline-secondary btn-sm" th:if="${reply.registerId == userEmail or isAdmin}" th:onclick="'deleteReply(' + ${reply.id} + ', ' + ${info.id} + ')'"><i class="bi bi-trash3-fill"></i></button>
 								        </div>					                    
 				                	</div>
 				                	<p th:id="'replyContent-' + ${reply.id}" class="pl-2 mt-2" th:text="${reply.content}"></p>				                	
