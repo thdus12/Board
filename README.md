@@ -42,10 +42,10 @@
 * 관리자 권한을 가진 사용자는 체크박스로 다중 선택하여 게시글 삭제가 가능함.
 
 **<일반 사용자일 경우 화면>**
-![image](https://github.com/thdus12/Board/assets/97299700/17e46888-ed94-4428-831b-949b5a16f981)
+![image](https://github.com/thdus12/Board/assets/97299700/be2fb47b-8ad7-4cf0-ae6d-fccba655dc0f)
 
 **<관리자 권한을 가진 사용자 경우 화면>**
-![image](https://github.com/thdus12/Board/assets/97299700/62e8ccc8-5059-49c6-860f-ae1d8db3d083)
+![image](https://github.com/thdus12/Board/assets/97299700/51d14d04-d8d9-4dfe-a85a-2012a32ba58c)
 
 #### ✨ 게시글 상세 화면
 
