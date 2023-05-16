@@ -11,6 +11,7 @@ import lombok.Setter;
 
 import com.board.entity.BaseTimeEntity;
 import com.board.entity.board.BoardEntity;
+import com.board.entity.member.MemberEntity;
 
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Getter
@@ -23,14 +24,18 @@ public class CommentEntity extends BaseTimeEntity{
     private Long id;
     private String content;
     private String registerId;
-    @ManyToOne(fetch = FetchType.LAZY)
-    private BoardEntity board;
     private LocalDateTime updateTime;
     private Long parentId;
     private Long depth;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "board_id")
+    private BoardEntity board;    
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "member_id")
+    private MemberEntity member;
     
     @Builder
-    public CommentEntity(Long id, String content, String registerId, BoardEntity board, LocalDateTime updateTime, Long parentId, Long depth) {
+    public CommentEntity(Long id, String content, String registerId, BoardEntity board, LocalDateTime updateTime, Long parentId, Long depth, MemberEntity member) {
     	this.id = id;
     	this.content = content;
     	this.registerId = registerId;
@@ -38,5 +43,6 @@ public class CommentEntity extends BaseTimeEntity{
     	this.updateTime = updateTime;
     	this.parentId = parentId;
     	this.depth = depth;
+    	this.member = member;
     }
 }

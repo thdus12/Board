@@ -11,7 +11,7 @@
                         <h3 class="text-center font-weight-bold my-4">Sign up</h3>
                     </div>
                     <div class="card-body">
-                        <form id="frm" name="frm" action="/member/signup" method="post">
+                        <form id="signupForm" name="signupForm" action="/member/signup" method="post">
                             <div th:if="${param.error}">
                                 <p th:text="${exception}" class="alert alert-danger"></p>
                             </div>
@@ -31,10 +31,10 @@
         </div>
     </div>
     <script th:inline="javascript">
-        let frm = $("#frm");
+        let signupForm = $("#signupForm");
 
         function fnSubmit() {
-            frm.submit();
+            signupForm.submit();
         }
 
         $(function() {
@@ -42,7 +42,7 @@
                 if (e.key == "Enter") fnSubmit();
             });
 
-            frm.validate({
+            signupForm.validate({
             	messages: {
 	            	email: {
                         required: "이메일 주소를 입력해주세요.",

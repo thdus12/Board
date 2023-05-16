@@ -1,5 +1,6 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+<html xmlns:th="http://www.thymeleaf.org" 
+	  xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
       layout:decorate="layout/default_layout">
    	<!-- layout Content -->
 	<th:block layout:fragment="content">
@@ -143,8 +144,6 @@
 			</div>						
 		</div>
 		<script th:inline="javascript">
-			let commentList = /*[[${commentList}]]*/ null;
-			
 			$(document).ready(function() {	
 			  	// 댓글 div 클릭 이벤트
 				$('p[id^="commentContent-"]').click(function() {					
@@ -154,10 +153,7 @@
 				        // 대댓글 입력폼이 이미 보이는 경우, 숨기기
 				        replyFormContainer.hide();
 				    } else {
-				    	parentId = $(this).parent().find('#reply_parentId').val();
-				        console.log(parentId);
-				    	let depth = calculateDepth(commentList, parentId);
-						replyFormContainer.find('input[name="depth"]').val(Number(depth));					  	
+						replyFormContainer.find('input[name="depth"]').val(1); 	
 				        // 대댓글 입력폼이 보이지 않는 경우, 보이기
 				        replyFormContainer.show();
 				    }

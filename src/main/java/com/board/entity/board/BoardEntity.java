@@ -1,11 +1,15 @@
 package com.board.entity.board;
 
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
 
 import com.board.entity.BaseTimeEntity;
+import com.board.entity.member.MemberEntity;
 
 import lombok.AccessLevel;
 import lombok.Builder;
@@ -28,6 +32,9 @@ public class BoardEntity extends BaseTimeEntity {
 	private int readCnt; 		 // 게시글의 조회수
 	private int upvoteCount;	 // 게시글의 추천수
 	private int downvoteCount;	 // 게시글의 비추천수
+	@ManyToOne(fetch = FetchType.LAZY)
+	@JoinColumn(name = "member_id")
+    private MemberEntity member;
 	
 	// Lombok 라이브러리를 사용하여 빌더 패턴을 적용한 생성자를 생성
 	@Builder
@@ -37,7 +44,8 @@ public class BoardEntity extends BaseTimeEntity {
 					   int readCnt, 
 					   String registerId,
 					   int upvoteCount,
-					   int downvoteCount
+					   int downvoteCount,
+					   MemberEntity member
 					   ) {
 	    this.id = id;
 	    this.title = title;
@@ -46,5 +54,6 @@ public class BoardEntity extends BaseTimeEntity {
 	    this.registerId = registerId;
 	    this.upvoteCount = upvoteCount;
 	    this.downvoteCount = downvoteCount;
+	    this.member = member;
 	}
 }

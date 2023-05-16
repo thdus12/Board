@@ -30,8 +30,6 @@ public class JwtTokenProvider {
                 .signWith(SignatureAlgorithm.HS512, jwtSecret) // 서명 알고리즘 및 비밀 키 설정
                 .compact(); // JWT 토큰 반환
         
-        System.out.println("@@@@token="+token);
-        
         return token;
     }
 

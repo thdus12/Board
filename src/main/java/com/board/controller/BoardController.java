@@ -1,5 +1,6 @@
 package com.board.controller;
 
+import java.security.Principal;
 import java.util.HashMap;
 import java.util.List;
 
@@ -16,7 +17,10 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.multipart.MultipartHttpServletRequest;
 import com.board.dto.board.BoardRequestDto;
 import com.board.dto.comment.CommentResponseDto;
+import com.board.dto.member.MemberRequestDto;
+import com.board.entity.board.BoardEntity;
 import com.board.entity.comment.CommentEntity;
+import com.board.entity.member.MemberEntity;
 import com.board.service.BoardService;
 import com.board.service.CommentService;
 import com.board.service.member.MemberService;
@@ -76,6 +80,27 @@ public class BoardController {
     	
     	return "board/write";
     }
+    
+    // 게시글 작성을 처리하고 게시글 목록 페이지로 리다이렉트하는 메소드
+    @PostMapping("/board/write/action")
+    public String boardWriteAction(Model model,
+    							   @RequestParam("memberId") String memberId,
+                                   BoardRequestDto boardRequestDto) throws Exception {
+        try {
+            // 현재 로그인한 회원의 정보를 가져옵니다.
+            MemberEntity member = memberService.getMemberByEmail(memberId);
+            boardRequestDto.setMember(member);
+
+            Long result = boardService.save(boardRequestDto);
+
+            if (result < 0) {
+                throw new Exception("#Exception boardWriteAction!");
+            }
+        } catch (Exception e) {
+            throw new Exception(e.getMessage()); 
+        }
+        return "redirect:/board/list";
+    }
 
     // 게시글 조회 페이지를 반환하는 메소드
     @GetMapping("/board/view")
@@ -83,9 +108,10 @@ public class BoardController {
     	Long boardId = boardRequestDto.getId();
     	
     	// 게시글 조회수 증가
-    	boardService.updateBoardReadCntInc(boardId);
+    	boardService.updateBoardReadCntInc(boardId);		
 		
-		HashMap<String, Object> resultMap = new HashMap<String, Object>();
+    	HashMap<String, Object> resultMap = new HashMap<String, Object>();
+		
 		try {
 			if (boardRequestDto.getId() != null) {
 				Authentication auth = SecurityContextHolder.getContext().getAuthentication();
@@ -112,7 +138,9 @@ public class BoardController {
 	            
 			}
 		} catch (Exception e) {
-			throw new Exception(e.getMessage()); 
+			System.out.println(e);
+		    model.addAttribute("errorMessage", e.getMessage());
+		    return "error";
 		}
 		
 		return "board/view";
@@ -136,38 +164,20 @@ public class BoardController {
 
         return "board/edit";
     }
-        
-    // 게시글 작성을 처리하고 게시글 목록 페이지로 리다이렉트하는 메소드
-    @PostMapping("/board/write/action")
-	public String boardWriteAction(Model model, BoardRequestDto boardRequestDto) throws Exception {
-		
-		try {
-			Long result = boardService.save(boardRequestDto);
-			
-			if (result < 0) {
-				throw new Exception("#Exception boardWriteAction!");
-			}
-		} catch (Exception e) {
-			throw new Exception(e.getMessage()); 
-		}
-		
-		return "redirect:/board/list";
-	}
     
     // 게시글 수정 후 저장하는 메소드
     @PostMapping("/board/edit/action")
 	public String boardViewAction(Model model, BoardRequestDto boardRequestDto, MultipartHttpServletRequest multiRequest) throws Exception {
-		
+    	Long id = boardRequestDto.getId();
 		try {
 			boardService.updateBoard(boardRequestDto);
 		} catch (Exception e) {
 			throw new Exception(e.getMessage()); 
 		}
-		
-		return "redirect:/board/list";
+		return "redirect:/board/view?id=" + id;
 	}
     
- // view.html에서 게시글 삭제
+    // view.html에서 게시글 삭제
     @PostMapping("/board/view/delete")
 	public String boardViewDeleteAction(Model model, @RequestParam() Long id) throws Exception {
 		try {

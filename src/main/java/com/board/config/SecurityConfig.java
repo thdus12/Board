@@ -55,7 +55,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 	    http.csrf().disable() 	 // CSRF 토큰 비활성화
 	        .authorizeRequests() // 요청 URL에 따라 접근 권한 설정
 	            .antMatchers("/admin/**").hasRole("ADMIN")
-	            .antMatchers("/", "/login/**", "/js/**", "/css/**", "/image/**").permitAll() // 해당 경로들은 접근 허용
+	            .antMatchers("/", "/login/**", "/member/**", "/js/**", "/css/**", "/image/**").permitAll() // 해당 경로들은 접근 허용
 	            .anyRequest().authenticated()
 	        .and()
 	        .formLogin() 			 // 로그인 설정

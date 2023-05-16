@@ -2,6 +2,7 @@ package com.board.dto.comment;
 
 import com.board.entity.board.BoardEntity;
 import com.board.entity.comment.CommentEntity;
+import com.board.entity.member.MemberEntity;
 
 import lombok.Getter;
 import lombok.Setter;
@@ -13,6 +14,7 @@ public class CommentRequestDto {
     private String content;
     private String registerId;
     private BoardEntity board;
+    private MemberEntity member;
     private Long parentId;
     private Long depth;
     
@@ -26,6 +28,7 @@ public class CommentRequestDto {
                 .content(content)
                 .registerId(registerId)
                 .board(board)
+                .member(member)
                 .parentId(parentId)
                 .depth(depth)
                 .build();

@@ -11,8 +11,10 @@ import org.springframework.web.bind.annotation.RequestParam;
 import com.board.dto.comment.CommentRequestDto;
 import com.board.entity.board.BoardEntity;
 import com.board.entity.comment.CommentEntity;
+import com.board.entity.member.MemberEntity;
 import com.board.service.BoardService;
 import com.board.service.CommentService;
+import com.board.service.member.MemberServiceImpl;
 
 import lombok.RequiredArgsConstructor;
 
@@ -24,6 +26,10 @@ public class CommentController {
 	
 	@Autowired
     private CommentService commentService;
+	
+	@Autowired
+	private MemberServiceImpl memberService;
+	
 	@Autowired
 	private BoardService boardService;
 	
@@ -57,9 +63,13 @@ public class CommentController {
 	
 	// 댓글 추가
 	@PostMapping("/board/view/comment")
-    public String addComment(@RequestParam("boardId") Long boardId, @RequestParam("registerId") String registerId, CommentRequestDto commentRequestDto) throws Exception {
+    public String addComment(@RequestParam("boardId") Long boardId, 
+    						 @RequestParam("registerId") String registerId,
+    						 CommentRequestDto commentRequestDto) throws Exception {
 		try {
 			BoardEntity board = boardService.getBoardById(boardId);
+            MemberEntity member = memberService.getMemberByEmail(registerId);
+            commentRequestDto.setMember(member);
 	        commentRequestDto.setBoard(board);
 	        commentRequestDto.setRegisterId(registerId);
 	        commentRequestDto.setParentId((long) 0);
@@ -105,6 +115,8 @@ public class CommentController {
     					   CommentRequestDto commentRequestDto) throws Exception {
 		try {			
 			BoardEntity board = boardService.getBoardById(boardId);
+			MemberEntity member = memberService.getMemberByEmail(registerId);
+            commentRequestDto.setMember(member);
 	        commentRequestDto.setBoard(board);
 	        commentRequestDto.setRegisterId(registerId);
 	        commentRequestDto.setParentId(parentId);

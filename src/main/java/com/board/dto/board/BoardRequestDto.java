@@ -1,6 +1,7 @@
 package com.board.dto.board;
 
 import com.board.entity.board.BoardEntity;
+import com.board.entity.member.MemberEntity;
 
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -14,6 +15,7 @@ public class BoardRequestDto {
 	private String content;
 	private String registerId;
 	private int readCnt;
+	private MemberEntity member;
 	
 	// DTO 객체를 Board 엔티티 객체로 변환하는 메서드
 	public BoardEntity toEntity() {
@@ -23,6 +25,7 @@ public class BoardRequestDto {
 				.content(content)
 				.registerId(registerId)
 				.readCnt(readCnt)
+				.member(member)
 				.build();
 	}
 }

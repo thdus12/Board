@@ -3,6 +3,7 @@ package com.board.dto.board;
 import java.time.LocalDateTime;
 
 import com.board.entity.board.BoardEntity;
+import com.board.entity.member.MemberEntity;
 
 import lombok.Getter;
 
@@ -16,7 +17,7 @@ public class BoardResponseDto {
     private LocalDateTime registerTime;
     private Long commentCount; // 게시글 댓글 수를 저장할 필드 추가
     private int upvoteCount;   // 게시글 추천수
-    
+    private MemberEntity member;
 
     public BoardResponseDto(BoardEntity board) {
         this.id = board.getId();
@@ -25,7 +26,7 @@ public class BoardResponseDto {
         this.readCnt = board.getReadCnt();
         this.registerId = board.getRegisterId();
         this.registerTime = board.getRegisterTime();
-        
+        this.member = board.getMember();
     }
 
     // 댓글 수를 설정하는 메소드 추가
@@ -47,6 +48,7 @@ public class BoardResponseDto {
                 + ", readCnt=" + readCnt
                 + ", registerId=" + registerId
                 + ", registerTime=" + registerTime
-                + ", commentCount=" + commentCount + "]";
+                + ", commentCount=" + commentCount 
+                + ", member=" + member + "]";
     }
 }

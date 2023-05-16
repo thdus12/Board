@@ -9,7 +9,7 @@
 				<div class="card-header mb-3">
 			    	<h3 class="text-center font-weight-bold my-4">Board</h3>
 			    </div>
-		    	<form action="/board/list" id="frm" method="get">
+		    	<form action="/board/list" id="boardListForm" method="get">
 				    <div class="col-md-12 mt-4">
 				    	<div class="d-flex justify-content-between">
 				    		<div>
@@ -110,10 +110,10 @@
 				
 				if (delInpChkLen > 0) {
 					if (confirm("Do you want to delete it?")) {
-						let frm = $("#frm");
-						frm.attr("action","/board/delete");
-						frm.attr("method","post");
-						frm.submit();
+						let boardListForm = $("#boardListForm");
+						boardListForm.attr("action","/board/delete");
+						boardListForm.attr("method","post");
+						boardListForm.submit();
 					}
 				} else {
 					alert("Not selected.");

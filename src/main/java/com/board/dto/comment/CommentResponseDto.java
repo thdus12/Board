@@ -4,6 +4,7 @@ import java.time.LocalDateTime;
 
 import com.board.entity.board.BoardEntity;
 import com.board.entity.comment.CommentEntity;
+import com.board.entity.member.MemberEntity;
 
 import lombok.Builder;
 import lombok.Getter;
@@ -16,13 +17,14 @@ public class CommentResponseDto {
     private String content;
     private String registerId;
     private BoardEntity board;
+    private MemberEntity member;
     private LocalDateTime registerTime;
     private LocalDateTime updateTime;
     private Long parentId;
     private Long depth;
 
     @Builder
-    public CommentResponseDto(Long id, String content, String registerId, BoardEntity board, LocalDateTime registerTime, LocalDateTime updateTime, Long parentId, Long depth) {
+    public CommentResponseDto(Long id, String content, String registerId, BoardEntity board, LocalDateTime registerTime, LocalDateTime updateTime, Long parentId, Long depth, MemberEntity member) {
         this.id = id;
         this.content = content;
         this.registerId = registerId;
@@ -31,6 +33,7 @@ public class CommentResponseDto {
         this.updateTime = updateTime;
         this.parentId = parentId;
     	this.depth = depth;
+    	this.member = member;
     }
     
     public CommentResponseDto(CommentEntity commentEntity) {
@@ -42,6 +45,7 @@ public class CommentResponseDto {
         this.updateTime = commentEntity.getUpdateTime();
         this.parentId = commentEntity.getParentId();
         this.depth = commentEntity.getDepth();
+        this.member = commentEntity.getMember();
     }
     
     @Override
@@ -54,6 +58,7 @@ public class CommentResponseDto {
         		+ ", registerTime=" + registerTime
         		+ ", updateTime=" + updateTime
         		+ ", parentId=" + parentId
-        		+ ", depth=" + depth + "]";
+        		+ ", depth=" + depth 
+        		+ ", member=" + member + "]";
     }
 }
