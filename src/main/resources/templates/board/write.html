@@ -8,7 +8,11 @@
 		    	<h3 class="text-center font-weight-bold my-4">Board Register.</h3>
 		    </div>
 			<form id="boardWriteForm" action="/board/write/action" method="post" enctype="multipart/form-data">
-				<input type="hidden" name="memberId" th:value="${userEmail}" />
+				<input type="hidden" name="memberId" th:value="${userEmail}" />				
+				<div class="mb-3">
+				    <label class="form-label font-weight-bold"><span class="text-danger">* </span>Writer.</label>
+				    <input type="text" class="form-control" name="registerId" th:value="${userEmail}" readonly >
+				</div>
 			  	<div class="mb-3">
 				   	<label class="form-label font-weight-bold"><span class="text-danger">* </span>Title.</label>
 				   	<input type="text" class="form-control" name="title" required >
@@ -17,19 +21,91 @@
 				   	<label class="form-label font-weight-bold"><span class="text-danger">* </span>Content.</label>
 				   	<textarea class="form-control" rows="5" name="content" required ></textarea>
 				</div>
-				<div class="mb-5">
-				    <label class="form-label font-weight-bold"><span class="text-danger">* </span>Writer.</label>
-				    <input type="text" class="form-control" name="registerId" th:value="${userEmail}" readonly >
+			   <div class="mb-6">
+				   <label class="form-label font-weight-bold">File Upload.</label>
+				   <div id="fileDiv">
+				       <div class="custom-file mt-1">
+				           <input type="file" class="custom-file-input" id="customFile" name="customFile" onchange="chngFile(this);">
+				           <label class="custom-file-label" for="customFile">Choose file</label>
+				       </div>
+				   </div>
+				   <div class="text-right mt-2">
+				       <a class="btn btn-outline-primary" href="javascript:addFile();">+</a>
+				       <a class="btn btn-outline-danger" href="javascript:delFile();">-</a>
+				   </div>
 				</div>
-				<div class="d-flex align-items-center justify-content-between">
-					<button type="button" class="btn btn-outline-primary" onclick="javascript:location.href='/board/list'"><i class="bi bi-arrow-left"></i></button>
-					<button type="button" class="btn btn-primary" onclick="boardSaveSubmit();">Save</button>
-			   </div>
+				<div class="clearfix mt-3">
+				   <div class="d-flex align-items-center">
+				       <button type="button" class="btn btn-outline-primary" onclick="javascript:location.href='/board/list'"><i class="bi bi-arrow-left"></i></button>
+						<div class="ml-auto"></div>
+				       <button type="button" class="btn btn-primary" onclick="boardSaveSubmit();">Save</button>
+				   </div>
+				</div>
 			</form>
 		</div>
 		<script th:inline="javascript">
 		    let boardWriteForm = $("#boardWriteForm");
-		    
+
+			let $origFileDiv = $(".custom-file");
+			let fileMaxCnt = 3,
+			    fileMaxSize = 10485760,
+			    fileAllowExt = ["jpg", "jpeg", "png"];
+			/*
+			    파일 등록 최대 개수는 3개
+			    파일 사이즈는 10MB
+			    파일 허용 확장자는 jpg, jpeg, png
+			    (properties로 관리하는게 더 용이하다.)
+			*/
+
+			function addFile() {
+			    let fileDivCnt = $(".custom-file").length;
+
+			    if (fileDivCnt >= fileMaxCnt) {
+			        alert("Can't add any more file.");
+			        return false;
+			    }
+
+			    let $copyFileDiv = $origFileDiv.clone(true);
+
+			    $copyFileDiv.find("input").val("");
+			    $copyFileDiv.find("label").text("Choose file");
+			    $copyFileDiv.find("label").attr("for", "customFile" + fileDivCnt);
+			    $copyFileDiv.find("input").attr("id", "customFile" + fileDivCnt);
+			    $copyFileDiv.find("input").attr("name", "customFile" + fileDivCnt);
+
+			    $("#fileDiv").append($copyFileDiv);
+			}
+
+			function delFile() {
+			    if ($(".custom-file").length <= 1) {
+			        alert("Can't Delete any more file.");
+			        return false;
+			    }
+			    $(".custom-file")[$(".custom-file").length - 1].remove();
+			}
+
+			function chngFile(obj) {
+			    let fileObj = $(obj)[0];
+			    let fileVal = fileObj.files[0].name;
+			    let fileSize = fileObj.files[0].size;
+			    let fileExt = fileVal.substring(fileVal.lastIndexOf(".") + 1, fileVal.length);
+			    let flag = true;
+
+			    if (fileAllowExt.indexOf(fileExt.toLowerCase()) < 0) {
+			        alert("It is not a registrable extension.");
+			    } else if (fileSize > fileMaxSize) {
+			        alert("Attachments can be registered up to 10MB.");
+			    } else {
+			        flag = false;
+			        $(obj).next("label").text(fileVal);
+			    }
+
+			    if (flag) {
+			        $(obj).val("");
+			        $(obj).next("label").text("Choose file");
+			    }
+			}
+					    
 		    function boardSaveSubmit() {
 		    	boardWriteForm.submit();
 		    }

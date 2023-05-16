@@ -1,6 +1,5 @@
 package com.board.controller;
 
-import java.security.Principal;
 import java.util.HashMap;
 import java.util.List;
 
@@ -16,14 +15,14 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.multipart.MultipartHttpServletRequest;
 import com.board.dto.board.BoardRequestDto;
+import com.board.dto.board.BoardResponseDto;
 import com.board.dto.comment.CommentResponseDto;
-import com.board.dto.member.MemberRequestDto;
 import com.board.entity.board.BoardEntity;
 import com.board.entity.comment.CommentEntity;
 import com.board.entity.member.MemberEntity;
+import com.board.service.BoardFileService;
 import com.board.service.BoardService;
 import com.board.service.CommentService;
-import com.board.service.member.MemberService;
 import com.board.service.member.MemberServiceImpl;
 
 import lombok.RequiredArgsConstructor;
@@ -43,6 +42,9 @@ public class BoardController {
 	
 	@Autowired
     private MemberServiceImpl memberService;
+	
+	@Autowired
+	private BoardFileService boardFileService;
 	
 	private String getAuthenticatedUserEmail() {
 	    Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
@@ -85,7 +87,8 @@ public class BoardController {
     @PostMapping("/board/write/action")
     public String boardWriteAction(Model model,
     							   @RequestParam("memberId") String memberId,
-                                   BoardRequestDto boardRequestDto) throws Exception {
+                                   BoardRequestDto boardRequestDto,
+                                   MultipartHttpServletRequest multiRequest) throws Exception {
         try {
             // 현재 로그인한 회원의 정보를 가져옵니다.
             MemberEntity member = memberService.getMemberByEmail(memberId);
@@ -96,6 +99,12 @@ public class BoardController {
             if (result < 0) {
                 throw new Exception("#Exception boardWriteAction!");
             }
+            
+            BoardEntity board = boardService.getBoardById(result);
+            boolean uploadFile = boardFileService.uploadFile(multiRequest, board);
+            
+            System.out.println("@@@@@@@@uploadFile"+uploadFile);
+            
         } catch (Exception e) {
             throw new Exception(e.getMessage()); 
         }
@@ -121,8 +130,12 @@ public class BoardController {
 				String userEmail = getAuthenticatedUserEmail();
 		        model.addAttribute("userEmail", userEmail);
 				
-		        resultMap.put("info", boardService.findById(boardRequestDto.getId()));
+		        BoardResponseDto info = boardService.findById(boardRequestDto.getId());
+		        resultMap.put("info", info);
+		        resultMap.put("fileList", boardFileService.findByBoardId(info.getId()));
 				model.addAttribute("resultMap", resultMap);
+				
+				System.out.println("@@@@@@@@@@resultMap"+resultMap);
 				
 				List<CommentResponseDto> commentList = commentService.getCommentsByBoardId(boardRequestDto.getId());
 	            model.addAttribute("commentList", commentList);  

@@ -22,9 +22,7 @@ import com.board.entity.board.BoardRepository;
 // 이 클래스를 스프링 서비스로 사용하도록 하는 어노테이션
 @Service
 public class BoardService {	
-	@Autowired	
     private final BoardRepository boardRepository;
-	@Autowired
 	private final CommentService commentService;
 
     // 게시글 저장 메소드
@@ -110,7 +108,8 @@ public class BoardService {
 	        return 0;
 	    }
 	}
-
+	
+	// 게시글 비추천수 가져오는 메소드
 	public int getDownvoteCount(Long boardId) {
 		BoardEntity board = boardRepository.findById(boardId).orElse(null);
 	    if (board != null) {

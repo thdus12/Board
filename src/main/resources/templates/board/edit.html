@@ -9,6 +9,10 @@
 			<form id="boardEditForm" action="/board/edit/action" method="post" th:with="info=${resultMap.info}" enctype="multipart/form-data">
 				<input type="hidden" name="id" th:value="${info.id}">
 				<div class="mb-3">
+				    <label class="form-label font-weight-bold"><span class="text-danger">* </span>Writer.</label>
+				    <input type="text" class="form-control" name="registerId" th:value="${info.registerId}" readonly>
+				</div>
+				<div class="mb-3">
 				    <label class="form-label font-weight-bold"><span class="text-danger">* </span>Title.</label>
 				    <input type="text" class="form-control" name="title" th:value="${info.title}" required >
 				</div>
@@ -16,11 +20,20 @@
 			    	<label class="form-label font-weight-bold"><span class="text-danger">* </span>Content.</label>
 			    	<textarea class="form-control" rows="5" name="content" th:text="${info.content}" required ></textarea>
 				</div>
-				<div class="mb-5">
-				    <label class="form-label font-weight-bold"><span class="text-danger">* </span>Writer.</label>
-				    <input type="text" class="form-control" name="registerId" th:value="${info.registerId}" readonly>
+				<div class="mb-6">
+				   <label class="form-label font-weight-bold">File Upload.</label>
+				   <div id="fileDiv">
+				       <div class="custom-file mt-1">
+				           <input type="file" class="custom-file-input" id="customFile" name="customFile" onchange="chngFile(this);">
+				           <label class="custom-file-label" for="customFile">Choose file</label>
+				       </div>
+				   </div>
+				   <div class="text-right mt-2">
+				       <a class="btn btn-outline-primary" href="javascript:addFile();">+</a>
+				       <a class="btn btn-outline-danger" href="javascript:delFile();">-</a>
+				   </div>
 				</div>
-				<div class="clearfix mt-5">
+				<div class="clearfix mt-3">
 					<div class="d-flex align-items-center">
 					    <button type="button" class="btn btn-outline-primary" onclick="javascript:location.href='/board/list'"><i class="bi bi-arrow-left"></i></button>
 					    <div class="ml-auto"></div>

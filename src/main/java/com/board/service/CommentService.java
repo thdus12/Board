@@ -11,18 +11,17 @@ import org.springframework.data.domain.Sort;
 
 import com.board.dto.comment.CommentRequestDto;
 import com.board.dto.comment.CommentResponseDto;
+import com.board.entity.board.BoardRepository;
 import com.board.entity.comment.CommentEntity;
 import com.board.entity.comment.CommentRepository;
 
+import lombok.RequiredArgsConstructor;
+
+@RequiredArgsConstructor
 @Service
 public class CommentService {
 
 	private final CommentRepository commentRepository;
-
-    @Autowired
-    public CommentService(CommentRepository commentRepository) {
-        this.commentRepository = commentRepository;
-    }
 
     // 댓글 생성
     @Transactional

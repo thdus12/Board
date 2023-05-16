@@ -2,27 +2,6 @@ let boardWriteForm = $("#boardWriteForm");
 let boardViewForm = $("#boardViewForm");
 let comment = $("#commentForm");
 let parentId = 0;
-let frm = $("#frm");
-	    
-// 개시글 작성시 유효성 검사
-$(function() {
-	boardWriteForm.validate({
-    	messages: {
-		   	title: {
-		     	required : "title is required, Please enter a title."
-		   	},
-		   	content: {
-		   		required : "content is required, Please enter a content."
-			},
-			registerId: {
-		    	required : "writer is required, Please enter a writer."
-			}		   
-        },
-        submitHandler: function (form) {
-            form.submit();
-        }
-  	});
-});
 
 // 댓글 수정 폼의 update 버튼 이벤트
 function fnCommentUpdate(button) {

@@ -1,4 +1,4 @@
-package com.board.entity.boardFIle;
+package com.board.entity.file;
 
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
