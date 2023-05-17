@@ -168,8 +168,10 @@ public class BoardController {
             String idStr = request.getParameter("id");
             if (idStr != null) {
                 Long id = Long.parseLong(idStr);
-                resultMap.put("info", boardService.findById(id));
-                model.addAttribute("resultMap", resultMap);
+                BoardResponseDto info = boardService.findById(id);
+		        resultMap.put("info", info);
+		        resultMap.put("fileList", boardFileService.findByBoardId(info.getId()));
+				model.addAttribute("resultMap", resultMap);
             } 
         } catch (Exception e) {
             throw new Exception(e.getMessage()); 

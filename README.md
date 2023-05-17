@@ -31,10 +31,12 @@
 
 * 게시글의 제목, 내용을 작성하여 게시글 등록이 가능함.
 * 유효성 검사를 하여 빈값일 경우 게시글 등록이 불가함.
+* File Upload 영역의 Browse 버튼을 통해 사진 첨부가 가능함.
+* +,- 버튼으로 파일 개수 조절 가능함.
 
-![image](https://github.com/thdus12/Board/assets/97299700/ba8a5e98-fbe6-4bbd-a866-432c91f95c33)
+![image](https://github.com/thdus12/Board/assets/97299700/c7ad9fba-0dc5-4488-bb29-63fe0e94ef7d)
 
-![image](https://github.com/thdus12/Board/assets/97299700/01ae2e58-050a-4ccd-bed2-77916e73cbdd)
+![image](https://github.com/thdus12/Board/assets/97299700/886e9332-d1b9-44e6-a866-adf2a48b4a86)
 
 #### ✨ 게시글 목록 화면
 
