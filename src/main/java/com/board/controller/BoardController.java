@@ -24,6 +24,7 @@ import com.board.service.BoardFileService;
 import com.board.service.BoardService;
 import com.board.service.CommentService;
 import com.board.service.member.MemberServiceImpl;
+import com.fasterxml.jackson.databind.ObjectMapper;
 
 import lombok.RequiredArgsConstructor;
 
@@ -182,15 +183,22 @@ public class BoardController {
     
     // 게시글 수정 후 저장하는 메소드
     @PostMapping("/board/edit/action")
-	public String boardViewAction(Model model, BoardRequestDto boardRequestDto, MultipartHttpServletRequest multiRequest) throws Exception {
-    	Long id = boardRequestDto.getId();
-		try {
-			boardService.updateBoard(boardRequestDto);
-		} catch (Exception e) {
-			throw new Exception(e.getMessage()); 
-		}
-		return "redirect:/board/view?id=" + id;
-	}
+    public String boardViewAction(Model model,
+                                  @RequestParam(value = "deletedFileIds", required = false) String deletedFileIdsJson,
+                                  BoardRequestDto boardRequestDto, 
+                                  MultipartHttpServletRequest multiRequest) throws Exception {
+        Long id = boardRequestDto.getId();
+        try {
+            boardService.updateBoard(boardRequestDto);
+            if (deletedFileIdsJson != null && !deletedFileIdsJson.isEmpty()) {
+                Long[] deletedFileIds = new ObjectMapper().readValue(deletedFileIdsJson, Long[].class);
+                boardFileService.updateDeleteYn(deletedFileIds);
+            }
+        } catch (Exception e) {
+            throw new Exception(e.getMessage()); 
+        }
+        return "redirect:/board/view?id=" + id;
+    }
     
     // view.html에서 게시글 삭제
     @PostMapping("/board/view/delete")

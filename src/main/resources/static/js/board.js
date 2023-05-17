@@ -2,6 +2,36 @@ let boardWriteForm = $("#boardWriteForm");
 let boardViewForm = $("#boardViewForm");
 let comment = $("#commentForm");
 let parentId = 0;
+let $origFileDiv = $(".custom-file");
+let fileMaxCnt = 3,
+    fileMaxSize = 10485760,
+    fileAllowExt = ["jpg", "jpeg", "png"];
+let deleteFileIdArr = [];
+/*
+    파일 등록 최대 개수는 3개
+    파일 사이즈는 10MB
+    파일 허용 확장자는 jpg, jpeg, png
+    (properties로 관리하는게 더 용이하다.)
+*/
+
+function addFile() {
+    let fileDivCnt = $(".custom-file").length;
+
+    if (fileDivCnt >= fileMaxCnt) {
+        alert("Can't add any more file.");
+        return false;
+    }
+
+    let $copyFileDiv = $origFileDiv.clone(true);
+
+    $copyFileDiv.find("input").val("");
+    $copyFileDiv.find("label").text("Choose file");
+    $copyFileDiv.find("label").attr("for", "customFile" + fileDivCnt);
+    $copyFileDiv.find("input").attr("id", "customFile" + fileDivCnt);
+    $copyFileDiv.find("input").attr("name", "customFile" + fileDivCnt);
+
+    $("#fileDiv").append($copyFileDiv);
+}
 
 // 댓글 수정 폼의 update 버튼 이벤트
 function fnCommentUpdate(button) {
@@ -66,6 +96,31 @@ function editComment(commentId) {
     }
   	
   	/*editFormContainer.style.display = editFormContainer.style.display === 'none' ? 'block' : 'none';*/
+}
+
+// 댓글 삭제
+function deleteComment(commentId, boardId) {
+    if (confirm("Do you want to delete it?")) {
+        let form = document.createElement("form");
+        form.setAttribute("charset", "UTF-8");
+        form.setAttribute("method", "POST");
+        form.setAttribute("action", "/board/view/comment/delete");
+
+        let hiddenCommentId = document.createElement("input");
+        hiddenCommentId.setAttribute("type", "hidden");
+        hiddenCommentId.setAttribute("name", "commentId");
+        hiddenCommentId.setAttribute("value", commentId);
+        form.appendChild(hiddenCommentId);
+
+        let hiddenBoardId = document.createElement("input");
+        hiddenBoardId.setAttribute("type", "hidden");
+        hiddenBoardId.setAttribute("name", "boardId");
+        hiddenBoardId.setAttribute("value", boardId);
+        form.appendChild(hiddenBoardId);
+
+        document.body.appendChild(form);
+        form.submit();
+    }
 }
 
 // 대댓글 수정 폼의 update 버튼 이벤트

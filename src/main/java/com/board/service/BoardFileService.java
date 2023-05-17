@@ -122,8 +122,6 @@ public class BoardFileService {
                     .deleteYn("N")
                     .build();
                 
-
-                System.out.println("@@@@@@@@@boardFileEntity="+boardFileEntity.toString());
                 resultList.add(boardFileRepository.save(boardFileEntity).getId());
             }
         }
