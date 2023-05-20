@@ -104,8 +104,6 @@ public class BoardController {
             BoardEntity board = boardService.getBoardById(result);
             boolean uploadFile = boardFileService.uploadFile(multiRequest, board);
             
-            System.out.println("@@@@@@@@uploadFile"+uploadFile);
-            
         } catch (Exception e) {
             throw new Exception(e.getMessage()); 
         }
@@ -135,8 +133,6 @@ public class BoardController {
 		        resultMap.put("info", info);
 		        resultMap.put("fileList", boardFileService.findByBoardId(info.getId()));
 				model.addAttribute("resultMap", resultMap);
-				
-				System.out.println("@@@@@@@@@@resultMap"+resultMap);
 				
 				List<CommentResponseDto> commentList = commentService.getCommentsByBoardId(boardRequestDto.getId());
 	            model.addAttribute("commentList", commentList);  

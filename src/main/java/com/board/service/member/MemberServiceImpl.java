@@ -1,7 +1,5 @@
 package com.board.service.member;
 
-import java.util.NoSuchElementException;
-
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
@@ -9,7 +7,6 @@ import org.springframework.stereotype.Service;
 
 import com.board.dto.member.MemberRequestDto;
 import com.board.dto.member.MemberResponseDto;
-import com.board.entity.board.BoardEntity;
 import com.board.entity.member.MemberEntity;
 import com.board.entity.member.MemberRepository;
 import com.board.security.Role;

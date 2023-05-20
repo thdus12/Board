@@ -4,14 +4,12 @@ import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.stream.Collectors;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.data.domain.Sort;
 
 import com.board.dto.comment.CommentRequestDto;
 import com.board.dto.comment.CommentResponseDto;
-import com.board.entity.board.BoardRepository;
 import com.board.entity.comment.CommentEntity;
 import com.board.entity.comment.CommentRepository;
 
