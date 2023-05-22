@@ -39,7 +39,29 @@
 	        let loginForm = $("#loginForm");
 	
 	        function login() {
-	        	loginForm.submit();
+	            const username = $("#username").val();
+	            const password = $("#password").val();
+	            const rememberMe = $("#remember-me").is(":checked");
+	            $.ajax({
+	                type: "POST",
+	                url: "/login",
+	                contentType: "application/json",
+	                data: JSON.stringify({
+	                    username: username,
+	                    password: password,
+	                    rememberMe: rememberMe
+	                }),
+	                success: function(response) {
+	                    // 로그인 성공 처리
+	                    // 예를 들어, 로그인이 성공하면 사용자를 홈페이지로 이동시킵니다.
+	                    window.location.href = '/';
+	                },
+	                error: function(response) {
+	                    // 로그인 실패 처리
+	                    // 예를 들어, 로그인이 실패하면 에러 메시지를 화면에 표시합니다.
+	                    alert('로그인에 실패하였습니다. 아이디 또는 비밀번호를 확인해주세요.');
+	                }
+	            });
 	        }
 	        
 	        function signup() {

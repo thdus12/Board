@@ -54,16 +54,15 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 	protected void configure(HttpSecurity http) throws Exception {
 	    http.csrf().disable() 	 // CSRF 토큰 비활성화
 	        .authorizeRequests() // 요청 URL에 따라 접근 권한 설정
-	            .antMatchers("/admin/**").hasRole("ADMIN")
-	            .antMatchers("/", "/login/**", "/member/**", "/js/**", "/css/**", "/image/**").permitAll() // 해당 경로들은 접근 허용
+	            .antMatchers("/", "/auth/**", "/login/**", "/member/**", "/js/**", "/css/**", "/image/**").permitAll() // 해당 경로들은 접근 허용
 	            .anyRequest().authenticated()
 	        .and()
-	        .formLogin() 			 // 로그인 설정
-	            .loginPage("/login") // 로그인 페이지 경로
-	            .loginProcessingUrl("/login/action") // 로그인 액션 처리 URL
-	            .successHandler(authSucessHandler)   // 로그인 성공 핸들러 jwt 토큰 생성
-	            .failureHandler(authFailureHandler)  // 로그인 실패 핸들러
-	        .and()
+//	        .formLogin() 			 // 로그인 설정
+//	            .loginPage("/login") // 로그인 페이지 경로
+//	            .loginProcessingUrl("/login/action") // 로그인 액션 처리 URL
+//	            .successHandler(authSucessHandler)   // 로그인 성공 핸들러 jwt 토큰 생성
+//	            .failureHandler(authFailureHandler)  // 로그인 실패 핸들러
+//	        .and()
 	        .logout() // 로그아웃 설정
 	            .logoutRequestMatcher(new AntPathRequestMatcher("/logout")) // 로그아웃 URL
 	            .logoutSuccessUrl("/login")  // 로그아웃 성공시 반환 URL
