@@ -44,7 +44,9 @@ public class BoardService {
         HashMap<String, Object> resultMap = new HashMap<String, Object>();
 
         Page<BoardEntity> list = boardRepository.findAll(PageRequest.of(page, size, Sort.by(Sort.Direction.DESC, "id")));
-
+        
+        System.out.println("@@@@@list="+list);
+        
         resultMap.put("list", list.stream().map(board -> {
             BoardResponseDto boardResponseDto = new BoardResponseDto(board);
             boardResponseDto.setCommentCount(commentService.countCommentsByBoardId(board.getId())); // 댓글 수를 게시글에 추가

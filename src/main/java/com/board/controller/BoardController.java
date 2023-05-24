@@ -53,11 +53,12 @@ public class BoardController {
 	}
     
     // 게시글 목록 페이지를 반환하는 메소드
-    @GetMapping("/board/list")
+    @GetMapping("board/list")
 	public String getBoardListPage(Model model
 			, @RequestParam(required = false, defaultValue = "0") Integer page
 			, @RequestParam(required = false, defaultValue = "5") Integer size) throws Exception {
 		
+    	System.out.println("게시판 목록 메소드");
 		try {			
 			Authentication auth = SecurityContextHolder.getContext().getAuthentication();
 	        boolean isAdmin = memberService.isAdmin(auth.getName());
@@ -66,8 +67,11 @@ public class BoardController {
 			String userEmail = getAuthenticatedUserEmail();
 	        model.addAttribute("userEmail", userEmail);
 			
-	        model.addAttribute("resultMap", boardService.findAll(page, size));
-			
+	        System.out.println("@@@@@userEmail="+userEmail);
+	        
+	        HashMap<String, Object> resultMap = boardService.findAll(page, size);
+	        model.addAttribute("resultMap", resultMap);
+	        
 		} catch (Exception e) {
 			throw new Exception(e.getMessage()); 
 		}

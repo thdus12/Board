@@ -4,10 +4,14 @@ import java.io.IOException;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
 
 import org.springframework.http.ResponseEntity;
 import org.springframework.http.HttpStatus;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.web.authentication.logout.SecurityContextLogoutHandler;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -18,6 +22,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.reactive.function.client.WebClient;
 
 import com.board.dto.member.MemberResponseDto;
+import com.board.service.member.MemberDetailServiceImpl;
 import com.board.dto.member.MemberRequestDto ;
 
 import lombok.RequiredArgsConstructor;
@@ -27,6 +32,7 @@ import lombok.RequiredArgsConstructor;
 @Controller
 public class MemberController {
 	private final WebClient webClient;
+	private final MemberDetailServiceImpl memberDetailServiceImpl;
 
 	@PostMapping("/member/signup")
     public String createUser(@RequestBody MemberRequestDto memberRequestDto) {
@@ -36,7 +42,9 @@ public class MemberController {
                 .retrieve()
                 .toEntity(MemberResponseDto.class)
                 .block();  // 비동기 작업을 동기적으로 수행
-
+        
+        System.out.println("@@@@@@responseEntity.getStatusCode()="+responseEntity.getStatusCode());
+        
         if(responseEntity.getStatusCode() == HttpStatus.CREATED) {
             return "/member/login";
         } else {
@@ -45,19 +53,29 @@ public class MemberController {
     }
 	
 	@PostMapping("/login")
-	public String authenticateUser(@RequestBody MemberRequestDto memberRequestDto, Model model) {
-	    ResponseEntity<?> responseEntity = webClient.post()
-	            .uri("/auth/login")  // API endpoint
-	            .bodyValue(memberRequestDto)
-	            .retrieve()
-	            .toEntity(MemberResponseDto.class)
-	            .block();  // 비동기 작업을 동기적으로 수행
+	public String authenticateUser(@RequestBody MemberRequestDto memberRequestDto, Model model, HttpServletRequest request) {
+	    
+		System.out.println("#######memberRequestDto.getEmail()="+memberRequestDto.getEmail());
+		ResponseEntity<MemberResponseDto> responseEntity = webClient.post()
+	        .uri("/auth/login")
+	        .bodyValue(memberRequestDto)
+	        .retrieve()
+	        .toEntity(MemberResponseDto.class)
+	        .block();
 
 	    if(responseEntity.getStatusCode() == HttpStatus.OK) {
-	        // 로그인 성공 처리
-	        return "/board/list";  // 로그인 성공 후 리다이렉트될 페이지
+	        // 로그인에 성공한 사용자 정보를 세션에 저장
+	        HttpSession session = request.getSession();
+	        session.setAttribute("user", responseEntity.getBody());
+	        
+	        // Spring Security에 인증 정보를 알려주기
+	        UserDetails userDetails = memberDetailServiceImpl.loadUserByUsername(memberRequestDto.getEmail());
+	        Authentication authentication = new UsernamePasswordAuthenticationToken(
+	            userDetails, null, userDetails.getAuthorities());
+	        SecurityContextHolder.getContext().setAuthentication(authentication);
+	        
+	        return "redirect:/board/list";  // 로그인 성공 후 리다이렉트될 페이지
 	    } else {
-	        // 에러 메시지를 뷰에 전달
 	        model.addAttribute("error", "Login failed");
 	        return "/member/login";
 	    }

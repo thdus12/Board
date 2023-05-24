@@ -20,31 +20,6 @@ import lombok.extern.slf4j.Slf4j;
 public class MemberServiceImpl implements MemberService{
 
     private final MemberRepository memberRepository;
-    private final BCryptPasswordEncoder bCryptPasswordEncoder;
-
-    @Override
-    public MemberResponseDto createUser(MemberRequestDto memberRequestDto) {
-
-        // 이메일 중복 확인
-        if(memberRepository.findByEmail(memberRequestDto.getEmail()) != null){
-            return null;
-        }
-        
-        log.info("Role: {}", Role.MEMBER);
-        
-        // 가입한 성공한 모든 유저는  "MEMBER" 권한 부여
-        MemberEntity member = memberRepository.save(MemberEntity.builder()
-                                        .pwd(bCryptPasswordEncoder.encode(memberRequestDto.getPassword()))
-                                        .email(memberRequestDto.getEmail())
-                                        .role(Role.MEMBER)
-                                        .build());
-        return MemberResponseDto.builder()
-                        .id(member.getId())
-                        .email(member.getEmail())
-                        .password(member.getPassword())
-                        .role(member.getRole())
-                        .build();
-    }
 
 	@Override
 	public MemberEntity getCurrentUser(MemberRequestDto memberRequestDto) {
