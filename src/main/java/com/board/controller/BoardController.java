@@ -58,7 +58,6 @@ public class BoardController {
 			, @RequestParam(required = false, defaultValue = "0") Integer page
 			, @RequestParam(required = false, defaultValue = "5") Integer size) throws Exception {
 		
-    	System.out.println("게시판 목록 메소드");
 		try {			
 			Authentication auth = SecurityContextHolder.getContext().getAuthentication();
 	        boolean isAdmin = memberService.isAdmin(auth.getName());
@@ -67,8 +66,6 @@ public class BoardController {
 			String userEmail = getAuthenticatedUserEmail();
 	        model.addAttribute("userEmail", userEmail);
 			
-	        System.out.println("@@@@@userEmail="+userEmail);
-	        
 	        HashMap<String, Object> resultMap = boardService.findAll(page, size);
 	        model.addAttribute("resultMap", resultMap);
 	        

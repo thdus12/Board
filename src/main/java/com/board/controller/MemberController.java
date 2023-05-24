@@ -53,9 +53,9 @@ public class MemberController {
     }
 	
 	@PostMapping("/login")
-	public String authenticateUser(@RequestBody MemberRequestDto memberRequestDto, Model model, HttpServletRequest request) {
-	    
-		System.out.println("#######memberRequestDto.getEmail()="+memberRequestDto.getEmail());
+	public String authenticateUser(@RequestParam String username, @RequestParam String password, Model model, HttpServletRequest request) {
+	    MemberRequestDto memberRequestDto = new MemberRequestDto(username, password);
+		
 		ResponseEntity<MemberResponseDto> responseEntity = webClient.post()
 	        .uri("/auth/login")
 	        .bodyValue(memberRequestDto)
@@ -67,16 +67,15 @@ public class MemberController {
 	        // 로그인에 성공한 사용자 정보를 세션에 저장
 	        HttpSession session = request.getSession();
 	        session.setAttribute("user", responseEntity.getBody());
-	        
+
 	        // Spring Security에 인증 정보를 알려주기
 	        UserDetails userDetails = memberDetailServiceImpl.loadUserByUsername(memberRequestDto.getEmail());
 	        Authentication authentication = new UsernamePasswordAuthenticationToken(
 	            userDetails, null, userDetails.getAuthorities());
 	        SecurityContextHolder.getContext().setAuthentication(authentication);
-	        
-	        return "redirect:/board/list";  // 로그인 성공 후 리다이렉트될 페이지
+
+	        return "redirect:/board/list";
 	    } else {
-	        model.addAttribute("error", "Login failed");
 	        return "/member/login";
 	    }
 	}

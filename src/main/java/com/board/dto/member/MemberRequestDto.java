@@ -16,4 +16,9 @@ public class MemberRequestDto {
     private String password;
     @NotNull
     private String role = "ROLE_MEMBER";
+    
+    public MemberRequestDto(String email, String password) {
+        this.email = email;
+        this.password = password;
+    }
 }
