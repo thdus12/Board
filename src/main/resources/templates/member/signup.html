@@ -22,7 +22,7 @@
                                 <input class="form-control" id="password" name="password" type="password" placeholder="Password" required />
                             </div>
                             <div class="d-flex align-items-center justify-content-center mt-4 mb-0">
-                                <a class="btn btn-primary" href="javascript:signup();">Sign Up</a>
+                                <button type="submit" class="btn btn-primary">Sign Up</button>
                             </div>
                         </form>
                     </div>
@@ -31,11 +31,7 @@
         </div>
     </div>
     <script th:inline="javascript">
-        let signupForm = $("#signupForm");
-
-        function signup() {
-            signupForm.submit();
-        }
+        let signupForm = $("#signupForm")
 
         $(function() {
             $("#password").on("keyup", function(e) {
@@ -55,26 +51,10 @@
             });
             
             signupForm.on('submit', function(e) {
-                e.preventDefault();
-
-                let data = {
-                    email: $("#email").val(),
-                    password: $("#password").val()
-                };
-                
-                $.ajax({
-                    url: '/member/signup',
-                    type: 'POST',
-                    contentType: 'application/json',
-                    data: JSON.stringify(data),
-                    success: function(response) {
-                        window.location.href = "/login";
-                    },
-                    error: function(error) {
-                        alert("회원 가입 실패");
-                    }
-                });
-            });
+	            if (!signupForm.valid()) {
+	                e.preventDefault();
+	            }
+	        });
         });
     </script>
 </th:block>

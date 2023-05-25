@@ -88,14 +88,24 @@ public class BoardService {
                 .orElseThrow(() -> new NoSuchElementException("Could not find board with ID: " + id));
     }  
     
-    // 게시글 추천 메소드
+    // 게시글 추천 추가 업데이트 메소드
     public void updateUpvote(Long id) {
         boardRepository.updateUpvote(id);
     }
 
-    // 게시글 비추천 메소드
+    // 게시글 비추천 추가 업데이트 메소드
     public void updateDownvote(Long id) {
         boardRepository.updateDownvote(id);
+    }
+    
+    // 게시글 추천 취소 업데이트 메소드
+    public void cancelUpvote(Long id) {
+        boardRepository.cancelUpvote(id);
+    }
+
+    // 게시글 비추천 취소 업데이트 메소드
+    public void cancelDownvote(Long id) {
+        boardRepository.cancelDownvote(id);
     }
     
     // 게시글 추천수 가져오는 메소드

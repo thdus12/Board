@@ -36,8 +36,8 @@
                 </th:block>
 				<!-- 추천 비추천 버튼 -->
 				<div class="d-flex justify-content-center">
-					<button type="button" class="btn btn-outline-success mr-1" th:onclick="'updateUpvote(' + ${info.id} + ')'"><i class="bi bi-hand-thumbs-up-fill"></i> Upvote <span th:text="${upvoteCount}"></span></button>
-					<button type="button" class="btn btn-outline-danger" th:onclick="'updateDownvote(' + ${info.id} + ')'"><i class="bi bi-hand-thumbs-down-fill"></i> Downvote <span th:text="${downvoteCount}"></span></button>
+					<button type="button" class="btn btn-outline-success mr-1" th:onclick="|toggleVote('${info.id}', 'upvote')|"><i class="bi bi-hand-thumbs-up-fill"></i> Upvote <span th:text="${upvoteCount}"></span></button>
+					<button type="button" class="btn btn-outline-danger" th:onclick="|toggleVote('${info.id}', 'downvote')|"><i class="bi bi-hand-thumbs-down-fill"></i> Downvote <span th:text="${downvoteCount}"></span></button>
 				</div>
 				<hr>
 				<!-- 이전, 수정 ,섹제 버튼 -->

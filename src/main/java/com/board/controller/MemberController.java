@@ -35,7 +35,12 @@ public class MemberController {
 	private final MemberDetailServiceImpl memberDetailServiceImpl;
 
 	@PostMapping("/member/signup")
-    public String createUser(@RequestBody MemberRequestDto memberRequestDto) {
+    public String createUser(@RequestParam String email, 
+						     @RequestParam String password, 
+						     Model model, 
+						     HttpServletRequest request) {
+		MemberRequestDto memberRequestDto = new MemberRequestDto(email, password);
+		
         ResponseEntity<MemberResponseDto> responseEntity = webClient.post()
                 .uri("/auth/member/signup")  // API endpoint
                 .bodyValue(memberRequestDto)
@@ -53,8 +58,11 @@ public class MemberController {
     }
 	
 	@PostMapping("/login")
-	public String authenticateUser(@RequestParam String username, @RequestParam String password, Model model, HttpServletRequest request) {
-	    MemberRequestDto memberRequestDto = new MemberRequestDto(username, password);
+	public String authenticateUser(@RequestParam String email, 
+								   @RequestParam String password, 
+								   Model model, 
+								   HttpServletRequest request) {
+	    MemberRequestDto memberRequestDto = new MemberRequestDto(email, password);
 		
 		ResponseEntity<MemberResponseDto> responseEntity = webClient.post()
 	        .uri("/auth/login")

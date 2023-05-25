@@ -286,6 +286,28 @@ function getCookie(name) {
     return null;
 }
 
+// 게시글 추천/비추천 업데이트 및 취소
+function toggleVote(boardId, type) {
+    var cookieName = type + '_' + boardId;
+    var currentVote = getCookie(cookieName);
+    var action = "";
+
+    if (currentVote) {
+        // 쿠키가 있으면 추천/비추천을 취소
+        setCookie(cookieName, '', -1); // 쿠키를 제거합니다.
+        action = "/board/view/cancel" + type.charAt(0).toUpperCase() + type.slice(1);
+    } else {
+        // 쿠키가 없으면 추천/비추천을 등록
+        setCookie(cookieName, 'true', 365); // 1년 동안 쿠키를 설정합니다.
+        action = "/board/view/update" + type.charAt(0).toUpperCase() + type.slice(1);
+    }
+
+    boardViewForm.attr("action", action);
+    boardViewForm.attr("method","post");
+    boardViewForm.submit();
+}
+
+/*
 // 게시글 추천수 업데이트
 function updateUpvote(boardId) {
 	var cookieName = 'upvoted_' + boardId;
@@ -313,3 +335,4 @@ function updateDownvote(boardId) {
 		setCookie(cookieName, 'true', 365); // Expires in 365 days
     }
 }
+*/

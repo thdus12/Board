@@ -245,17 +245,31 @@ public class BoardController {
 		return "redirect:/board/list";
 	}
 	
-	// 게시글 추천수 업데이트 메소드
+	// 게시글 추천수 추가 업데이트 메소드
 	@PostMapping("/board/view/updateUpvote")
-	public String upvote(@RequestParam("id") Long id) {
+	public String updateuUpvote(@RequestParam("id") Long id) {
 	    boardService.updateUpvote(id);
 	    return "redirect:/board/view?id=" + id;
 	}
 
-	// 게시글 비추천수 업데이트 메소드
+	// 게시글 비추천수 추가 업데이트 메소드
 	@PostMapping("/board/view/updateDownvote")
-	public String downvote(@RequestParam("id") Long id) {
+	public String updateDownvote(@RequestParam("id") Long id) {
 	    boardService.updateDownvote(id);
+	    return "redirect:/board/view?id=" + id;
+	}	
+	
+	// 게시글 추천수 취소 업데이트 메소드
+	@PostMapping("/board/view/cancelUpvote")
+	public String cancelUpvote(@RequestParam("id") Long id) {
+	    boardService.cancelUpvote(id);
+	    return "redirect:/board/view?id=" + id;
+	}
+
+	// 게시글 비추천수 취소 업데이트 메소드
+	@PostMapping("/board/view/cancelDownvote")
+	public String cancelDownvote(@RequestParam("id") Long id) {
+	    boardService.cancelDownvote(id);
 	    return "redirect:/board/view?id=" + id;
 	}	
 }

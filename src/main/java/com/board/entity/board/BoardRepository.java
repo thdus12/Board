@@ -34,6 +34,14 @@ public interface BoardRepository extends JpaRepository<BoardEntity, Long> {
     static final String UPDATE_BOARD_DOWNVOTECOUNT = "UPDATE board "
     		+ "SET downvote_count = downvote_count + 1 "
     		+ "WHERE id = :id";
+    
+    static final String UPDATE_BOARD_UPVOTECOUNT_CANCEL = "UPDATE board "
+    		+ "SET upvote_count = upvote_count - 1 "
+    		+ "WHERE id = :id";
+    
+    static final String UPDATE_BOARD_DOWNVOTECOUNT_CANCEL = "UPDATE board "
+    		+ "SET downvote_count = downvote_count - 1 "
+    		+ "WHERE id = :id";
 
     // 게시글 업데이트를 위한 메소드
     @Transactional
@@ -53,15 +61,27 @@ public interface BoardRepository extends JpaRepository<BoardEntity, Long> {
     @Query(value = DELETE_BOARD, nativeQuery = true)
     public int deleteBoard(@Param("deleteList") Long[] deleteList);
     
-    // 게시글 추천수를 업데이트 하기 위한 메소드
+    // 게시글 추천수 추가 업데이트 하기 위한 메소드
     @Transactional
     @Modifying
     @Query(value = UPDATE_BOARD_UPVOTECOUNT, nativeQuery = true)
     void updateUpvote(@Param("id") Long id);
 
-    // 게시글 비추천수를 업데이트 하기 위한 메소드
+    // 게시글 비추천수 추가 업데이트 하기 위한 메소드
     @Transactional
     @Modifying
     @Query(value = UPDATE_BOARD_DOWNVOTECOUNT, nativeQuery = true)
     void updateDownvote(@Param("id") Long id);
+    
+    // 게시글 추천수 취소 업데이트 하기 위한 메소드
+    @Transactional
+    @Modifying
+    @Query(value = UPDATE_BOARD_UPVOTECOUNT_CANCEL, nativeQuery = true)
+    void cancelUpvote(@Param("id") Long id);
+
+    // 게시글 비추천수 취소 업데이트 하기 위한 메소드
+    @Transactional
+    @Modifying
+    @Query(value = UPDATE_BOARD_DOWNVOTECOUNT_CANCEL, nativeQuery = true)
+    void cancelDownvote(@Param("id") Long id);
 }
