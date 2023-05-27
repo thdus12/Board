@@ -30,12 +30,15 @@ public class MemberDetailServiceImpl implements UserDetailsService {
     @Override
     public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
         log.info("check: " + email);
+        // 이메일로 사용자를 조회
         MemberEntity member = memberRepository.findByEmail(email);
         
+        // 사용자가 없으면 UsernameNotFoundException을 던짐
         if (member == null) {
             throw new UsernameNotFoundException("Not Found account.");
         }
         
+        // 조회된 멤버 객체를 반환
         return member;
     }
 }

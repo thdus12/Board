@@ -39,12 +39,12 @@ public class MemberEntity extends BaseTimeEntity implements UserDetails {
 	
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	private Long id;                    // 회원의 고유 식별자(ID)
-	private String email;               // 회원의 이메일
-	private String pwd;                 // 회원의 비밀번호
-	private LocalDateTime lastLoginTime;    // 회원의 마지막 로그인 시간
+	private Long id;                     // 회원의 고유 식별자(ID)
+	private String email;                // 회원의 이메일
+	private String pwd;                  // 회원의 비밀번호
+	private LocalDateTime lastLoginTime; // 회원의 마지막 로그인 시간
 	@Enumerated(EnumType.STRING)
-	private Role role;                  // 회원의 권한(Role)
+	private Role role;                   // 회원의 권한(Role)
 	
 	/**
 	 * MemberEntity의 생성자

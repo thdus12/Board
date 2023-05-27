@@ -12,9 +12,9 @@
 	                    </div>
 	                    <div class="card-body">
 	                        <form id="loginForm" name="loginForm" action="/login" method="post">
-							    <div th:if="${param.error}">
-							        <p th:text="${exception}" class="alert alert-danger"></p>
-							    </div>
+							    <div th:if="${error}" class="alert alert-danger">
+								    <p th:text="${error}"></p>
+								</div>
 							    <div class="form-floating mb-3">
 							        <input class="form-control" id="email" name="email" type="email" placeholder="name@example.com" required />
 							    </div>

@@ -19,6 +19,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.reactive.function.client.WebClient;
+import org.springframework.web.reactive.function.client.WebClientResponseException;
 
 import com.board.dto.member.MemberResponseDto;
 import com.board.service.member.MemberDetailServiceImpl;
@@ -52,22 +53,28 @@ public class MemberController {
 	    // 이메일과 비밀번호를 담은 DTO 생성
 	    MemberRequestDto memberRequestDto = new MemberRequestDto(email, password);
 
-	    // "/auth/member/signup" 엔드포인트에 POST 요청을 보냄
-	    ResponseEntity<MemberResponseDto> responseEntity = webClient.post()
-	            .uri("/auth/member/signup")
-	            .bodyValue(memberRequestDto)
-	            .retrieve()
-	            .toEntity(MemberResponseDto.class)
-	            .block();  // 비동기 작업을 동기적으로 수행
+	    try {
+	        // "/auth/member/signup" 엔드포인트에 POST 요청을 보냄
+	        ResponseEntity<MemberResponseDto> responseEntity = webClient.post()
+	                .uri("/auth/member/signup")
+	                .bodyValue(memberRequestDto)
+	                .retrieve()
+	                .toEntity(MemberResponseDto.class)
+	                .block();  // 비동기 작업을 동기적으로 수행
 
-	    // 요청이 성공적인 경우 (HTTP 상태 코드가 CREATED인 경우)
-	    if(responseEntity.getStatusCode() == HttpStatus.CREATED) {
-	        // 로그인 페이지로 리다이렉션
-	        return "/member/login";
-	    } else {
-	        // 계정 생성 실패 페이지를 반환
-	        return "/member/failsignup";
+	        // 요청이 성공적인 경우 (HTTP 상태 코드가 CREATED인 경우)
+	        if(responseEntity.getStatusCode() == HttpStatus.CREATED) {
+	            // 로그인 페이지로 리다이렉션
+	            return "/member/login";
+	        }
+	    } catch (Exception e) {
+	        // 계정 생성 실패 시 예외 처리
+	        e.printStackTrace();
 	    }
+
+	    // 계정 생성 실패 에러 메시지를 모델에 추가
+	    model.addAttribute("error", "계정 생성에 실패했습니다.");
+	    return "/member/signup";
 	}
 	
 	/**
@@ -80,23 +87,40 @@ public class MemberController {
 	 * @return 인증 성공 시 게시판 목록 페이지로 리다이렉션, 실패 시 로그인 페이지를 반환
 	 */
 	@PostMapping("/login")
-	public String authenticateUser(@RequestParam String email, 
-	                               @RequestParam String password, 
-	                               Model model, 
+	public String authenticateUser(@RequestParam String email,
+	                               @RequestParam String password,
+	                               Model model,
 	                               HttpServletRequest request) {
 	    // 이메일과 비밀번호를 담은 DTO 생성
 	    MemberRequestDto memberRequestDto = new MemberRequestDto(email, password);
-	    
+
 	    // "/auth/login" 엔드포인트에 POST 요청을 보냄
-	    ResponseEntity<MemberResponseDto> responseEntity = webClient.post()
-	        .uri("/auth/login")
-	        .bodyValue(memberRequestDto)
-	        .retrieve()
-	        .toEntity(MemberResponseDto.class)
-	        .block();
+	    ResponseEntity<MemberResponseDto> responseEntity;
+	    try {
+	        responseEntity = webClient.post()
+	                .uri("/auth/login")
+	                .bodyValue(memberRequestDto)
+	                .retrieve()
+	                .toEntity(MemberResponseDto.class)
+	                .block();
+	    } catch (WebClientResponseException ex) {
+	        if (ex.getStatusCode() == HttpStatus.BAD_REQUEST) {
+	            // 400 에러 발생 시 에러 메시지를 모델에 추가하여 로그인 페이지에서 표시
+	            model.addAttribute("error", "로그인 실패");
+	            return "/member/login";
+	        } else {
+	            // 기타 예외 상황 처리
+	            model.addAttribute("exception", ex.getMessage());
+	            return "/member/login";
+	        }
+	    }
+
+	    HttpStatus status = responseEntity.getStatusCode();
+
+	    System.out.println("######status" + status);
 
 	    // 요청이 성공적인 경우 (HTTP 상태 코드가 OK인 경우)
-	    if(responseEntity.getStatusCode() == HttpStatus.OK) {
+	    if (status == HttpStatus.OK) {
 	        // 세션에 로그인한 사용자 정보를 저장
 	        HttpSession session = request.getSession();
 	        session.setAttribute("user", responseEntity.getBody());
@@ -104,7 +128,7 @@ public class MemberController {
 	        // Spring Security에 사용자의 인증 정보를 알림
 	        UserDetails userDetails = memberDetailServiceImpl.loadUserByUsername(memberRequestDto.getEmail());
 	        Authentication authentication = new UsernamePasswordAuthenticationToken(
-	            userDetails, null, userDetails.getAuthorities());
+	                userDetails, null, userDetails.getAuthorities());
 	        SecurityContextHolder.getContext().setAuthentication(authentication);
 
 	        // 게시판 목록 페이지로 리다이렉션
