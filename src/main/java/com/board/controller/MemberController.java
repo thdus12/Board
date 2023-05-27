@@ -117,8 +117,6 @@ public class MemberController {
 
 	    HttpStatus status = responseEntity.getStatusCode();
 
-	    System.out.println("######status" + status);
-
 	    // 요청이 성공적인 경우 (HTTP 상태 코드가 OK인 경우)
 	    if (status == HttpStatus.OK) {
 	        // 세션에 로그인한 사용자 정보를 저장
