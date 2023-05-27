@@ -8,7 +8,9 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.board.dto.board.BoardRequestDto;
 
-// JpaRepository를 상속받아 Board 엔티티와 관련된 데이터베이스 작업을 처리하는 인터페이스
+/**
+ * Board 엔티티에 대한 데이터 액세스를 수행하는 JpaRepository 인터페이스
+ */
 public interface BoardRepository extends JpaRepository<BoardEntity, Long> {
 	
     // 게시글 업데이트를 위한 쿼리 문자열
@@ -27,18 +29,22 @@ public interface BoardRepository extends JpaRepository<BoardEntity, Long> {
     static final String DELETE_BOARD = "DELETE FROM board "
 			+ "WHERE id IN (:deleteList)";
     
+    // 게시글 추천수 증가를 위한 쿼리 문자열
     static final String UPDATE_BOARD_UPVOTECOUNT = "UPDATE board "
     		+ "SET upvote_count = upvote_count + 1 "
     		+ "WHERE id = :id";
     
+    // 게시글 비추천수 증가를 위한 쿼리 문자열
     static final String UPDATE_BOARD_DOWNVOTECOUNT = "UPDATE board "
     		+ "SET downvote_count = downvote_count + 1 "
     		+ "WHERE id = :id";
     
+    // 게시글 추천수 감소를 위한 쿼리 문자열
     static final String UPDATE_BOARD_UPVOTECOUNT_CANCEL = "UPDATE board "
     		+ "SET upvote_count = upvote_count - 1 "
     		+ "WHERE id = :id";
     
+    // 게시글 비추천수 감소를 위한 쿼리 문자열
     static final String UPDATE_BOARD_DOWNVOTECOUNT_CANCEL = "UPDATE board "
     		+ "SET downvote_count = downvote_count - 1 "
     		+ "WHERE id = :id";

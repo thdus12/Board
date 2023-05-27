@@ -11,24 +11,31 @@ import com.board.entity.member.MemberRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
-@Service // 이 클래스를 스프링 서비스로 등록
-@RequiredArgsConstructor // 필수 생성자를 자동으로 생성
-// UserDetailsService 인터페이스를 구현하여 스프링 시큐리티와 호환
+/**
+ * 사용자 인증을 위한 UserDetailsService의 구현 클래스
+ */
+@Service
+@RequiredArgsConstructor
 @Slf4j
 public class MemberDetailServiceImpl implements UserDetailsService {
-	// 멤버 리포지토리를 주입
-    private final MemberRepository memberRepository;      
+    private final MemberRepository memberRepository;
     
+    /**
+     * 주어진 이메일을 사용하여 사용자를 조회하는 메소드
+     * 
+     * @param email 조회할 사용자의 이메일
+     * @return 조회된 사용자의 UserDetails 객체
+     * @throws UsernameNotFoundException 주어진 이메일에 해당하는 사용자가 없을 경우 발생
+     */
     @Override
     public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
-    	log.info("check : " + email);
-        // 이메일로 사용자를 조회
+        log.info("check: " + email);
         MemberEntity member = memberRepository.findByEmail(email);
-
-        // 사용자가 없으면 UsernameNotFoundException을 던짐
-        if (member == null) throw new UsernameNotFoundException("Not Found account.");
         
-        // 조회된 멤버 객체를 반환
+        if (member == null) {
+            throw new UsernameNotFoundException("Not Found account.");
+        }
+        
         return member;
     }
 }

@@ -16,31 +16,35 @@ import com.board.dto.board.BoardResponseDto;
 import com.board.entity.board.BoardEntity;
 import com.board.entity.board.BoardRepository;
 
-// 생성자를 자동으로 생성하는 Lombok 어노테이션
+/**
+ * 게시글 관리를 위한 서비스 클래스
+ */
 @RequiredArgsConstructor
-// 이 클래스를 스프링 서비스로 사용하도록 하는 어노테이션
 @Service
 public class BoardService {	
     private final BoardRepository boardRepository;
-	private final CommentService commentService;
+    private final CommentService commentService;
 
-    // 게시글 저장 메소드
+    /**
+     * 게시글을 저장하는 메소드
+     * 
+     * @param boardRequestDto 게시글 요청 DTO
+     * @return 저장된 게시글의 ID
+     */
     @Transactional
     public Long save(BoardRequestDto boardRequestDto) {
         return boardRepository.save(boardRequestDto.toEntity()).getId();
     }
     
-    /*
-		트랜잭션에 readOnly=true 옵션을 주면 스프링 프레임워크가 하이버네이트 세션 플러시 모드를 MANUAL로 설정한다.
-		이렇게 하면 강제로 플러시를 호출하지 않는 한 플러시가 일어나지 않는다.
-		따라서 트랜잭션을 커밋하더라도 영속성 컨텍스트가 플러시 되지 않아서 엔티티의 등록, 수정, 삭제이 동작하지 않고,
-		또한 읽기 전용으로, 영속성 컨텍스트는 변경 감지를 위한 스냅샷을 보관하지 않으므로 성능이 향상된다.
-	*/
-
-    // 게시글 목록 조회 메소드
+    /**
+     * 게시글 목록을 조회하는 메소드
+     * 
+     * @param page 페이지 번호
+     * @param size 페이지 크기
+     * @return 게시글 목록과 페이징 정보를 담은 HashMap
+     */
     @Transactional(readOnly = true)
     public HashMap<String, Object> findAll(Integer page, Integer size) {
-    	
         HashMap<String, Object> resultMap = new HashMap<String, Object>();
 
         Page<BoardEntity> list = boardRepository.findAll(PageRequest.of(page, size, Sort.by(Sort.Direction.DESC, "id")));
@@ -58,74 +62,129 @@ public class BoardService {
         return resultMap;
     }
 
-    // 게시글 조회 메소드
+    /**
+     * 게시글을 ID로 조회하는 메소드
+     * 
+     * @param id 게시글 ID
+     * @return 게시글 응답 DTO
+     */
     public BoardResponseDto findById(Long id) {
         return new BoardResponseDto(boardRepository.findById(id).get());
     }
 
-    // 게시글 업데이트 메소드
+    /**
+     * 게시글을 업데이트하는 메소드
+     * 
+     * @param boardRequestDto 게시글 요청 DTO
+     * @return 업데이트된 게시글의 개수
+     */
     public int updateBoard(BoardRequestDto boardRequestDto) {
-		return boardRepository.updateBoard(boardRequestDto);
-	}
+        return boardRepository.updateBoard(boardRequestDto);
+    }
 
-    // 게시글 조회수 증가 메소드
+    /**
+     * 게시글의 조회수를 증가시키는 메소드
+     * 
+     * @param id 게시글 ID
+     * @return 업데이트된 게시글의 개수
+     */
     public int updateBoardReadCntInc(Long id) {
         return boardRepository.updateBoardReadCntInc(id);
     }
 
-    // 게시글 삭제 메소드
+    /**
+     * 게시글을 삭제하는 메소드
+     * 
+     * @param id 게시글 ID
+     */
     public void deleteById(Long id) {
         boardRepository.deleteById(id);
     }
     
-    // 게시글 다중 삭제 메소드
+    /**
+     * 여러 개의 게시글을 한 번에 삭제하는 메소드
+     * 
+     * @param deleteId 삭제할 게시글 ID 배열
+     */
     public void deleteAll(Long[] deleteId) {
-    	boardRepository.deleteBoard(deleteId);
+        boardRepository.deleteBoard(deleteId);
     }
 
-    // 주어진 ID로 BoardEntity를 찾는 메소드
+    /**
+     * 주어진 ID로 게시글을 찾는 메소드
+     * 
+     * @param id 게시글 ID
+     * @return 게시글 엔티티
+     * @throws NoSuchElementException 주어진 ID에 해당하는 게시글이 없을 경우 발생
+     */
     public BoardEntity getBoardById(Long id) {
         return boardRepository.findById(id)
                 .orElseThrow(() -> new NoSuchElementException("Could not find board with ID: " + id));
     }  
     
-    // 게시글 추천 추가 업데이트 메소드
+    /**
+     * 게시글의 추천 수를 증가시키는 메소드
+     * 
+     * @param id 게시글 ID
+     */
     public void updateUpvote(Long id) {
         boardRepository.updateUpvote(id);
     }
 
-    // 게시글 비추천 추가 업데이트 메소드
+    /**
+     * 게시글의 비추천 수를 증가시키는 메소드
+     * 
+     * @param id 게시글 ID
+     */
     public void updateDownvote(Long id) {
         boardRepository.updateDownvote(id);
     }
     
-    // 게시글 추천 취소 업데이트 메소드
+    /**
+     * 게시글의 추천을 취소하는 메소드
+     * 
+     * @param id 게시글 ID
+     */
     public void cancelUpvote(Long id) {
         boardRepository.cancelUpvote(id);
     }
 
-    // 게시글 비추천 취소 업데이트 메소드
+    /**
+     * 게시글의 비추천을 취소하는 메소드
+     * 
+     * @param id 게시글 ID
+     */
     public void cancelDownvote(Long id) {
         boardRepository.cancelDownvote(id);
     }
     
-    // 게시글 추천수 가져오는 메소드
-	public int getUpvoteCount(Long boardId) {
-		BoardEntity board = boardRepository.findById(boardId).orElse(null);
-	    if (board != null) {
-	        return board.getUpvoteCount();
-	    } else {
-	        return 0;
-	    }
-	}
-	
-	// 게시글 비추천수 가져오는 메소드
-	public int getDownvoteCount(Long boardId) {
-		BoardEntity board = boardRepository.findById(boardId).orElse(null);
-	    if (board != null) {
-	        return board.getDownvoteCount();
-	    } else {
-	        return 0;
-	    }
-	}
+    /**
+     * 게시글의 추천 수를 가져오는 메소드
+     * 
+     * @param boardId 게시글 ID
+     * @return 추천 수
+     */
+    public int getUpvoteCount(Long boardId) {
+        BoardEntity board = boardRepository.findById(boardId).orElse(null);
+        if (board != null) {
+            return board.getUpvoteCount();
+        } else {
+            return 0;
+        }
+    }
+    
+    /**
+     * 게시글의 비추천 수를 가져오는 메소드
+     * 
+     * @param boardId 게시글 ID
+     * @return 비추천 수
+     */
+    public int getDownvoteCount(Long boardId) {
+        BoardEntity board = boardRepository.findById(boardId).orElse(null);
+        if (board != null) {
+            return board.getDownvoteCount();
+        } else {
+            return 0;
+        }
+    }
 }

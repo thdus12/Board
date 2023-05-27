@@ -18,22 +18,27 @@ import com.board.service.member.MemberServiceImpl;
 
 import lombok.RequiredArgsConstructor;
 
-//생성자를 자동으로 생성하는 Lombok 어노테이션
+/**
+ * 댓글과 대댓글에 대한 처리를 담당하는 컨트롤러
+ */
 @RequiredArgsConstructor
-//이 클래스를 스프링 MVC의 컨트롤러로 사용하도록 하는 어노테이션
 @Controller
 public class CommentController {
-	
 	@Autowired
     private CommentService commentService;
-	
 	@Autowired
 	private MemberServiceImpl memberService;
-	
 	@Autowired
 	private BoardService boardService;
 	
-	// 댓글 수정
+	 /**
+     * 댓글을 수정하는 액션을 처리
+     *
+     * @param commentId 수정할 댓글의 ID
+     * @param boardId 댓글이 속한 게시판의 ID
+     * @param commentRequestDto 댓글 수정 정보를 담은 DTO
+     * @return 게시판 보기 페이지 리다이렉트 경로
+     */
 	@PostMapping("/board/view/comment/update")
 	public String updateComment(@RequestParam("commentId") Long commentId,
 	                            @RequestParam("boardId") Long boardId,
@@ -43,7 +48,13 @@ public class CommentController {
 	    return "redirect:/board/view?id=" + boardId;
 	}
 	
-	// 댓글 삭제
+	/**
+     * 댓글을 삭제하는 액션을 처리
+     *
+     * @param commentId 삭제할 댓글의 ID
+     * @param boardId 댓글이 속한 게시판의 ID
+     * @return 게시판 보기 페이지 리다이렉트 경로
+     */
 	@PostMapping("/board/view/comment/delete")
 	public String deleteComment(@RequestParam("commentId") Long commentId,
 	                            @RequestParam("boardId") Long boardId) {
@@ -61,7 +72,15 @@ public class CommentController {
 	    return "redirect:/board/view?id=" + boardId;
 	}
 	
-	// 댓글 추가
+	 /**
+     * 새 댓글을 추가하는 액션을 처리
+     *
+     * @param boardId 댓글을 추가할 게시판의 ID
+     * @param registerId 댓글 작성자의 ID
+     * @param commentRequestDto 댓글 정보를 담은 DTO
+     * @return 게시판 보기 페이지 리다이렉트 경로
+     * @throws Exception 처리 중 발생한 예외
+     */
 	@PostMapping("/board/view/comment")
     public String addComment(@RequestParam("boardId") Long boardId, 
     						 @RequestParam("registerId") String registerId,
@@ -86,7 +105,14 @@ public class CommentController {
         return "redirect:/board/view?id=" + boardId;		
     }
 	
-	// 대댓글 수정
+	/**
+     * 대댓글을 수정하는 액션을 처리
+     *
+     * @param replyId 수정할 대댓글의 ID
+     * @param boardId 대댓글이 속한 게시판의 ID
+     * @param commentRequestDto 대댓글 수정 정보를 담은 DTO
+     * @return 게시판 보기 페이지 리다이렉트 경로
+     */
 	@PostMapping("/board/view/reply/update")
 	public String updateReply(@RequestParam("replyId") Long replyId,
 	                            @RequestParam("boardId") Long boardId,
@@ -96,7 +122,13 @@ public class CommentController {
 	    return "redirect:/board/view?id=" + boardId;
 	}
 	
-	// 대댓글 삭제
+	 /**
+     * 대댓글을 삭제하는 액션을 처리
+     *
+     * @param replyId 삭제할 대댓글의 ID
+     * @param boardId 대댓글이 속한 게시판의 ID
+     * @return 게시판 보기 페이지 리다이렉트 경로
+     */
 	@PostMapping("/board/view/reply/delete")
 	public String deleteRelply(@RequestParam("replyId") Long replyId,
 	                            @RequestParam("boardId") Long boardId) {
@@ -106,7 +138,17 @@ public class CommentController {
 	    return "redirect:/board/view?id=" + boardId;
 	}
 	
-	// 대댓글 추가
+	/**
+     * 새 대댓글을 추가하는 액션을 처리
+     *
+     * @param parentId 대댓글의 부모 댓글 ID
+     * @param depth 대댓글의 깊이
+     * @param boardId 대댓글을 추가할 게시판의 ID
+     * @param registerId 대댓글 작성자의 ID
+     * @param commentRequestDto 대댓글 정보를 담은 DTO
+     * @return 게시판 보기 페이지 리다이렉트 경로
+     * @throws Exception 처리 중 발생한 예외
+     */
 	@PostMapping("/board/view/reply")
     public String addReply(@RequestParam("parentId") Long parentId,
     					   @RequestParam("depth") Long depth,

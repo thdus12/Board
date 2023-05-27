@@ -17,14 +17,25 @@ import com.board.dto.file.BoardFileResponseDto;
 import com.board.service.BoardFileService;
 import lombok.RequiredArgsConstructor;
 
+/**
+ * 게시글의 파일에 대한 CRUD 연산을 담당하는 컨트롤러
+ */
 @RequiredArgsConstructor
 @Controller
 public class BoardFileController {
 
     private final BoardFileService boardFileService;
-
+    
+    /**
+     * 특정 파일을 다운로드하는 메소드
+     *
+     * @param id 다운로드하려는 파일의 ID
+     * @param response 클라이언트에게 응답을 보내는데 사용되는 HttpServletResponse 객체
+     * @throws Exception 파일을 찾을 수 없거나, 다운로드 중 오류가 발생했을 경우
+     */
     @GetMapping("/file/download")
-    public void downloadFile(@RequestParam() Long id, HttpServletResponse response) throws Exception {
+    public void downloadFile(@RequestParam() Long id, 
+    						 HttpServletResponse response) throws Exception {
         try {
             // 파일정보를 조회한다.
             BoardFileResponseDto fileInfo = boardFileService.findById(id);
@@ -104,10 +115,20 @@ public class BoardFileController {
         }
     }
 
+    /**
+     * 파일을 삭제하는 요청을 처리하는 메소드
+     *
+     * @param model 뷰에 데이터를 전달하는데 사용되는 Model 객체
+     * @param boardFileRequestDto 삭제하려는 파일의 정보를 담은 DTO
+     * @throws Exception 파일 삭제 중 오류가 발생했을 경우
+     * @return 결과를 json 형태로 반환
+     */
     @PostMapping("/file/delete.ajax")
-    public String updateDeleteYn(Model model, BoardFileRequestDto boardFileRequestDto) throws Exception {
+    public String updateDeleteYn(Model model, 
+    							 BoardFileRequestDto boardFileRequestDto) throws Exception {
     	try {
-            model.addAttribute("result", boardFileService.updateDeleteYn(boardFileRequestDto.getIdArr()));
+    		int result = boardFileService.updateDeleteYn(boardFileRequestDto.getIdArr());
+            model.addAttribute("result", result);
         } catch (Exception e) {
             throw new Exception(e.getMessage());
         }

@@ -8,11 +8,20 @@ import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 
 import lombok.RequiredArgsConstructor;
 
+/**
+ * Spring Security 설정을 담당하는 클래스
+ */
 @Configurable
 @EnableWebSecurity
 @RequiredArgsConstructor
 public class SecurityConfig extends WebSecurityConfigurerAdapter {
 	
+	/**
+     * HttpSecurity를 이용하여 보안 설정을 구성합니다.
+     *
+     * @param http HttpSecurity 객체
+     * @throws Exception 예외 처리
+     */
 	@Override
 	protected void configure(HttpSecurity http) throws Exception {
 	    http.csrf().disable() 	 // CSRF 토큰 비활성화

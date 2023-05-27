@@ -28,31 +28,40 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 
 import lombok.RequiredArgsConstructor;
 
-// 생성자를 자동으로 생성하는 Lombok 어노테이션
+/**
+ * 게시글과 관련된 동작을 처리하는 컨트롤러
+ */
 @RequiredArgsConstructor
-// 이 클래스를 스프링 MVC의 컨트롤러로 사용하도록 하는 어노테이션
 @Controller
 public class BoardController {
-
-    // BoardService를 주입 받음
 	@Autowired
-    private BoardService boardService;
-	
+    private BoardService boardService;	
 	@Autowired
-    private CommentService commentService;
-	
+    private CommentService commentService;	
 	@Autowired
-    private MemberServiceImpl memberService;
-	
+    private MemberServiceImpl memberService;	
 	@Autowired
 	private BoardFileService boardFileService;
 	
+	/**
+     * 현재 인증된 사용자의 이메일을 반환
+     *
+     * @return 사용자 이메일
+     */
 	private String getAuthenticatedUserEmail() {
 	    Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
 	    return authentication.getName();
 	}
     
-    // 게시글 목록 페이지를 반환하는 메소드
+	 /**
+     * 게시글 리스트 페이지를 반환
+     *
+     * @param model Spring Model 객체
+     * @param page 페이지 번호, 필수가 아님 (기본값 = 0)
+     * @param size 페이지당 게시글 개수, 필수가 아님 (기본값 = 5)
+     * @return 게시글 리스트 페이지 경로
+     * @throws Exception 처리 중 발생한 예외
+     */
     @GetMapping("board/list")
 	public String getBoardListPage(Model model
 			, @RequestParam(required = false, defaultValue = "0") Integer page
@@ -76,7 +85,12 @@ public class BoardController {
 		return "board/list";
 	}
 
-    // 게시글 작성 페이지를 반환하는 메소드
+    /**
+     * 게시글 작성 페이지를 반환
+     *
+     * @param model Spring Model 객체
+     * @return 게시글 작성 페이지 경로
+     */
     @GetMapping("/board/write")
     public String getBoardWritePage(Model model) {
     	String userEmail = getAuthenticatedUserEmail();
@@ -85,7 +99,16 @@ public class BoardController {
     	return "board/write";
     }
     
-    // 게시글 작성을 처리하고 게시글 목록 페이지로 리다이렉트하는 메소드
+    /**
+     * 게시글 작성 액션을 처리
+     *
+     * @param model Spring Model 객체
+     * @param memberId 회원 ID
+     * @param boardRequestDto 게시글 요청 DTO
+     * @param multiRequest MultipartHttpServletRequest 객체
+     * @return 게시글 리스트 페이지 리다이렉트 경로
+     * @throws Exception 처리 중 발생한 예외
+     */
     @PostMapping("/board/write/action")
     public String boardWriteAction(Model model,
     							   @RequestParam("memberId") String memberId,
@@ -111,9 +134,17 @@ public class BoardController {
         return "redirect:/board/list";
     }
 
-    // 게시글 조회 페이지를 반환하는 메소드
+    /**
+     * 게시글 보기 페이지를 반환
+     *
+     * @param model Spring Model 객체
+     * @param boardRequestDto 게시글 요청 DTO
+     * @return 게시글 보기 페이지 경로
+     * @throws Exception 처리 중 발생한 예외
+     */
     @GetMapping("/board/view")
-	public String getBoardViewPage(Model model, BoardRequestDto boardRequestDto) throws Exception {
+	public String getBoardViewPage(Model model, 
+								   BoardRequestDto boardRequestDto) throws Exception {
     	Long boardId = boardRequestDto.getId();
     	
     	// 게시글 조회수 증가
@@ -131,8 +162,9 @@ public class BoardController {
 		        model.addAttribute("userEmail", userEmail);
 				
 		        BoardResponseDto info = boardService.findById(boardRequestDto.getId());
+		        List <Long> fileList = boardFileService.findByBoardId(info.getId());
 		        resultMap.put("info", info);
-		        resultMap.put("fileList", boardFileService.findByBoardId(info.getId()));
+		        resultMap.put("fileList", fileList);
 				model.addAttribute("resultMap", resultMap);
 				
 				List<CommentResponseDto> commentList = commentService.getCommentsByBoardId(boardRequestDto.getId());
@@ -157,9 +189,17 @@ public class BoardController {
 		return "board/view";
 	}
     
-    // 게시글 수정 페이지를 반환하는 메소드
+    /**
+     * 게시글 수정 페이지를 반환
+     *
+     * @param model Spring Model 객체
+     * @param request HttpServletRequest 객체
+     * @return 게시글 수정 페이지 경로
+     * @throws Exception 처리 중 발생한 예외
+     */
     @GetMapping("/board/edit")
-    public String getBoardEditPage(Model model, HttpServletRequest request) throws Exception {
+    public String getBoardEditPage(Model model, 
+    							   HttpServletRequest request) throws Exception {
 
         HashMap<String, Object> resultMap = new HashMap<String, Object>();
         try {
@@ -167,8 +207,9 @@ public class BoardController {
             if (idStr != null) {
                 Long id = Long.parseLong(idStr);
                 BoardResponseDto info = boardService.findById(id);
+                List <Long> fileList = boardFileService.findByBoardId(info.getId());
 		        resultMap.put("info", info);
-		        resultMap.put("fileList", boardFileService.findByBoardId(info.getId()));
+		        resultMap.put("fileList", fileList);
 				model.addAttribute("resultMap", resultMap);
             } 
         } catch (Exception e) {
@@ -178,7 +219,16 @@ public class BoardController {
         return "board/edit";
     }
     
-    // 게시글 수정 후 저장하는 메소드
+    /**
+     * 게시글 수정 액션을 처리
+     *
+     * @param model Spring Model 객체
+     * @param deletedFileIdsJson 삭제된 파일의 ID 리스트 JSON 문자열
+     * @param boardRequestDto 게시글 요청 DTO
+     * @param multiRequest MultipartHttpServletRequest 객체
+     * @return 게시글 보기 페이지 리다이렉트 경로
+     * @throws Exception 처리 중 발생한 예외
+     */
     @PostMapping("/board/edit/action")
     public String boardViewAction(Model model,
                                   @RequestParam(value = "deletedFileIds", required = false) String deletedFileIdsJson,
@@ -201,9 +251,17 @@ public class BoardController {
         return "redirect:/board/view?id=" + id;
     }
     
-    // view.html에서 게시글 삭제
+    /**
+     * 게시글 상세보기에서 삭제 액션을 처리
+     *
+     * @param model Spring Model 객체
+     * @param id 삭제할 게시글 ID
+     * @return 게시글 리스트 페이지 리다이렉트 경로
+     * @throws Exception 처리 중 발생한 예외
+     */
     @PostMapping("/board/view/delete")
-	public String boardViewDeleteAction(Model model, @RequestParam() Long id) throws Exception {
+	public String boardViewDeleteAction(Model model, 
+										@RequestParam() Long id) throws Exception {
 		try {
 			// 댓글 및 대댓글 삭제
 	        List<CommentEntity> comments = commentService.getCommentEntitiesByBoardId(id);
@@ -224,9 +282,17 @@ public class BoardController {
 		return "redirect:/board/list";
 	}
 	
-    // 게시글 다중 삭제
+    /**
+     * 게시글 삭제 액션을 처리
+     *
+     * @param model Spring Model 객체
+     * @param deleteId 삭제할 게시글 ID 배열
+     * @return 게시글 리스트 페이지 리다이렉트 경로
+     * @throws Exception 처리 중 발생한 예외
+     */
 	@PostMapping("/board/delete")
-	public String boardDeleteAction(Model model, @RequestParam() Long[] deleteId) throws Exception {	
+	public String boardDeleteAction(Model model, 
+									@RequestParam() Long[] deleteId) throws Exception {	
 		try {
 			for (Long id : deleteId) {
 	            // 댓글 및 대댓글 삭제
@@ -249,28 +315,48 @@ public class BoardController {
 		return "redirect:/board/list";
 	}
 	
-	// 게시글 추천수 추가 업데이트 메소드
+	/**
+     * 게시글 추천수를 증가
+     *
+     * @param id 추천을 증가시킬 게시글 ID
+     * @return 게시글 보기 페이지 리다이렉트 경로
+     */
 	@PostMapping("/board/view/updateUpvote")
 	public String updateuUpvote(@RequestParam("id") Long id) {
 	    boardService.updateUpvote(id);
 	    return "redirect:/board/view?id=" + id;
 	}
 
-	// 게시글 비추천수 추가 업데이트 메소드
+	/**
+     * 게시글 반대수를 증가
+     *
+     * @param id 반대를 증가시킬 게시글 ID
+     * @return 게시글 보기 페이지 리다이렉트 경로
+     */
 	@PostMapping("/board/view/updateDownvote")
 	public String updateDownvote(@RequestParam("id") Long id) {
 	    boardService.updateDownvote(id);
 	    return "redirect:/board/view?id=" + id;
 	}	
 	
-	// 게시글 추천수 취소 업데이트 메소드
+	/**
+     * 게시글 추천수를 취소
+     *
+     * @param id 추천을 취소할 게시글 ID
+     * @return 게시글 보기 페이지 리다이렉트 경로
+     */
 	@PostMapping("/board/view/cancelUpvote")
 	public String cancelUpvote(@RequestParam("id") Long id) {
 	    boardService.cancelUpvote(id);
 	    return "redirect:/board/view?id=" + id;
 	}
 
-	// 게시글 비추천수 취소 업데이트 메소드
+	/**
+     * 게시글 반대수를 취소
+     *
+     * @param id 반대를 취소할 게시글 ID
+     * @return 게시글 보기 페이지 리다이렉트 경로
+     */
 	@PostMapping("/board/view/cancelDownvote")
 	public String cancelDownvote(@RequestParam("id") Long id) {
 	    boardService.cancelDownvote(id);
