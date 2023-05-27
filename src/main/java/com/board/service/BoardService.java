@@ -83,6 +83,7 @@ public class BoardService {
     	boardRepository.deleteBoard(deleteId);
     }
 
+    // 주어진 ID로 BoardEntity를 찾는 메소드
     public BoardEntity getBoardById(Long id) {
         return boardRepository.findById(id)
                 .orElseThrow(() -> new NoSuchElementException("Could not find board with ID: " + id));

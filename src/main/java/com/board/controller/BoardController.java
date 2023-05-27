@@ -103,7 +103,7 @@ public class BoardController {
             }
             
             BoardEntity board = boardService.getBoardById(result);
-            boolean uploadFile = boardFileService.uploadFile(multiRequest, board);
+            boardFileService.uploadFile(multiRequest, board);
             
         } catch (Exception e) {
             throw new Exception(e.getMessage()); 
@@ -191,6 +191,10 @@ public class BoardController {
                 Long[] deletedFileIds = new ObjectMapper().readValue(deletedFileIdsJson, Long[].class);
                 boardFileService.updateDeleteYn(deletedFileIds);
             }
+            
+            BoardEntity board = boardService.getBoardById(id);
+            boardFileService.uploadFile(multiRequest, board);
+            
         } catch (Exception e) {
             throw new Exception(e.getMessage()); 
         }

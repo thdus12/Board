@@ -106,15 +106,12 @@ public class BoardFileController {
 
     @PostMapping("/file/delete.ajax")
     public String updateDeleteYn(Model model, BoardFileRequestDto boardFileRequestDto) throws Exception {
-    	Long id = boardFileRequestDto.getBoard().getId();
-    	
     	try {
             model.addAttribute("result", boardFileService.updateDeleteYn(boardFileRequestDto.getIdArr()));
         } catch (Exception e) {
             throw new Exception(e.getMessage());
         }
 
-//        return "redirect:/board/edit?id=" + id;
         return "jsonView";
     }
 }

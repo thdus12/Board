@@ -13,7 +13,6 @@
 * 가입한 아이디 및 비밀번호로 로그인이 가능함.
 * 유효성 검사를 통해 유효값 체크함.
 
-
 ![image](https://github.com/thdus12/Board/assets/97299700/9ac61436-f2c1-4c7d-a4ef-4ce7c0f86201)
 
 ![image](https://github.com/thdus12/Board/assets/97299700/2e0b6352-834f-41dd-8769-b36f65dd702e)

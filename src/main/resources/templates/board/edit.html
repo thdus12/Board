@@ -52,19 +52,38 @@
 			</form>
 		</div>
 	    <script th:inline="javascript">		
-	   		let boardEditForm = $("#boardEditForm");
+		    let boardWriteForm = $("#boardWriteForm");
+	
 			let $origFileDiv = $(".custom-file");
 			let fileMaxCnt = 3,
 			    fileMaxSize = 10485760,
 			    fileAllowExt = ["jpg", "jpeg", "png"];
-			let deleteFileIdArr = [];
 			/*
 			    파일 등록 최대 개수는 3개
 			    파일 사이즈는 10MB
 			    파일 허용 확장자는 jpg, jpeg, png
 			    (properties로 관리하는게 더 용이하다.)
 			*/
-
+	
+			function addFile() {
+			    let fileDivCnt = $(".custom-file").length;
+	
+			    if (fileDivCnt >= fileMaxCnt) {
+			        alert("Can't add any more file.");
+			        return false;
+			    }
+	
+			    let $copyFileDiv = $origFileDiv.clone(true);
+	
+			    $copyFileDiv.find("input").val("");
+			    $copyFileDiv.find("label").text("Choose file");
+			    $copyFileDiv.find("label").attr("for", "customFile" + fileDivCnt);
+			    $copyFileDiv.find("input").attr("id", "customFile" + fileDivCnt);
+			    $copyFileDiv.find("input").attr("name", "customFile" + fileDivCnt);
+	
+			    $("#fileDiv").append($copyFileDiv);
+			}
+	
 			function delFile() {
 			    if ($(".custom-file").length <= 1) {
 			        alert("Can't Delete any more file.");
@@ -72,7 +91,7 @@
 			    }
 			    $(".custom-file")[$(".custom-file").length - 1].remove();
 			}
-
+			
 			function chngFile(obj) {
 			    let fileObj = $(obj)[0];
 			    let fileVal = fileObj.files[0].name;
@@ -92,20 +111,6 @@
 			    if (flag) {
 			        $(obj).val("");
 			        $(obj).next("label").text("Choose file");
-			    }
-			}
-			
-			function fileDelete(obj, id) {
-			    if (confirm("Do you want to file delete it?")) {
-			        $(obj).parents(".fileList").remove();
-			        deleteFileIdArr.push(id);
-			        console.log(deleteFileIdArr);
-			        // Add the file ID to a hidden input field
-			        $('<input>').attr({
-			            type: 'hidden',
-			            name: 'deletedFileIds',
-			            value: JSON.stringify(deleteFileIdArr)
-			        }).appendTo(boardEditForm);
 			    }
 			}
 	    
