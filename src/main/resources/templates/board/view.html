@@ -12,13 +12,13 @@
 			<form id="boardViewForm" action="/board/edit" method="get" enctype="multipart/form-data">
 				<input type="hidden" name="id" th:value="${info.id}">
 				<div class="mb-3">
-				    <span class = "font-weight-bold" name="title" th:text="${info.title}"></span>				    
+				    <span class = "font-weight-bold" th:text="${info.title}"></span>				    
 				</div>		
 				<div class="board-id mb-3 d-flex justify-content-between">
 					<!-- 게시글 제목, 작성자 -->
 					<span>
-						<span class = "text-secondary" name="registerId" th:text="${info.registerId} + ' | '"></span>
-						<span class = "text-secondary" name="registerTime" th:text="${#temporals.format(info.registerTime, 'yyyy-MM-dd HH:mm:ss')}"></span>
+						<span class = "text-secondary" th:text="${info.registerId} + ' | '"></span>
+						<span class = "text-secondary" th:text="${#temporals.format(info.registerTime, 'yyyy-MM-dd HH:mm:ss')}"></span>
 					</span>
 					<!-- 조회수 -->
 					<span class="flex-grow-1 text-right" th:text="'view : ' + ${info.readCnt}"></span>
@@ -26,7 +26,7 @@
 				<hr>
 				<!-- 게시글 내용 -->
 				<div class="mb-5">
-			    	<pre name="content" th:utext="${info.content}"></pre>
+			    	<pre th:utext="${info.content}"></pre>
 				</div>
 				<!-- 게시글 이미지 -->		
 				<th:block th:if="${resultMap.fileList}">

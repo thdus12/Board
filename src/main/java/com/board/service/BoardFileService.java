@@ -48,8 +48,8 @@ public class BoardFileService {
      * @return 조회된 파일 ID 목록
      * @throws Exception 예외 발생 시
      */
-    public List<Long> findByBoardId(Long boardId) throws Exception {
-        return boardFileRepository.findByBoardId(boardId);
+    public List<Long> findByBoardFileId(Long boardId) throws Exception {
+        return boardFileRepository.findByBoardFileId(boardId);
     }
 
     /**
@@ -171,5 +171,29 @@ public class BoardFileService {
      */
     public int deleteBoardFileYn(Long[] boardIdList) throws Exception {
         return boardFileRepository.deleteBoardFileYn(boardIdList);
+    }
+    
+    /**
+     * 삭제 대상 게시글의 파일들을 실제로 삭제하는 메서드
+     *
+     * @param boardId 삭제 대상 게시글 ID
+     * @throws Exception 예외 발생 시
+     */
+    @Transactional
+    public void deleteByBoardId(Long boardId) throws Exception {
+        List<BoardFileEntity> files = boardFileRepository.findAllByBoardId(boardId);
+
+        for(BoardFileEntity file : files) {
+            File deleteFile = new File(file.getFilePath() + "/" + file.getSaveFileName());
+            if(deleteFile.exists()) {
+                if(deleteFile.delete()) {
+                    System.out.println("File deleted successfully");
+                } else {
+                    System.out.println("Failed to delete the file");
+                }
+            }
+        }
+
+        boardFileRepository.deleteByBoardId(boardId);
     }
 }

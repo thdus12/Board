@@ -33,7 +33,7 @@ public interface BoardFileRepository extends JpaRepository<BoardFileEntity, Long
      * @return 게시글 ID에 해당하는 첨부 파일 ID 목록
      */
     @Query(value = SELECT_FILE_ID, nativeQuery = true)
-    public List<Long> findByBoardId(@Param("boardId") Long boardId);
+    public List<Long> findByBoardFileId(@Param("boardId") Long boardId);
 
     /**
      * 첨부 파일의 삭제 여부를 업데이트하는 메서드
@@ -56,4 +56,20 @@ public interface BoardFileRepository extends JpaRepository<BoardFileEntity, Long
     @Modifying
     @Query(value = DELETE_BOARD_FILE_YN, nativeQuery = true)
     public int deleteBoardFileYn(@Param("boardIdList") Long[] boardIdList);
+    
+    /**
+     * 게시글 ID에 해당하는 첨부 파일 Entity 목록을 조회하는 메서드
+     *
+     * @param boardId 게시글의 ID
+     * @return 게시글 ID에 해당하는 첨부 파일 Entity 목록
+     */
+    List<BoardFileEntity> findAllByBoardId(Long boardId);
+
+    /**
+     * 게시글 ID에 해당하는 첨부 파일을 삭제하는 메서드
+     *
+     * @param boardId 게시글의 ID
+     */
+    @Transactional
+    void deleteByBoardId(Long boardId);
 }

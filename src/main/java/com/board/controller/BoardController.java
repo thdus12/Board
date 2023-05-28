@@ -162,7 +162,7 @@ public class BoardController {
 		        model.addAttribute("userEmail", userEmail);
 				
 		        BoardResponseDto info = boardService.findById(boardRequestDto.getId());
-		        List <Long> fileList = boardFileService.findByBoardId(info.getId());
+		        List <Long> fileList = boardFileService.findByBoardFileId(info.getId());
 		        resultMap.put("info", info);
 		        resultMap.put("fileList", fileList);
 				model.addAttribute("resultMap", resultMap);
@@ -207,7 +207,7 @@ public class BoardController {
             if (idStr != null) {
                 Long id = Long.parseLong(idStr);
                 BoardResponseDto info = boardService.findById(id);
-                List <Long> fileList = boardFileService.findByBoardId(info.getId());
+                List <Long> fileList = boardFileService.findByBoardFileId(info.getId());
 		        resultMap.put("info", info);
 		        resultMap.put("fileList", fileList);
 				model.addAttribute("resultMap", resultMap);
@@ -230,11 +230,11 @@ public class BoardController {
      * @throws Exception 처리 중 발생한 예외
      */
     @PostMapping("/board/edit/action")
-    public String boardViewAction(Model model,
+    public String boardEditAction(Model model,
                                   @RequestParam(value = "deletedFileIds", required = false) String deletedFileIdsJson,
                                   BoardRequestDto boardRequestDto, 
                                   MultipartHttpServletRequest multiRequest) throws Exception {
-        Long id = boardRequestDto.getId();
+    	Long id = boardRequestDto.getId();
         try {
             boardService.updateBoard(boardRequestDto);
             if (deletedFileIdsJson != null && !deletedFileIdsJson.isEmpty()) {
@@ -273,6 +273,9 @@ public class BoardController {
 	            commentService.deleteComment(comment.getId());
 	        }
 
+	        // 첨부 파일 삭제
+	        boardFileService.deleteByBoardId(id);
+	        
 	        // 게시글 삭제
 	        boardService.deleteById(id);
 		} catch (Exception e) {
@@ -283,7 +286,7 @@ public class BoardController {
 	}
 	
     /**
-     * 게시글 삭제 액션을 처리
+     * 게시글 다중 삭제 액션을 처리
      *
      * @param model Spring Model 객체
      * @param deleteId 삭제할 게시글 ID 배열
@@ -304,6 +307,8 @@ public class BoardController {
 	                }
 	                commentService.deleteComment(comment.getId());
 	            }
+	            // 첨부파일 삭제
+	            boardFileService.deleteByBoardId(id);
 	        }
 	        // 다중 게시글 삭제
 	        boardService.deleteAll(deleteId);

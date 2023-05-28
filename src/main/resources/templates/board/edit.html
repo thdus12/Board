@@ -53,7 +53,7 @@
 		</div>
 	    <script th:inline="javascript">		
 		    let boardWriteForm = $("#boardWriteForm");
-	
+		    let deleteFileIdArr = [];
 			let $origFileDiv = $(".custom-file");
 			let fileMaxCnt = 3,
 			    fileMaxSize = 10485760,
@@ -113,6 +113,20 @@
 			        $(obj).next("label").text("Choose file");
 			    }
 			}
+			
+			function fileDelete(obj, id) {
+				if (confirm("Do you want to file delete it?")) {
+			        $(obj).parents(".fileList").remove();
+			        deleteFileIdArr.push(id);
+			        console.log(deleteFileIdArr);
+			        // Add the file ID to a hidden input field
+			        $('<input>').attr({
+			            type: 'hidden',
+			            name: 'deletedFileIds',
+			            value: JSON.stringify(deleteFileIdArr)
+			        }).appendTo(boardEditForm);
+			    }
+			}
 	    
 	   		$(document).ready(function() {
 		    	boardEditForm.validate({
@@ -127,9 +141,30 @@
 					    	required : "writer is required, Please enter a writer."
 						}		   
 			        },
-			        submitHandler: function (form) {
-			            form.submit();
-			        }
+			        submitHandler: function(form) {
+	                    if (deleteFileIdArr.length > 0) {
+	                        $.ajax({
+	                            url: "/file/delete.ajax",
+	                            type: "post",
+	                            data: {
+	                                idArr: deleteFileIdArr
+	                            },
+	                            dataType: "json",
+	                            success: function(r) {
+	                                if (r.result) {
+	                                    form.submit();
+	                                } else {
+	                                    alert("A problem occurred, and progress is interrupted. Try again in a few minutes.");
+	                                }
+	                            },
+	                            error: function(e) {
+	                                console.log(e);
+	                            }
+	                        });
+	                    } else {
+	                        form.submit();
+	                    }
+	                }
 		      	});
 	        });
 		</script>

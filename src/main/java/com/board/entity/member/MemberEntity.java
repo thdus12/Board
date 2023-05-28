@@ -29,7 +29,7 @@ import lombok.NoArgsConstructor;
 /**
  * 회원 정보를 담고 있는 엔티티 클래스
  */
-@EqualsAndHashCode(of = {"id"})
+@EqualsAndHashCode(callSuper = true, of = {"id"})
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Getter
 @Entity(name = "member")
