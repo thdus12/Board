@@ -2,6 +2,7 @@ package com.board.service;
 
 import lombok.RequiredArgsConstructor;
 import java.util.HashMap;
+import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.stream.Collectors;
 
@@ -44,10 +45,10 @@ public class BoardService {
      * @return 게시글 목록과 페이징 정보를 담은 HashMap
      */
     @Transactional(readOnly = true)
-    public HashMap<String, Object> findAll(Integer page, Integer size) throws Exception {
-        HashMap<String, Object> resultMap = new HashMap<String, Object>();
+    public HashMap<String, Object> findAll(Integer page, Integer size, String category) throws Exception {
+    	HashMap<String, Object> resultMap = new HashMap<String, Object>();
 
-        Page<BoardEntity> list = boardRepository.findAll(PageRequest.of(page, size, Sort.by("isNotice").descending().and(Sort.by("id").descending())));
+        Page<BoardEntity> list = boardRepository.findByCategoryName(PageRequest.of(page, size, Sort.by("isNotice").descending().and(Sort.by("id").descending())), category);
         
         resultMap.put("list", list.stream().map(board -> {
             BoardResponseDto boardResponseDto = new BoardResponseDto(board);
@@ -186,5 +187,9 @@ public class BoardService {
         } else {
             return 0;
         }
+    }
+    
+    public List<BoardEntity> getAllBoards(String category) {
+        return boardRepository.findByCategoryName(category);
     }
 }

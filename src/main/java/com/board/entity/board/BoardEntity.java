@@ -10,6 +10,7 @@ import javax.persistence.ManyToOne;
 
 import com.board.entity.BaseTimeEntity;
 import com.board.entity.member.MemberEntity;
+import com.board.entity.category.CategoryEntity;
 
 import lombok.AccessLevel;
 import lombok.Builder;
@@ -37,6 +38,9 @@ public class BoardEntity extends BaseTimeEntity {
     @JoinColumn(name = "member_id")
     private MemberEntity member;       // 게시글을 작성한 회원 정보
     private int isNotice = 0;  		   // 공지사항 여부
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "category_id")
+    private CategoryEntity category;
 
     /**
      * BoardEntity의 생성자
@@ -50,9 +54,10 @@ public class BoardEntity extends BaseTimeEntity {
      * @param downvoteCount 게시글의 비추천수
      * @param member        게시글을 작성한 회원 정보
      * @param isNotice      공지사항 여부
+     * @param category      게시판 카테고리 정보
      */
     @Builder
-    public BoardEntity(Long id, String title, String content, int readCnt, String registerId, int upvoteCount, int downvoteCount, MemberEntity member, int isNotice) {
+    public BoardEntity(Long id, String title, String content, int readCnt, String registerId, int upvoteCount, int downvoteCount, MemberEntity member, int isNotice, CategoryEntity category) {
         this.id = id;
         this.title = title;
         this.content = content;
@@ -62,5 +67,6 @@ public class BoardEntity extends BaseTimeEntity {
         this.downvoteCount = downvoteCount;
         this.member = member;
         this.isNotice = isNotice;
+        this.category = category;
     }
 }

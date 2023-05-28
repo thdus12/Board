@@ -1,5 +1,9 @@
 package com.board.entity.board;
 
+import java.util.List;
+
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
@@ -90,4 +94,8 @@ public interface BoardRepository extends JpaRepository<BoardEntity, Long> {
     @Modifying
     @Query(value = UPDATE_BOARD_DOWNVOTECOUNT_CANCEL, nativeQuery = true)
     void cancelDownvote(@Param("id") Long id);
+
+    List<BoardEntity> findByCategoryName(String category);
+
+    Page<BoardEntity> findByCategoryName(Pageable pageable, String category);
 }

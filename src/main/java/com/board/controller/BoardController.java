@@ -18,10 +18,12 @@ import com.board.dto.board.BoardRequestDto;
 import com.board.dto.board.BoardResponseDto;
 import com.board.dto.comment.CommentResponseDto;
 import com.board.entity.board.BoardEntity;
+import com.board.entity.category.CategoryEntity;
 import com.board.entity.comment.CommentEntity;
 import com.board.entity.member.MemberEntity;
 import com.board.service.BoardFileService;
 import com.board.service.BoardService;
+import com.board.service.CategoryService;
 import com.board.service.CommentService;
 import com.board.service.member.MemberServiceImpl;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -42,6 +44,8 @@ public class BoardController {
     private MemberServiceImpl memberService;	
 	@Autowired
 	private BoardFileService boardFileService;
+	@Autowired
+	private CategoryService categoryService;
 	
 	/**
      * 현재 인증된 사용자의 이메일을 반환
@@ -65,7 +69,8 @@ public class BoardController {
     @GetMapping("board/list")
 	public String getBoardListPage(Model model
 			, @RequestParam(required = false, defaultValue = "0") Integer page
-			, @RequestParam(required = false, defaultValue = "10") Integer size) throws Exception {
+			, @RequestParam(required = false, defaultValue = "10") Integer size
+			, @RequestParam(required = false) String categoryName) throws Exception {
 		
 		try {			
 			Authentication auth = SecurityContextHolder.getContext().getAuthentication();
@@ -75,8 +80,14 @@ public class BoardController {
 			String userEmail = getAuthenticatedUserEmail();
 	        model.addAttribute("userEmail", userEmail);
 			
-	        HashMap<String, Object> resultMap = boardService.findAll(page, size);
+	        HashMap<String, Object> resultMap = boardService.findAll(page, size, categoryName);
 	        model.addAttribute("resultMap", resultMap);
+	        
+	        // 모든 카테고리를 검색하고 모델에 추가
+	        List<CategoryEntity> categories = categoryService.getAllCategories();
+	        model.addAttribute("categories", categories);
+	        
+	        model.addAttribute("categoryName",categoryName);
 	        
 		} catch (Exception e) {
 			throw new Exception(e.getMessage()); 

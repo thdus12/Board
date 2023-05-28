@@ -5,20 +5,49 @@
       layout:decorate="layout/default_layout">
     <th:block layout:fragment="content">
         <div id="wrapper">        	
-			<div class="container">
-				<div class="card-header mb-3">
-			    	<h3 class="text-center font-weight-bold my-4">Board</h3>
+			<div class="container-fluid">				
+			    <div class="d-flex justify-content-end align-items-center py-2">
+		    		<div>
+			    		<i class="bi bi-person-fill"></i>
+			    		<span th:text="${userEmail}"></span>
+		    		</div>
+		    		<button type="button" class="btn btn-outline-danger ml-3" onclick="javascript:location.href='/logout'"><i class="bi bi-box-arrow-left"></i></button>
+		    	</div>
+			    <div class="card-header mb-3">
+			        <h3 class="text-center font-weight-bold my-4" th:text="${categoryName}"></h3>
 			    </div>
+			    <div>
+				    <ul class="nav nav-tabs">
+					  	<li class="nav-item">
+					    	<a class="nav-link active" aria-current="page" href="#">All</a>
+					  	</li>
+					  	<li class="nav-item">
+					    	<a class="nav-link" href="#">Best</a>
+					  	</li>
+					  	<li class="nav-item">
+					    	<a class="nav-link" href="#">Notices</a>
+					  	</li>
+					  	<button class="btn btn-primary ms-auto mb-2" type="button" data-bs-toggle="offcanvas" data-bs-target="#offcanvasWithBackdrop" aria-controls="offcanvasWithBackdrop" data-bs-backdrop="true">Category</button>
+					</ul>
+			    </div>
+			    <div class="offcanvas offcanvas-start" data-bs-backdrop="false" tabindex="-1" id="offcanvasWithBackdrop" aria-labelledby="offcanvasWithBackdropLabel">
+				  	<div class="offcanvas-header">
+				    	<h5 class="offcanvas-title" id="offcanvasWithBackdropLabel">Category</h5>
+				    	<button type="button" class="btn-close text-reset" data-bs-dismiss="offcanvas" aria-label="Close"></button>
+				  	</div>
+				  	<div class="offcanvas-body">
+					    <ul class="list-group list-group-flush">
+					        <li class="list-group-item" th:each="category : ${categories}">
+							    <a th:href="@{/board/list(categoryName=${category.name}, page=${page}, size=${size})}">
+							        <span th:text="${category.name}"></span>
+							    </a>
+							</li>
+					    </ul>
+					</div>
+				</div>
 		    	<form action="/board/list" id="boardListForm" method="get">
 				    <div class="col-md-12 mt-4">
-				    	<div class="d-flex justify-content-between">
-				    		<div>
-					    		<i class="bi bi-person-fill"></i>
-					    		<span th:text="${userEmail}"></span>
-				    		</div>
-				    		<button type="button" class="btn btn-outline-danger" onclick="javascript:location.href='/logout'"><i class="bi bi-box-arrow-left"></i> Logout</button>
-				    	</div>			   
-				        <table class="table table-hover table-striped table-horizontal table-bordered text-center mt-3">
+				        <table class="table table-hover table-horizontal table-bordered text-center mt-3">
 				            <thead class="thead-strong">
 				                <tr>
 				                    <th width="5%" th:if="${isAdmin}"><input type="checkbox" id="chkAll"></th>

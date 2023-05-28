@@ -30,6 +30,7 @@ public interface CommentRepository extends JpaRepository<CommentEntity, Long> {
      */
     List<CommentEntity> findByParentId(Long parentId);
 
+    // 게시글의 댓글 개수를 가져오기 위한 쿼리 문자열
     static final String SELECT_COMMENT_CNT = "SELECT COUNT(content) "
             + "FROM comment "
             + "WHERE board_id = :boardId";
