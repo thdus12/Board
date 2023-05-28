@@ -1,6 +1,9 @@
 package com.board.entity;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
+
 import javax.persistence.EntityListeners;
 import javax.persistence.MappedSuperclass;
 import org.springframework.data.annotation.CreatedDate;
@@ -27,4 +30,5 @@ public class BaseTimeEntity {
      */
     @LastModifiedDate
     private LocalDateTime updateTime;
+    
 }

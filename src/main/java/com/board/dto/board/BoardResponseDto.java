@@ -1,6 +1,7 @@
 package com.board.dto.board;
 
 import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 
 import com.board.entity.board.BoardEntity;
 import com.board.entity.member.MemberEntity;
@@ -37,6 +38,23 @@ public class BoardResponseDto {
         this.registerTime = board.getRegisterTime();
         this.member = board.getMember();
         this.isNotice = board.getIsNotice();
+    }
+    
+    /**
+     * 게시글 등록 시간을 포맷팅하여 반환하는 메소드
+     * 만약 게시글 등록 날짜가 현재 날짜와 동일하다면, 시간을 'HH:mm' 형태로 포맷팅하고,
+     * 그렇지 않다면, 날짜를 'yyyy-MM-dd' 형태로 포맷팅하여 반환
+     *
+     * @return 포맷팅된 등록 시간 문자열
+     */
+    public String getFormattedRegisterTime() {
+        LocalDateTime now = LocalDateTime.now();
+
+        if (registerTime.toLocalDate().equals(now.toLocalDate())) {
+            return registerTime.format(DateTimeFormatter.ofPattern("HH:mm"));
+        } else {
+            return registerTime.format(DateTimeFormatter.ofPattern("yyyy-MM-dd"));
+        }
     }
 
     /**
