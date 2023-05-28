@@ -17,4 +17,14 @@ public class CategoryService {
 	public List<CategoryEntity> getAllCategories() {
         return categoryRepository.findAll();
     }
+	
+	public CategoryEntity getCategoryEntity(Long categoryId) throws Exception {
+		return categoryRepository.findById(categoryId)
+                .orElseThrow(() -> new Exception("Category not found with id: " + categoryId));
+	}
+
+	public Long getCategoryId(String categoryName) {
+        CategoryEntity category = categoryRepository.findByName(categoryName);
+        return category.getId();
+    }
 }

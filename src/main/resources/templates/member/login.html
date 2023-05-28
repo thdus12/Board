@@ -16,11 +16,13 @@
 								    <p th:text="${error}"></p>
 								</div>
 							    <div class="form-floating mb-3">
-							        <input class="form-control" id="email" name="email" type="email" placeholder="name@example.com" required />
-							    </div>
-							    <div class="form-floating mb-3">
-							        <input class="form-control" id="password" name="password" type="password" placeholder="Password" required />
-							    </div>
+								    <input class="form-control" id="email" name="email" type="email" placeholder="name@example.com" required />
+								    <label for="email">Email Address</label>
+								</div>
+								<div class="form-floating mb-3">
+								    <input class="form-control" id="password" name="password" type="password" placeholder="Password" required />
+								    <label for="password">Password</label>
+								</div>
 							    <div class="form-check mb-3">
 							        <input class="form-check-input" id="remember-me" name="remember-me" type="checkbox" />
 							        <label class="form-check-label" for="remember-me">Remember Password</label>

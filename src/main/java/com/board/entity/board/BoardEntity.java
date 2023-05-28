@@ -40,7 +40,7 @@ public class BoardEntity extends BaseTimeEntity {
     private int isNotice = 0;  		   // 공지사항 여부
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "category_id")
-    private CategoryEntity category;
+    private CategoryEntity category;   // 카테고리 정보
 
     /**
      * BoardEntity의 생성자

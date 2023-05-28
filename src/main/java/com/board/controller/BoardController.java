@@ -86,10 +86,10 @@ public class BoardController {
      * @throws Exception 처리 중 발생한 예외
      */
     @GetMapping("board/list")
-	public String getBoardListPage(Model model
-			, @RequestParam(required = false, defaultValue = "0") Integer page
-			, @RequestParam(required = false, defaultValue = "10") Integer size
-			, @RequestParam(required = false) String categoryName) throws Exception {
+	public String getBoardListPage(Model model, 
+								   @RequestParam(required = false, defaultValue = "0") Integer page, 
+								   @RequestParam(required = false, defaultValue = "10") Integer size, 
+								   @RequestParam(required = false) String categoryName) throws Exception {
 		
 		try {			
 			Authentication auth = SecurityContextHolder.getContext().getAuthentication();
@@ -122,10 +122,17 @@ public class BoardController {
      * @return 게시글 작성 페이지 경로
      */
     @GetMapping("/board/write")
-    public String getBoardWritePage(Model model) {
+    public String getBoardWritePage(Model model, 
+    								@RequestParam(required = false) String categoryName) {
+    	
     	String userEmail = getAuthenticatedUserEmail();
         model.addAttribute("userEmail", userEmail);
-    	
+        
+        if (categoryName != null && !categoryName.isEmpty()) {
+            Long categoryId = categoryService.getCategoryId(categoryName);
+            model.addAttribute("categoryId", categoryId);
+        }
+        
     	return "board/write";
     }
     
@@ -142,12 +149,18 @@ public class BoardController {
     @PostMapping("/board/write/action")
     public String boardWriteAction(Model model,
     							   @RequestParam("memberId") String memberId,
+    							   @RequestParam("categoryId") Long categoryId,
                                    BoardRequestDto boardRequestDto,
                                    MultipartHttpServletRequest multiRequest) throws Exception {
-        try {
-            // 현재 로그인한 회원의 정보를 가져옵니다.
-            MemberEntity member = memberService.getMemberByEmail(memberId);
+    	MemberEntity member;
+    	CategoryEntity category;
+    	try {
+            // 현재 로그인한 회원의 정보
+    		member = memberService.getMemberByEmail(memberId);
             boardRequestDto.setMember(member);
+            
+            category = categoryService.getCategoryEntity(categoryId);
+            boardRequestDto.setCategory(category);
             
             Authentication auth = SecurityContextHolder.getContext().getAuthentication();
 	        boolean isAdmin = memberService.isAdmin(auth.getName());
@@ -169,7 +182,7 @@ public class BoardController {
         } catch (Exception e) {
             throw new Exception(e.getMessage()); 
         }
-        return "redirect:/board/list";
+        return "redirect:/board/list?categoryName=" + category.getName() + "&page=&size=";
     }
 
     /**

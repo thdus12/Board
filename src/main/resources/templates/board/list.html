@@ -95,16 +95,18 @@
 				        <div class="d-flex align-items-center justify-content-between">
 					        <button type="button" class="btn btn-danger" th:if="${isAdmin}" onclick="multipleDelete()"><i class="bi bi-trash3-fill"></i> Delete</button>
 				        	<div></div>
-				        	<button type="button" class="btn btn-primary" onclick="javascript:location.href='/board/write'"><i class="bi bi-plus-lg"></i> New Board</button>
+				        	<a class="btn btn-primary" role="button" th:href="@{/board/write(categoryName=${categoryName})}">
+							    <i class="bi bi-plus-lg"></i> New Board
+							</a>
 				        </div>
 				        <div class="row">
 						    <div class="col">
 						        <div class="d-flex justify-content-center">
 						            <ul class="pagination">
 						                <li class="page-item" th:each="index : ${#numbers.sequence(1, resultMap.totalPage)}" th:with="paging=${resultMap.paging}">
-						                    <a class="page-link" th:classappend="${paging.pageNumber ==  (index-1)} ? bg-primary : bg-secondary" th:href="@{./list(page=${index - 1},page=${paging.pageSize})}">
-						                        <span class="text-white" th:text="${index}"></span>
-						                    </a>
+						                    <a class="page-link" th:classappend="${paging.pageNumber ==  (index-1)} ? bg-primary : bg-secondary" th:href="@{/board/list(categoryName=${categoryName}, page=${index - 1}, size=${paging.pageSize})}">
+											    <span class="text-white" th:text="${index}"></span>
+											</a>
 						                </li>
 						            </ul>
 						        </div>

@@ -4,6 +4,7 @@ import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 
 import com.board.entity.board.BoardEntity;
+import com.board.entity.category.CategoryEntity;
 import com.board.entity.member.MemberEntity;
 
 import lombok.Getter;
@@ -22,7 +23,8 @@ public class BoardResponseDto {
     private Long commentCount;   		 // 게시글의 댓글 수
     private int upvoteCount;  	 		 // 게시글의 추천 수
     private MemberEntity member; 		 // 게시글을 작성한 회원 정보
-    private int isNotice;    // 공지사항 여부 
+    private int isNotice;    			 // 공지사항 여부 
+    private CategoryEntity category; 	 // 카테고리 정보
 
     /**
      * BoardEntity 객체를 기반으로 BoardResponseDto 객체를 생성하는 생성자
@@ -38,6 +40,7 @@ public class BoardResponseDto {
         this.registerTime = board.getRegisterTime();
         this.member = board.getMember();
         this.isNotice = board.getIsNotice();
+        this.category = board.getCategory();
     }
     
     /**
@@ -91,6 +94,7 @@ public class BoardResponseDto {
                 + ", registerTime=" + registerTime
                 + ", commentCount=" + commentCount 
                 + ", member=" + member 
-                + ", isNotice=" + isNotice + "]";
+                + ", isNotice=" + isNotice 
+                + ", category=" + category + "]";
     }
 }
