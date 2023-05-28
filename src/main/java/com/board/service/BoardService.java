@@ -44,10 +44,10 @@ public class BoardService {
      * @return 게시글 목록과 페이징 정보를 담은 HashMap
      */
     @Transactional(readOnly = true)
-    public HashMap<String, Object> findAll(Integer page, Integer size) {
+    public HashMap<String, Object> findAll(Integer page, Integer size) throws Exception {
         HashMap<String, Object> resultMap = new HashMap<String, Object>();
 
-        Page<BoardEntity> list = boardRepository.findAll(PageRequest.of(page, size, Sort.by(Sort.Direction.DESC, "id")));
+        Page<BoardEntity> list = boardRepository.findAll(PageRequest.of(page, size, Sort.by("isNotice").descending().and(Sort.by("id").descending())));
         
         resultMap.put("list", list.stream().map(board -> {
             BoardResponseDto boardResponseDto = new BoardResponseDto(board);

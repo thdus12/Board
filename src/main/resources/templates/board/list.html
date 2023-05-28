@@ -31,21 +31,21 @@
 				                </tr>
 				            </thead>
 				            <tbody id="tbody">
-				            	<tr th:each="list,index : ${resultMap.list}" th:with="paging=${resultMap.paging}">
+				            	<tr th:each="list,index : ${resultMap.list}" th:with="paging=${resultMap.paging}" th:classappend="${list.isNotice} ? 'table-warning'">
 									<td th:if="${isAdmin}">
 										<input type="checkbox" name="deleteId" th:value="${list.id}">
 									</td>
 									<td>
-										<span th:text="${list.id}"></span>
+										<span th:text="${list.isNotice} ? 'Notice' : ${list.id}"></span>
 									</td>
 									<td class="text-left">
-										<a th:href="@{./view(id=${list.id})}">
+										<a th:href="@{./view(id=${list.id})}" th:class="${list.isNotice} ? 'font-weight-bold' : '' ">
 											<span th:text="${list.title}"></span>
 											<span th:text="'[' + ${list.commentCount} + ']'"></span>
 										</a>										
 									</td>
 									<td>
-										<span th:text="${list.registerId}"></span>
+										<span th:text="${list.isNotice} ? 'Admin' : ${list.registerId}"></span>
 									</td>
 									
 									<td>

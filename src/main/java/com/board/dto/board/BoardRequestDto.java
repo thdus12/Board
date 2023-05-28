@@ -18,6 +18,7 @@ public class BoardRequestDto {
 	private String registerId;   // 게시글을 등록한 사용자의 ID
 	private int readCnt;  		 // 게시글의 조회 수
 	private MemberEntity member; // 게시글을 작성한 회원 정보
+	private int isNotice;    // 공지사항 여부 
 	
 	/**
      * DTO 객체를 BoardEntity 객체로 변환하는 메서드
@@ -32,6 +33,7 @@ public class BoardRequestDto {
 				.registerId(registerId)
 				.readCnt(readCnt)
 				.member(member)
+				.isNotice(isNotice)
 				.build();
 	}
 }

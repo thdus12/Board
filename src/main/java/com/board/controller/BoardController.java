@@ -118,6 +118,14 @@ public class BoardController {
             // 현재 로그인한 회원의 정보를 가져옵니다.
             MemberEntity member = memberService.getMemberByEmail(memberId);
             boardRequestDto.setMember(member);
+            
+            Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+	        boolean isAdmin = memberService.isAdmin(auth.getName());
+	        
+	        // 관리자 권한을 가졌을 경우, 게시글 공지사항 여부 true로 설정
+	        if (isAdmin) {
+	        	boardRequestDto.setIsNotice(1);
+	        }
 
             Long result = boardService.save(boardRequestDto);
 

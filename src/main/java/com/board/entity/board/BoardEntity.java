@@ -36,6 +36,7 @@ public class BoardEntity extends BaseTimeEntity {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "member_id")
     private MemberEntity member;       // 게시글을 작성한 회원 정보
+    private int isNotice = 0;  		   // 공지사항 여부
 
     /**
      * BoardEntity의 생성자
@@ -48,9 +49,10 @@ public class BoardEntity extends BaseTimeEntity {
      * @param upvoteCount   게시글의 추천수
      * @param downvoteCount 게시글의 비추천수
      * @param member        게시글을 작성한 회원 정보
+     * @param isNotice      공지사항 여부
      */
     @Builder
-    public BoardEntity(Long id, String title, String content, int readCnt, String registerId, int upvoteCount, int downvoteCount, MemberEntity member) {
+    public BoardEntity(Long id, String title, String content, int readCnt, String registerId, int upvoteCount, int downvoteCount, MemberEntity member, int isNotice) {
         this.id = id;
         this.title = title;
         this.content = content;
@@ -59,5 +61,6 @@ public class BoardEntity extends BaseTimeEntity {
         this.upvoteCount = upvoteCount;
         this.downvoteCount = downvoteCount;
         this.member = member;
+        this.isNotice = isNotice;
     }
 }
