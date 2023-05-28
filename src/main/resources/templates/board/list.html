@@ -27,7 +27,9 @@
 					  	<li class="nav-item">
 					    	<a class="nav-link" href="#">Notices</a>
 					  	</li>
-					  	<button class="btn btn-primary ms-auto mb-2" type="button" data-bs-toggle="offcanvas" data-bs-target="#offcanvasWithBackdrop" aria-controls="offcanvasWithBackdrop" data-bs-backdrop="true">Category</button>
+					  	<li class="nav-item ms-auto">
+					  		<button class="btn btn-primary mb-3" type="button" data-bs-toggle="offcanvas" data-bs-target="#offcanvasWithBackdrop" aria-controls="offcanvasWithBackdrop" data-bs-backdrop="true">Category</button>
+					  	</li>
 					</ul>
 			    </div>
 			    <div class="offcanvas offcanvas-start" data-bs-backdrop="false" tabindex="-1" id="offcanvasWithBackdrop" aria-labelledby="offcanvasWithBackdropLabel">
@@ -53,10 +55,10 @@
 				                    <th width="5%" th:if="${isAdmin}"><input type="checkbox" id="chkAll"></th>
 				                    <th width="10%">No.</th>
 				                    <th width="">Title</th>
-				                    <th width="20%">Writer</th>
-				                    <th width="20%">Reg Time</th>
-				                    <th width="10%">Views</th>
-				                    <th width="10%">Upvote</th>
+				                    <th width="15%">Writer</th>
+				                    <th width="15%">Reg Time</th>
+				                    <th width="5%">Views</th>
+				                    <th width="5%">Upvote</th>
 				                </tr>
 				            </thead>
 				            <tbody id="tbody">

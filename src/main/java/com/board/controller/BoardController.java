@@ -56,6 +56,25 @@ public class BoardController {
 	    Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
 	    return authentication.getName();
 	}
+	
+	/**
+     * 게시판 카테고리 페이지를 반환
+     *
+     * @param model Spring Model 객체
+     * @return 게시판 카테고리 페이지 경로
+     */
+	@GetMapping("/board/boardCategoryList")
+    public String getBoardCategoryList(Model model) {
+		
+		String userEmail = getAuthenticatedUserEmail();
+        model.addAttribute("userEmail", userEmail);
+		
+		// 모든 카테고리를 검색하고 모델에 추가
+        List<CategoryEntity> categories = categoryService.getAllCategories();
+        model.addAttribute("categories", categories);
+    	
+    	return "board/boardCategoryList";
+    }
     
 	 /**
      * 게시글 리스트 페이지를 반환

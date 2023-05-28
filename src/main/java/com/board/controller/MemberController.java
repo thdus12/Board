@@ -129,8 +129,8 @@ public class MemberController {
 	                userDetails, null, userDetails.getAuthorities());
 	        SecurityContextHolder.getContext().setAuthentication(authentication);
 
-	        // 게시판 목록 페이지로 리다이렉션
-	        return "redirect:/board/list";
+	        // 게시판 카테고리 페이지로 리다이렉션
+	        return "redirect:/board/boardCategoryList";
 	    } else {
 	        // 로그인 페이지를 반환
 	        return "/member/login";

@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" 
+	  xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+	  xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity5"
+      layout:decorate="layout/default_layout">
+    <th:block layout:fragment="content">
+    	<div id="wrapper">        	
+			<div class="container-fluid">				
+			    <div class="d-flex justify-content-end align-items-center py-2">
+		    		<div>
+			    		<i class="bi bi-person-fill"></i>
+			    		<span th:text="${userEmail}"></span>
+		    		</div>
+		    		<button type="button" class="btn btn-outline-danger ml-3" onclick="javascript:location.href='/logout'"><i class="bi bi-box-arrow-left"></i></button>
+		    	</div>
+			    <div class="card-header mb-3">
+			        <h3 class="text-center font-weight-bold my-4">Board Category</h3>
+			    </div>
+			    <ul class="list-group">
+				    <li class="list-group-item d-flex justify-content-between align-items-center" th:each="category : ${categories}">
+				        <a th:href="@{/board/list(categoryName=${category.name}, page=${page}, size=${size})}">
+					        <span th:text="${category.name}"></span>
+					    </a>
+				        <span class="badge bg-primary rounded-pill">1</span>
+				    </li>
+				</ul>
+			</div>
+		</div>
+   	</th:block>
+</html>
