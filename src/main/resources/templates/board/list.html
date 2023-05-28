@@ -18,7 +18,7 @@
 				    		</div>
 				    		<button type="button" class="btn btn-outline-danger" onclick="javascript:location.href='/logout'"><i class="bi bi-box-arrow-left"></i> Logout</button>
 				    	</div>			   
-				        <table class="table table-striped table-horizontal table-bordered text-center mt-3">
+				        <table class="table table-hover table-striped table-horizontal table-bordered text-center mt-3">
 				            <thead class="thead-strong">
 				                <tr>
 				                    <th width="5%" th:if="${isAdmin}"><input type="checkbox" id="chkAll"></th>
@@ -31,7 +31,7 @@
 				                </tr>
 				            </thead>
 				            <tbody id="tbody">
-				            	<tr th:each="list,index : ${resultMap.list}" th:with="paging=${resultMap.paging}" th:classappend="${list.isNotice} ? 'table-warning'">
+				            	<tr th:each="list,index : ${resultMap.list}" th:with="paging=${resultMap.paging}" th:classappend="${list.isNotice} ? 'table-active'">
 									<td th:if="${isAdmin}">
 										<input type="checkbox" name="deleteId" th:value="${list.id}">
 									</td>
@@ -39,7 +39,8 @@
 										<span th:text="${list.isNotice} ? 'Notice' : ${list.id}"></span>
 									</td>
 									<td class="text-left">
-										<a th:href="@{./view(id=${list.id})}" th:class="${list.isNotice} ? 'font-weight-bold' : '' ">
+										<a th:href="@{./view(id=${list.id})}" th:class="${list.isNotice} ? 'font-weight-bold text-dark' : 'text-dark' ">
+											<i class="bi bi-exclamation-circle-fill" th:if="${list.isNotice == 1}"></i>
 											<span th:text="${list.title}"></span>
 											<span th:text="'[' + ${list.commentCount} + ']'"></span>
 										</a>										

@@ -65,7 +65,7 @@ public class BoardController {
     @GetMapping("board/list")
 	public String getBoardListPage(Model model
 			, @RequestParam(required = false, defaultValue = "0") Integer page
-			, @RequestParam(required = false, defaultValue = "5") Integer size) throws Exception {
+			, @RequestParam(required = false, defaultValue = "10") Integer size) throws Exception {
 		
 		try {			
 			Authentication auth = SecurityContextHolder.getContext().getAuthentication();
@@ -174,6 +174,8 @@ public class BoardController {
 		        resultMap.put("info", info);
 		        resultMap.put("fileList", fileList);
 				model.addAttribute("resultMap", resultMap);
+				
+				System.out.println(info.toString());
 				
 				List<CommentResponseDto> commentList = commentService.getCommentsByBoardId(boardRequestDto.getId());
 	            model.addAttribute("commentList", commentList);  
