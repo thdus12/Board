@@ -6,20 +6,25 @@
 			<div class="card-header mb-3">
 		    	<h3 class="text-center font-weight-bold my-4">Board Edit.</h3>
 		    </div>
+		    <!-- 게시글 수정 화면 -->
 			<form id="boardEditForm" action="/board/edit/action" method="post" th:with="info=${resultMap.info}" enctype="multipart/form-data">
 				<input type="hidden" name="id" th:value="${info.id}">
+				<!-- 게시글 작성자 -->
 				<div class="mb-3">
 				    <label class="form-label font-weight-bold"><span class="text-danger">* </span>Writer.</label>
 				    <input type="text" class="form-control" name="registerId" th:value="${info.registerId}" readonly>
 				</div>
+				<!-- 게시글 제목 -->
 				<div class="mb-3">
 				    <label class="form-label font-weight-bold"><span class="text-danger">* </span>Title.</label>
 				    <input type="text" class="form-control" name="title" th:value="${info.title}" required >
 				</div>
+				<!-- 게시글 내용 -->
 				<div class="mb-3">
 			    	<label class="form-label font-weight-bold"><span class="text-danger">* </span>Content.</label>
 			    	<textarea class="form-control" rows="5" name="content" th:text="${info.content}" required ></textarea>
 				</div>
+				<!-- 게시글 첨부파일 -->
 				<th:block th:if="${resultMap.fileList}">
 				    <div class="fileList mb-3" th:each="id : ${resultMap.fileList}">
 				        <img alt="image file" style="width: 50%" class="form-control mt-3" th:src="@{/file/download(id=${id})}">
@@ -29,22 +34,28 @@
                         </div>
                     </div>
                 </th:block>
+                <!-- 게시글 첨부파일 업로드 -->
 				<div class="mb-6">
 				   <label class="form-label font-weight-bold">File Upload.</label>
+				   <!-- 게시글 첨부파일 선택 -->
 				   <div id="fileDiv">
 				       <div class="custom-file mt-1">
 				           <input type="file" class="custom-file-input" id="customFile" name="customFile" onchange="chngFile(this);">
 				           <label class="custom-file-label" for="customFile">Choose file</label>
 				       </div>
 				   </div>
+				   <!-- 첨부파일 목록 추가 -->
 				   <div class="text-right mt-2">
 				       <a class="btn btn-outline-primary" href="javascript:addFile();">+</a>
 				       <a class="btn btn-outline-danger" href="javascript:delFile();">-</a>
 				   </div>
 				</div>
+				<!-- 이전 버튼, 저장 버튼 -->
 				<div class="clearfix mt-3">
 					<div class="d-flex align-items-center">
-					    <button type="button" class="btn btn-outline-primary" onclick="javascript:location.href='/board/list'"><i class="bi bi-arrow-left"></i></button>
+					    <a class="btn btn-outline-primary" th:href="@{/board/view(id=${info.id})}">
+						    <i class="bi bi-arrow-left"></i>
+						</a>
 					    <div class="ml-auto"></div>
 					    <button type="button" class="btn btn-primary mr-1" onclick="boardEditForm.submit();">Save</button>
 					</div>

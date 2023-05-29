@@ -8,7 +8,7 @@
 			<div class="card-header mb-3">
 		    	<h3 class="text-center font-weight-bold my-4">Board View.</h3>
 		    </div>
-		    <!-- 게시글 폼 -->
+		    <!-- 게시글 상세 화면 -->
 			<form id="boardViewForm" action="/board/edit" method="get" enctype="multipart/form-data">
 				<input type="hidden" name="id" th:value="${info.id}">
 				<div class="mb-3">
@@ -23,7 +23,7 @@
 					<!-- 조회수 -->
 					<span class="flex-grow-1 text-right" th:text="'view : ' + ${info.readCnt}"></span>
 				</div>
-				<hr>
+				<hr class="my-2">
 				<!-- 게시글 내용 -->
 				<div class="mb-5">
 			    	<pre th:utext="${info.content}"></pre>
@@ -39,11 +39,11 @@
 					<button type="button" class="btn btn-outline-success mr-1" th:onclick="|toggleVote('${info.id}', 'upvote')|"><i class="bi bi-hand-thumbs-up-fill"></i> Upvote <span th:text="${upvoteCount}"></span></button>
 					<button type="button" class="btn btn-outline-danger" th:onclick="|toggleVote('${info.id}', 'downvote')|"><i class="bi bi-hand-thumbs-down-fill"></i> Downvote <span th:text="${downvoteCount}"></span></button>
 				</div>
-				<hr>
+				<hr class="my-2">
 				<!-- 이전, 수정 ,섹제 버튼 -->
 				<div class="clearfix mt-3">
 					<div class="d-flex align-items-center">
-					    <a class="btn btn-outline-primary" th:href="@{/board/list(categoryName=${info.category.name})}">
+					    <a class="btn btn-outline-primary" th:href="@{/board/list(categoryName=${categoryName}, tab='All')}">
 						    <i class="bi bi-arrow-left"></i>
 						</a>
 					    <div class="ml-auto"></div>
@@ -52,7 +52,7 @@
 					</div>
 				</div>
 			</form>
-			<hr>
+			<hr class="my-2">
 			<!-- 댓글 작성 폼 -->
 			<form id="commentForm" th:action="@{/board/view/comment}" method="post">
 			  	<input type="hidden" name="boardId" th:value="${info.id}" />
@@ -68,7 +68,7 @@
 			   		<span th:text="'(' + ${commentCount} + ')'"></span>
 			   		<i class="bi bi-people-fill"></i>
 			   	</label>
-			    <hr>
+			    <hr class="my-2">
 			    <!-- 댓글 리스트 -->
 			    <div th:each="comment : ${commentList}" th:if="${comment.parentId} == 0" th:id="'comment-' + ${comment.id}" th:attr="data-comment=${comment}">
 				    <div class="comment">
@@ -147,7 +147,7 @@
 					        </form>
 					    </div>
 				    </div>
-				    <hr>
+				    <hr class="my-2">
 				</div>
 			</div>						
 		</div>
