@@ -4,7 +4,7 @@ let comment = $("#commentForm");
 let parentId = 0;
 
 // 댓글 수정 폼의 update 버튼 이벤트
-function fnCommentUpdate(button) {
+function fnCommentUpdate(button, categoryName) {
   	// 현재 클릭된 버튼을 기준으로 댓글 수정 폼을 찾음
   	const currentEditForm = $(button).closest('.edit-form');
   	const commentContent = currentEditForm.parent().find('#commentContent');
@@ -22,6 +22,7 @@ function fnCommentUpdate(button) {
     	data: {
       		commentId: commentId,
       		boardId: boardId,
+      		categoryName: categoryName,
       		content: content,
       		registerId: registerId
     	},
@@ -38,6 +39,37 @@ function fnCommentUpdate(button) {
 	      	alert("댓글 수정 중 오류가 발생했습니다.");
     	}
   	});
+}
+
+// 댓글 삭제
+function deleteComment(commentId, boardId, categoryName) {
+    if (confirm("Do you want to delete it?")) {
+        let form = document.createElement("form");
+        form.setAttribute("charset", "UTF-8");
+        form.setAttribute("method", "POST");
+        form.setAttribute("action", "/board/view/comment/delete");
+
+        let hiddenCommentId = document.createElement("input");
+        hiddenCommentId.setAttribute("type", "hidden");
+        hiddenCommentId.setAttribute("name", "commentId");
+        hiddenCommentId.setAttribute("value", commentId);
+        form.appendChild(hiddenCommentId);
+
+        let hiddenBoardId = document.createElement("input");
+        hiddenBoardId.setAttribute("type", "hidden");
+        hiddenBoardId.setAttribute("name", "boardId");
+        hiddenBoardId.setAttribute("value", boardId);
+        form.appendChild(hiddenBoardId);
+        
+        let hiddenCategoryName = document.createElement("input");
+		hiddenCategoryName.setAttribute("type", "hidden");
+		hiddenCategoryName.setAttribute("name", "categoryName");
+		hiddenCategoryName.setAttribute("value", categoryName);
+		form.appendChild(hiddenCategoryName);
+
+        document.body.appendChild(form);
+        form.submit();
+    }
 }
 
 // 댓글 수정폼의 cancel 버튼 이벤트
@@ -68,33 +100,8 @@ function editComment(commentId) {
   	/*editFormContainer.style.display = editFormContainer.style.display === 'none' ? 'block' : 'none';*/
 }
 
-// 댓글 삭제
-function deleteComment(commentId, boardId) {
-    if (confirm("Do you want to delete it?")) {
-        let form = document.createElement("form");
-        form.setAttribute("charset", "UTF-8");
-        form.setAttribute("method", "POST");
-        form.setAttribute("action", "/board/view/comment/delete");
-
-        let hiddenCommentId = document.createElement("input");
-        hiddenCommentId.setAttribute("type", "hidden");
-        hiddenCommentId.setAttribute("name", "commentId");
-        hiddenCommentId.setAttribute("value", commentId);
-        form.appendChild(hiddenCommentId);
-
-        let hiddenBoardId = document.createElement("input");
-        hiddenBoardId.setAttribute("type", "hidden");
-        hiddenBoardId.setAttribute("name", "boardId");
-        hiddenBoardId.setAttribute("value", boardId);
-        form.appendChild(hiddenBoardId);
-
-        document.body.appendChild(form);
-        form.submit();
-    }
-}
-
 // 대댓글 수정 폼의 update 버튼 이벤트
-function fnReplyUpdate(button) {
+function fnReplyUpdate(button, categoryName) {
   	// 현재 클릭된 버튼을 기준으로 댓글 수정 폼을 찾음
   	const currentEditForm = $(button).closest('.editReply-form');
   	const replyContent = currentEditForm.parent().find('#replyContent');
@@ -113,6 +120,7 @@ function fnReplyUpdate(button) {
       		replyId: replyId,
       		boardId: boardId,
       		content: content,
+      		categoryName: categoryName,
       		registerId: registerId
     	},
     	success: function(data) {
@@ -128,6 +136,37 @@ function fnReplyUpdate(button) {
 	      	alert("댓글 수정 중 오류가 발생했습니다.");
     	}
   	});
+}
+
+// 대댓글 삭제
+function deleteReply(replyId, boardId, categoryName) {
+    if (confirm("Do you want to delete it?")) {
+        let form = document.createElement("form");
+        form.setAttribute("charset", "UTF-8");
+        form.setAttribute("method", "POST");
+        form.setAttribute("action", "/board/view/reply/delete");
+
+        let hiddenReplyId = document.createElement("input");
+        hiddenReplyId.setAttribute("type", "hidden");
+        hiddenReplyId.setAttribute("name", "replyId");
+        hiddenReplyId.setAttribute("value", replyId);
+        form.appendChild(hiddenReplyId);
+
+        let hiddenBoardId = document.createElement("input");
+        hiddenBoardId.setAttribute("type", "hidden");
+        hiddenBoardId.setAttribute("name", "boardId");
+        hiddenBoardId.setAttribute("value", boardId);
+        form.appendChild(hiddenBoardId);
+        
+        let hiddenCategoryName = document.createElement("input");
+		hiddenCategoryName.setAttribute("type", "hidden");
+		hiddenCategoryName.setAttribute("name", "categoryName");
+		hiddenCategoryName.setAttribute("value", categoryName);
+		form.appendChild(hiddenCategoryName);
+
+        document.body.appendChild(form);
+        form.submit();
+    }
 }
 
 // 대댓글 수정폼의 cancel 버튼 이벤트
@@ -158,29 +197,16 @@ function editReply(replyId) {
   	/*editReplyFormContainer.style.display = editReplyFormContainer.style.display === 'none' ? 'block' : 'none';*/
 }
 
-// 대댓글 삭제
-function deleteReply(replyId, boardId) {
-    if (confirm("Do you want to delete it?")) {
-        let form = document.createElement("form");
-        form.setAttribute("charset", "UTF-8");
-        form.setAttribute("method", "POST");
-        form.setAttribute("action", "/board/view/reply/delete");
+// 댓글 추가
+function commentAdd() {		    	
+	comment.submit();
+}
 
-        let hiddenReplyId = document.createElement("input");
-        hiddenReplyId.setAttribute("type", "hidden");
-        hiddenReplyId.setAttribute("name", "replyId");
-        hiddenReplyId.setAttribute("value", replyId);
-        form.appendChild(hiddenReplyId);
-
-        let hiddenBoardId = document.createElement("input");
-        hiddenBoardId.setAttribute("type", "hidden");
-        hiddenBoardId.setAttribute("name", "boardId");
-        hiddenBoardId.setAttribute("value", boardId);
-        form.appendChild(hiddenBoardId);
-
-        document.body.appendChild(form);
-        form.submit();
-    }
+// 대댓글 추가
+function replyAdd(event) {
+	// 현재 클릭된 버튼을 기준으로 폼을 찾음
+	const currentReplyForm = $(event.target).closest('.reply-form');
+	currentReplyForm.submit();
 }
 
 // 댓글의 깊이 계산
@@ -219,18 +245,6 @@ function boardViewEdit(id) {
         $("#id").val(id);
         boardViewForm.submit();
     }
-}
-
-// 댓글 추가
-function commentAdd() {		    	
-	comment.submit();
-}
-
-// 대댓글 추가
-function replyAdd(event) {
-	// 현재 클릭된 버튼을 기준으로 폼을 찾음
-	const currentReplyForm = $(event.target).closest('.reply-form');
-	currentReplyForm.submit();
 }
 
 // 쿠키 설정

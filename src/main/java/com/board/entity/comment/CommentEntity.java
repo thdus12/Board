@@ -1,6 +1,5 @@
 package com.board.entity.comment;
 
-import java.time.LocalDateTime;
 import javax.persistence.*;
 
 import lombok.AccessLevel;
@@ -27,7 +26,6 @@ public class CommentEntity extends BaseTimeEntity {
     private Long id;                   // 댓글의 고유 식별자(ID)
     private String content;            // 댓글의 내용
     private String registerId;         // 댓글을 등록한 사용자의 식별자
-    private LocalDateTime updateTime;  // 댓글의 업데이트 시간
     private Long parentId;             // 댓글의 부모 댓글 ID
     private Long depth;                // 댓글의 깊이 (계층 구조를 나타내기 위해 사용)
     @ManyToOne(fetch = FetchType.LAZY)
@@ -44,18 +42,16 @@ public class CommentEntity extends BaseTimeEntity {
      * @param content      댓글의 내용
      * @param registerId   댓글을 등록한 사용자의 식별자
      * @param board        댓글이 속한 게시글 정보
-     * @param updateTime  댓글의 업데이트 시간
      * @param parentId     댓글의 부모 댓글 ID
      * @param depth        댓글의 깊이 (계층 구조를 나타내기 위해 사용)
      * @param member       댓글을 작성한 회원 정보
      */
     @Builder
-    public CommentEntity(Long id, String content, String registerId, BoardEntity board, LocalDateTime updateTime, Long parentId, Long depth, MemberEntity member) {
+    public CommentEntity(Long id, String content, String registerId, BoardEntity board, Long parentId, Long depth, MemberEntity member) {
         this.id = id;
         this.content = content;
         this.registerId = registerId;
         this.board = board;
-        this.updateTime = updateTime;
         this.parentId = parentId;
         this.depth = depth;
         this.member = member;

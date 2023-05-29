@@ -30,22 +30,59 @@ public class CommentController {
 	private MemberServiceImpl memberService;
 	@Autowired
 	private BoardService boardService;
+
+	/**
+	 * 새 댓글을 추가하는 액션을 처리
+	 *
+	 * @param boardId 댓글을 추가할 게시판의 ID
+	 * @param registerId 댓글 작성자의 ID
+	 * @param categoryName 카테고리 이름
+	 * @param commentRequestDto 댓글 정보를 담은 DTO
+	 * @return 게시판 보기 페이지 리다이렉트 경로
+	 * @throws Exception 처리 중 발생한 예외
+	 */
+	@PostMapping("/board/view/comment")
+	public String addComment(@RequestParam("boardId") Long boardId, 
+	                         @RequestParam("registerId") String registerId,
+	                         @RequestParam("categoryName") String categoryName,
+	                         CommentRequestDto commentRequestDto) throws Exception {
+	    try {
+	        BoardEntity board = boardService.getBoardById(boardId);
+	        MemberEntity member = memberService.getMemberByEmail(registerId);
+	        commentRequestDto.setMember(member);
+	        commentRequestDto.setBoard(board);
+	        commentRequestDto.setRegisterId(registerId);
+	        commentRequestDto.setParentId((long) 0);
+	        commentRequestDto.setDepth((long) 0);
+	        Long result = commentService.createComment(commentRequestDto);
+	        
+	        if (result < 0) {
+	            throw new Exception("#Exception comment!");
+	        }
+	    } catch (Exception e) {
+	        throw new Exception(e.getMessage()); 
+	    }
+	    
+	    return "redirect:/board/view?id=" + boardId + "&categoryName=" + categoryName;       
+	}
 	
-	 /**
+	/**
      * 댓글을 수정하는 액션을 처리
      *
      * @param commentId 수정할 댓글의 ID
      * @param boardId 댓글이 속한 게시판의 ID
+     * @param categoryName 카테고리 이름
      * @param commentRequestDto 댓글 수정 정보를 담은 DTO
      * @return 게시판 보기 페이지 리다이렉트 경로
      */
 	@PostMapping("/board/view/comment/update")
 	public String updateComment(@RequestParam("commentId") Long commentId,
 	                            @RequestParam("boardId") Long boardId,
+	                            @RequestParam("categoryName") String categoryName,
 	                            @ModelAttribute("comment") CommentRequestDto commentRequestDto) {
 	    CommentEntity updatedComment = commentRequestDto.toEntity();
 	    commentService.updateComment(commentId, updatedComment);
-	    return "redirect:/board/view?id=" + boardId;
+	    return "redirect:/board/view?id=" + boardId + "&categoryName=" + categoryName;
 	}
 	
 	/**
@@ -53,11 +90,13 @@ public class CommentController {
      *
      * @param commentId 삭제할 댓글의 ID
      * @param boardId 댓글이 속한 게시판의 ID
+     * @param categoryName 카테고리 이름
      * @return 게시판 보기 페이지 리다이렉트 경로
      */
 	@PostMapping("/board/view/comment/delete")
 	public String deleteComment(@RequestParam("commentId") Long commentId,
-	                            @RequestParam("boardId") Long boardId) {
+	                            @RequestParam("boardId") Long boardId,
+	                            @RequestParam("categoryName") String categoryName) {
 		// 댓글의 대댓글 찾기
 	    List<CommentEntity> replies = commentService.findRepliesByParentId(commentId);
 
@@ -69,73 +108,7 @@ public class CommentController {
 	    // 댓글 삭제
 	    commentService.deleteComment(commentId);
 	    
-	    return "redirect:/board/view?id=" + boardId;
-	}
-	
-	 /**
-     * 새 댓글을 추가하는 액션을 처리
-     *
-     * @param boardId 댓글을 추가할 게시판의 ID
-     * @param registerId 댓글 작성자의 ID
-     * @param commentRequestDto 댓글 정보를 담은 DTO
-     * @return 게시판 보기 페이지 리다이렉트 경로
-     * @throws Exception 처리 중 발생한 예외
-     */
-	@PostMapping("/board/view/comment")
-    public String addComment(@RequestParam("boardId") Long boardId, 
-    						 @RequestParam("registerId") String registerId,
-    						 CommentRequestDto commentRequestDto) throws Exception {
-		try {
-			BoardEntity board = boardService.getBoardById(boardId);
-            MemberEntity member = memberService.getMemberByEmail(registerId);
-            commentRequestDto.setMember(member);
-	        commentRequestDto.setBoard(board);
-	        commentRequestDto.setRegisterId(registerId);
-	        commentRequestDto.setParentId((long) 0);
-	        commentRequestDto.setDepth((long) 0);
-	        Long result = commentService.createComment(commentRequestDto);
-	        
-			if (result < 0) {
-				throw new Exception("#Exception comment!");
-			}
-		} catch (Exception e) {
-			throw new Exception(e.getMessage()); 
-		}
-		
-        return "redirect:/board/view?id=" + boardId;		
-    }
-	
-	/**
-     * 대댓글을 수정하는 액션을 처리
-     *
-     * @param replyId 수정할 대댓글의 ID
-     * @param boardId 대댓글이 속한 게시판의 ID
-     * @param commentRequestDto 대댓글 수정 정보를 담은 DTO
-     * @return 게시판 보기 페이지 리다이렉트 경로
-     */
-	@PostMapping("/board/view/reply/update")
-	public String updateReply(@RequestParam("replyId") Long replyId,
-	                            @RequestParam("boardId") Long boardId,
-	                            @ModelAttribute("comment") CommentRequestDto commentRequestDto) {
-	    CommentEntity updatedComment = commentRequestDto.toEntity();
-	    commentService.updateComment(replyId, updatedComment);
-	    return "redirect:/board/view?id=" + boardId;
-	}
-	
-	 /**
-     * 대댓글을 삭제하는 액션을 처리
-     *
-     * @param replyId 삭제할 대댓글의 ID
-     * @param boardId 대댓글이 속한 게시판의 ID
-     * @return 게시판 보기 페이지 리다이렉트 경로
-     */
-	@PostMapping("/board/view/reply/delete")
-	public String deleteRelply(@RequestParam("replyId") Long replyId,
-	                            @RequestParam("boardId") Long boardId) {
-	    // 댓글 삭제
-	    commentService.deleteComment(replyId);
-	    
-	    return "redirect:/board/view?id=" + boardId;
+	    return "redirect:/board/view?id=" + boardId + "&categoryName=" + categoryName;
 	}
 	
 	/**
@@ -144,6 +117,7 @@ public class CommentController {
      * @param parentId 대댓글의 부모 댓글 ID
      * @param depth 대댓글의 깊이
      * @param boardId 대댓글을 추가할 게시판의 ID
+     * @param categoryName 카테고리 이름
      * @param registerId 대댓글 작성자의 ID
      * @param commentRequestDto 대댓글 정보를 담은 DTO
      * @return 게시판 보기 페이지 리다이렉트 경로
@@ -153,6 +127,7 @@ public class CommentController {
     public String addReply(@RequestParam("parentId") Long parentId,
     					   @RequestParam("depth") Long depth,
     					   @RequestParam("boardId") Long boardId, 
+    					   @RequestParam("categoryName") String categoryName,
     					   @RequestParam("registerId") String registerId, 
     					   CommentRequestDto commentRequestDto) throws Exception {
 		try {			
@@ -172,6 +147,44 @@ public class CommentController {
 			throw new Exception(e.getMessage()); 
 		}
 		
-        return "redirect:/board/view?id=" + boardId;		
+		return "redirect:/board/view?id=" + boardId + "&categoryName=" + categoryName;		
     }
+	
+	/**
+     * 대댓글을 수정하는 액션을 처리
+     *
+     * @param replyId 수정할 대댓글의 ID
+     * @param boardId 대댓글이 속한 게시판의 ID
+     * @param categoryName 카테고리 이름
+     * @param commentRequestDto 대댓글 수정 정보를 담은 DTO
+     * @return 게시판 보기 페이지 리다이렉트 경로
+     */
+	@PostMapping("/board/view/reply/update")
+	public String updateReply(@RequestParam("replyId") Long replyId,
+	                            @RequestParam("boardId") Long boardId,
+	                            @RequestParam("categoryName") String categoryName,
+	                            @ModelAttribute("comment") CommentRequestDto commentRequestDto) {
+	    CommentEntity updatedComment = commentRequestDto.toEntity();
+	    commentService.updateComment(replyId, updatedComment);
+	    
+	    return "redirect:/board/view?id=" + boardId + "&categoryName=" + categoryName;
+	}
+	
+	 /**
+     * 대댓글을 삭제하는 액션을 처리
+     *
+     * @param replyId 삭제할 대댓글의 ID
+     * @param boardId 대댓글이 속한 게시판의 ID
+     * @param categoryName 카테고리 이름
+     * @return 게시판 보기 페이지 리다이렉트 경로
+     */
+	@PostMapping("/board/view/reply/delete")
+	public String deleteRelply(@RequestParam("replyId") Long replyId,
+	                            @RequestParam("boardId") Long boardId,
+	                            @RequestParam("categoryName") String categoryName) {
+	    // 댓글 삭제
+	    commentService.deleteComment(replyId);
+	    
+	    return "redirect:/board/view?id=" + boardId + "&categoryName=" + categoryName;
+	}
 }

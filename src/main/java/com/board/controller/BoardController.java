@@ -187,7 +187,7 @@ public class BoardController {
         } catch (Exception e) {
             throw new Exception(e.getMessage()); 
         }
-        return "redirect:/board/list?categoryName=" + category.getName() + "&page=&size=";
+        return "redirect:/board/list?categoryName=" + category.getName() + "&page=&size=&tab=All";
     }
 
     /**

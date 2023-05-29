@@ -55,16 +55,18 @@
 			<hr class="my-2">
 			<!-- 댓글 작성 폼 -->
 			<form id="commentForm" th:action="@{/board/view/comment}" method="post">
-			  	<input type="hidden" name="boardId" th:value="${info.id}" />
-			  	<input type="hidden" name="registerId" th:value="${userEmail}"/>
-			  	<div class="d-flex mb-6">
-			    	<textarea class="form-control flex-grow-1 mr-1" rows="3" name="content"></textarea>
-			    	<button type="button" class="btn btn-success active p-3" onclick="commentAdd()">Add</button>
-			  	</div>
+			    <input type="hidden" name="boardId" th:value="${info.id}" />
+			    <input type="hidden" name="registerId" th:value="${userEmail}"/>
+			    <input type="hidden" name="categoryName" th:value="${categoryName}"/>
+			    <div class="d-flex mb-6">
+			        <textarea class="form-control flex-grow-1 mr-1" rows="3" name="content"></textarea>
+			        <button type="button" class="btn btn-success active p-3" onclick="commentAdd()">Add</button>
+			    </div>
 			</form>
 			<div class="mt-5">			    
 			   	<label class="form-label font-weight-bold">
 			   		Comment 
+			   		<!-- 전체 댓글 개수 -->
 			   		<span th:text="'(' + ${commentCount} + ')'"></span>
 			   		<i class="bi bi-people-fill"></i>
 			   	</label>
@@ -75,12 +77,24 @@
 				        <div class="d-flex justify-content-between align-items-center p-1">
 					        <div>
 					        	<i class="bi bi-person-fill"></i>
+					            <!-- 댓글 작성자 -->
 					            <span class="font-weight-bold" th:text="${comment.registerId} + ' | '"></span>
+					            <!-- 댓글 등혹 시간 -->
 					            <span class="text-secondary" th:text="${#temporals.format(comment.registerTime, 'yyyy-MM-dd HH:mm:ss')}"></span>
 					        </div>
 					        <div>
-					        	<button type="button" class="btn btn-outline-secondary btn-sm" th:if="${comment.registerId == userEmail}" th:onclick="'editComment(' + ${comment.id} + ')'"><i class="bi bi-pencil-square"></i></button>
-					            <button type="button" class="btn btn-outline-secondary btn-sm" th:if="${comment.registerId == userEmail or isAdmin}" th:onclick="'deleteComment(' + ${comment.id} + ', ' + ${info.id} + ')'"><i class="bi bi-trash3-fill"></i></button>
+					        	<!-- 댓글 수정 폼 활성화 버튼 -->
+					        	<button type="button" class="btn btn-outline-secondary btn-sm" 
+					        		th:if="${comment.registerId == userEmail}" 
+					        		th:onclick="'editComment(' + ${comment.id} + ')'">
+					        		<i class="bi bi-pencil-square"></i>
+					        	</button>
+					        	<!-- 댓글 삭제 버튼 -->
+					            <button type="button" class="btn btn-outline-secondary btn-sm" 
+								    th:if="${comment.registerId == userEmail or isAdmin}" 
+								    th:attr="onclick='deleteComment(' + ${comment.id} + ', ' + ${info.id} + ', \'' + ${categoryName} + '\')'">
+								    <i class="bi bi-trash3-fill"></i>
+								</button>
 					        </div>
 					    </div>
 					    <p th:id="'commentContent-' + ${comment.id}" class="mt-2" th:text="${comment.content}"></p>
@@ -93,7 +107,11 @@
 				                <div class="mb-6 mt-1">
 				                    <textarea class="form-control mb-1" rows="3" name="content" th:text="${comment.content}"></textarea>
 				                    <div align="right" class="mb-1">
-					                    <button type="button" class="btn btn-primary active" th:if="${comment.registerId == userEmail}" onclick="fnCommentUpdate(this)">Update</button>
+				                    	<!-- 댓글 업데이트 버튼 -->
+					                    <button type="button" class="btn btn-primary active" 
+									        th:if="${comment.registerId == userEmail}" 
+									        th:attr="onclick='fnCommentUpdate(this, \'' + ${categoryName} + '\')'">Update</button>
+					                    <!-- 댓글 업데이트 cancel 버튼-->
 					                    <button type="button" class="btn btn-outline-secondary" th:if="${comment.registerId == userEmail}" onclick="fnCommentEdit(this)">Cancel</button>
 				                    </div>
 				                </div>
@@ -106,12 +124,24 @@
 				                	<div class="d-flex justify-content-between align-items-center">
 					                	<div class="pl-2">
 					                		<i class="bi bi-person-fill"></i>
+						                    <!-- 대댓글 작성자 -->
 						                    <span class="font-weight-bold" th:text="${reply.registerId} + ' | '"></span>
+						                    <!-- 대댓글 등록 시간 -->
 						                    <span class="text-secondary" th:text="${#temporals.format(reply.registerTime, 'yyyy-MM-dd HH:mm:ss')}"></span>
 					                    </div>
 								        <div>
-								        	<button type="button" class="btn btn-outline-secondary btn-sm" th:if="${reply.registerId == userEmail}" th:onclick="'editReply(' + ${reply.id} + ')'"><i class="bi bi-pencil-square"></i></button>
-								            <button type="button" class="btn btn-outline-secondary btn-sm" th:if="${reply.registerId == userEmail or isAdmin}" th:onclick="'deleteReply(' + ${reply.id} + ', ' + ${info.id} + ')'"><i class="bi bi-trash3-fill"></i></button>
+								        	<!-- 대댓글 수정폼 활성화 버튼-->
+								        	<button type="button" class="btn btn-outline-secondary btn-sm" 
+								        		th:if="${reply.registerId == userEmail}" 
+								        		th:onclick="'editReply(' + ${reply.id} + ')'">
+								        		<i class="bi bi-pencil-square"></i>
+								        	</button>
+								        	<!-- 대댓글 삭제 -->
+								        	<button type="button" class="btn btn-outline-secondary btn-sm" 
+											    th:if="${reply.registerId == userEmail or isAdmin}" 
+											    th:attr="onclick='deleteReply(' + ${comment.id} + ', ' + ${info.id} + ', \'' + ${categoryName} + '\')'">
+											    <i class="bi bi-trash3-fill"></i>
+											</button>
 								        </div>					                    
 				                	</div>
 				                	<p th:id="'replyContent-' + ${reply.id}" class="pl-2 mt-2" th:text="${reply.content}"></p>				                	
@@ -124,7 +154,11 @@
 							                <div class="mb-6 mt-1">
 							                    <textarea class="form-control mb-1" rows="3" name="content" th:text="${reply.content}"></textarea>
 							                    <div align="right" class="mb-1">
-								                    <button type="button" class="btn btn-primary active" onclick="fnReplyUpdate(this)">Update</button>
+								                    <!-- 댓글 업데이트 버튼 -->
+								                    <button type="button" class="btn btn-primary active" 
+								                    	th:if="${comment.registerId == userEmail}" 
+									        			th:attr="onclick='fnReplyUpdate(this, \'' + ${categoryName} + '\')'">Update</button>
+								                    <!-- 댓글 업데이트 cancel 버튼-->
 								                    <button type="button" class="btn btn-outline-secondary" onclick="fnReplyEdit(this)">Cancel</button>
 							                    </div>
 							                </div>
@@ -140,6 +174,7 @@
 					            <input type="hidden" id="reply_depth" name="depth" th:value="0"/>
 					            <input type="hidden" id="reply_boardId" name="boardId" th:value="${info.id}" />
 					            <input type="hidden" id="reply_registerId" name="registerId" th:value="${userEmail}" />
+					            <input type="hidden" id="categoryName" name="categoryName" th:value="${categoryName}"/>
 					            <div class="d-flex mb-6">
 					                <textarea class="form-control flex-grow-1 mr-1" rows="3" name="content"></textarea>
 			                    	<button type="button" class="btn btn-success active" onclick="replyAdd(event)">Add Reply</button>
