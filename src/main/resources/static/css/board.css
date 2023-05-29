@@ -5,3 +5,7 @@
 .board-id {
 	font-size: 70%;
 }
+hr:not([size]) {
+    height: auto;
+}
+
