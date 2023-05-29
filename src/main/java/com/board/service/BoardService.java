@@ -45,10 +45,17 @@ public class BoardService {
      * @return 게시글 목록과 페이징 정보를 담은 HashMap
      */
     @Transactional(readOnly = true)
-    public HashMap<String, Object> findAll(Integer page, Integer size, String category) throws Exception {
+    public HashMap<String, Object> findAll(Integer page, Integer size, String category, String tab) throws Exception {
     	HashMap<String, Object> resultMap = new HashMap<String, Object>();
 
-        Page<BoardEntity> list = boardRepository.findByCategoryName(PageRequest.of(page, size, Sort.by("isNotice").descending().and(Sort.by("id").descending())), category);
+    	Page<BoardEntity> list = null;
+        if ("All".equals(tab)) {
+        	list = boardRepository.findByCategoryName(PageRequest.of(page, size, Sort.by("isNotice").descending().and(Sort.by("id").descending())), category);
+        } else if ("Notices".equals(tab)) {
+            list = boardRepository.findNoticesByCategoryName(PageRequest.of(page, size, Sort.by("is_notice").descending().and(Sort.by("id").descending())), category);
+        } else if ("Best".equals(tab)) {
+        	list = boardRepository.findBestBoardByCategoryName(PageRequest.of(page, size, Sort.by("id").descending()), category);
+        }
         
         resultMap.put("list", list.stream().map(board -> {
             BoardResponseDto boardResponseDto = new BoardResponseDto(board);
@@ -62,7 +69,7 @@ public class BoardService {
         
         return resultMap;
     }
-
+    
     /**
      * 게시글을 ID로 조회하는 메소드
      * 

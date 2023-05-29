@@ -82,6 +82,7 @@ public class BoardController {
      * @param model Spring Model 객체
      * @param page 페이지 번호, 필수가 아님 (기본값 = 0)
      * @param size 페이지당 게시글 개수, 필수가 아님 (기본값 = 5)
+     * @param categoryName 카테고리 이름
      * @return 게시글 리스트 페이지 경로
      * @throws Exception 처리 중 발생한 예외
      */
@@ -89,7 +90,8 @@ public class BoardController {
 	public String getBoardListPage(Model model, 
 								   @RequestParam(required = false, defaultValue = "0") Integer page, 
 								   @RequestParam(required = false, defaultValue = "10") Integer size, 
-								   @RequestParam(required = false) String categoryName) throws Exception {
+								   @RequestParam(required = false) String categoryName,
+								   @RequestParam(required = false) String tab) throws Exception {
 		
 		try {			
 			Authentication auth = SecurityContextHolder.getContext().getAuthentication();
@@ -99,7 +101,7 @@ public class BoardController {
 			String userEmail = getAuthenticatedUserEmail();
 	        model.addAttribute("userEmail", userEmail);
 			
-	        HashMap<String, Object> resultMap = boardService.findAll(page, size, categoryName);
+	        HashMap<String, Object> resultMap = boardService.findAll(page, size, categoryName, tab);
 	        model.addAttribute("resultMap", resultMap);
 	        
 	        // 모든 카테고리를 검색하고 모델에 추가
@@ -107,6 +109,7 @@ public class BoardController {
 	        model.addAttribute("categories", categories);
 	        
 	        model.addAttribute("categoryName",categoryName);
+	        model.addAttribute("tab", tab);
 	        
 		} catch (Exception e) {
 			throw new Exception(e.getMessage()); 
@@ -131,6 +134,7 @@ public class BoardController {
         if (categoryName != null && !categoryName.isEmpty()) {
             Long categoryId = categoryService.getCategoryId(categoryName);
             model.addAttribute("categoryId", categoryId);
+            model.addAttribute("categoryName", categoryName);
         }
         
     	return "board/write";
@@ -141,6 +145,7 @@ public class BoardController {
      *
      * @param model Spring Model 객체
      * @param memberId 회원 ID
+     * @param categoryId 카테고리 ID
      * @param boardRequestDto 게시글 요청 DTO
      * @param multiRequest MultipartHttpServletRequest 객체
      * @return 게시글 리스트 페이지 리다이렉트 경로
@@ -195,6 +200,7 @@ public class BoardController {
      */
     @GetMapping("/board/view")
 	public String getBoardViewPage(Model model, 
+								   @RequestParam(required = false) String categoryName,
 								   BoardRequestDto boardRequestDto) throws Exception {
     	Long boardId = boardRequestDto.getId();
     	
@@ -218,8 +224,6 @@ public class BoardController {
 		        resultMap.put("fileList", fileList);
 				model.addAttribute("resultMap", resultMap);
 				
-				System.out.println(info.toString());
-				
 				List<CommentResponseDto> commentList = commentService.getCommentsByBoardId(boardRequestDto.getId());
 	            model.addAttribute("commentList", commentList);  
 	            
@@ -231,6 +235,8 @@ public class BoardController {
 	            
 	            int downvoteCount = boardService.getDownvoteCount(boardId);
 	            model.addAttribute("downvoteCount", downvoteCount);
+	            
+	            model.addAttribute("categoryName", categoryName);
 	            
 			}
 		} catch (Exception e) {

@@ -1,5 +1,6 @@
 package com.board.entity.board;
 
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
@@ -37,6 +38,7 @@ public class BoardEntity extends BaseTimeEntity {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "member_id")
     private MemberEntity member;       // 게시글을 작성한 회원 정보
+    @Column(name = "is_notice")
     private int isNotice = 0;  		   // 공지사항 여부
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "category_id")

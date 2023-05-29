@@ -4,34 +4,44 @@
 	  xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity5"
       layout:decorate="layout/default_layout">
     <th:block layout:fragment="content">
-        <div id="wrapper">        	
-			<div class="container-fluid">				
+        <div id="wrapper" class="mx-5">        	
+			<div class="container-fluid">
+				<!-- 사용자 -->			
 			    <div class="d-flex justify-content-end align-items-center py-2">
+		    		<!-- 사용자 이메일 -->
 		    		<div>
 			    		<i class="bi bi-person-fill"></i>
 			    		<span th:text="${userEmail}"></span>
 		    		</div>
+		    		<!-- 사용자 로그아웃 버튼 -->
 		    		<button type="button" class="btn btn-outline-danger ml-3" onclick="javascript:location.href='/logout'"><i class="bi bi-box-arrow-left"></i></button>
 		    	</div>
+		    	<!-- 카테고리 이름 -->
 			    <div class="card-header mb-3">
 			        <h3 class="text-center font-weight-bold my-4" th:text="${categoryName}"></h3>
 			    </div>
+			    <!-- 전체, 베스트, 공지사항 게시글 조회 Tab -->
 			    <div>
 				    <ul class="nav nav-tabs">
-					  	<li class="nav-item">
-					    	<a class="nav-link active" aria-current="page" href="#">All</a>
-					  	</li>
-					  	<li class="nav-item">
-					    	<a class="nav-link" href="#">Best</a>
-					  	</li>
-					  	<li class="nav-item">
-					    	<a class="nav-link" href="#">Notices</a>
-					  	</li>
-					  	<li class="nav-item ms-auto">
-					  		<button class="btn btn-primary mb-3" type="button" data-bs-toggle="offcanvas" data-bs-target="#offcanvasWithBackdrop" aria-controls="offcanvasWithBackdrop" data-bs-backdrop="true">Category</button>
-					  	</li>
-					</ul>
-			    </div>
+				    	<!-- 전체 게시글 조회 -->
+				        <li class="nav-item">
+				            <a class="nav-link" aria-current="page" th:href="@{/board/list(categoryName=${categoryName}, tab='All')}" th:classappend="${tab == 'All'} ? 'active' : ''">All</a>
+				        </li>
+				        <!-- 베스트 게시글 조회 (추천수 10이상) -->
+				        <li class="nav-item">
+				            <a class="nav-link" th:href="@{/board/list(categoryName=${categoryName}, tab='Best')}" th:classappend="${tab == 'Best'} ? 'active' : ''">Best</a>
+				        </li>
+				        <!-- 공지사항 게시글 조회 -->
+				        <li class="nav-item">
+				            <a class="nav-link" th:href="@{/board/list(categoryName=${categoryName}, tab='Notices')}" th:classappend="${tab == 'Notices'} ? 'active' : ''">Notices</a>
+				        </li>
+				        <!-- 카테고리 목록 버튼 -->
+				        <li class="nav-item ms-auto">
+				            <button class="btn btn-primary mb-3" type="button" data-bs-toggle="offcanvas" data-bs-target="#offcanvasWithBackdrop" aria-controls="offcanvasWithBackdrop" data-bs-backdrop="true">Category</button>
+				        </li>
+				    </ul>
+				</div>
+				<!-- 카테고리 목록 -->
 			    <div class="offcanvas offcanvas-start" data-bs-backdrop="false" tabindex="-1" id="offcanvasWithBackdrop" aria-labelledby="offcanvasWithBackdropLabel">
 				  	<div class="offcanvas-header">
 				    	<h5 class="offcanvas-title" id="offcanvasWithBackdropLabel">Category</h5>
@@ -40,16 +50,17 @@
 				  	<div class="offcanvas-body">
 					    <ul class="list-group list-group-flush">
 					        <li class="list-group-item" th:each="category : ${categories}">
-							    <a th:href="@{/board/list(categoryName=${category.name}, page=${page}, size=${size})}">
+							    <a th:href="@{/board/list(categoryName=${category.name}, page=${page}, size=${size}, tab=${tab})}">
 							        <span th:text="${category.name}"></span>
 							    </a>
 							</li>
 					    </ul>
 					</div>
 				</div>
+				<!-- 게시글 목록 화면-->
 		    	<form action="/board/list" id="boardListForm" method="get">
 				    <div class="col-md-12 mt-4">
-				        <table class="table table-hover table-horizontal table-bordered text-center mt-3">
+				        <table class="table table-hover table-horizontal text-center mt-3">
 				            <thead class="thead-strong">
 				                <tr>
 				                    <th width="5%" th:if="${isAdmin}"><input type="checkbox" id="chkAll"></th>
@@ -62,36 +73,42 @@
 				                </tr>
 				            </thead>
 				            <tbody id="tbody">
-				            	<tr th:each="list,index : ${resultMap.list}" th:with="paging=${resultMap.paging}" th:classappend="${list.isNotice} ? 'table-active'">
+				            	<tr th:each="list,index : ${resultMap.list}" th:with="paging=${resultMap.paging}" th:classappend="${list.isNotice} ? 'table-warning'">
+									<!-- 권리자 권한을 가진 사용자일 경우 게시글 삭제 체크박스 활성화 -->
 									<td th:if="${isAdmin}">
 										<input type="checkbox" name="deleteId" th:value="${list.id}">
 									</td>
+									<!-- 게시글 번호 단, 게시글이 공지사항일 경우 Notice로 표시 -->
 									<td>
 										<span th:text="${list.isNotice} ? 'Notice' : ${list.id}"></span>
 									</td>
 									<td class="text-left">
-										<a th:href="@{./view(id=${list.id})}" th:class="${list.isNotice} ? 'font-weight-bold text-dark' : 'text-dark' ">
+										<a th:href="@{./view(id=${list.id}, categoryName=${categoryName})}" th:class="${list.isNotice} ? 'font-weight-bold text-dark' : 'text-dark' ">
 											<i class="bi bi-exclamation-circle-fill" th:if="${list.isNotice == 1}"></i>
 											<span th:text="${list.title}"></span>
 											<span th:text="'[' + ${list.commentCount} + ']'"></span>
 										</a>										
 									</td>
+									<!-- 게시글 작성자 단, 게시글이 공지사항일 경우 작성자 ADMIN으로 표시 -->
 									<td>
 										<span th:text="${list.isNotice} ? 'Admin' : ${list.registerId}"></span>
 									</td>
-									
+									<!-- 게시글 등록시간 -->
 									<td>
 										<span th:text="${list.getFormattedRegisterTime()}"></span>
 									</td>
+									<!-- 게시글 조회수 -->
 									<td>
 										<span th:text="${list.readCnt}"></span>
 									</td>
+									<!-- 게시글 추천수 -->
 									<td>
 										<span th:text="${list.upvoteCount}"></span>
 									</td>
 								</tr>
 				            </tbody>
 				        </table>
+				        <!-- 게시글 삭제 버튼 (관리자 전용), 새 게시글 추가 버튼 -->
 				        <div class="d-flex align-items-center justify-content-between">
 					        <button type="button" class="btn btn-danger" th:if="${isAdmin}" onclick="multipleDelete()"><i class="bi bi-trash3-fill"></i> Delete</button>
 				        	<div></div>
@@ -99,12 +116,13 @@
 							    <i class="bi bi-plus-lg"></i> New Board
 							</a>
 				        </div>
+				        <!-- 페이징 -->
 				        <div class="row">
 						    <div class="col">
 						        <div class="d-flex justify-content-center">
 						            <ul class="pagination">
 						                <li class="page-item" th:each="index : ${#numbers.sequence(1, resultMap.totalPage)}" th:with="paging=${resultMap.paging}">
-						                    <a class="page-link" th:classappend="${paging.pageNumber ==  (index-1)} ? bg-primary : bg-secondary" th:href="@{/board/list(categoryName=${categoryName}, page=${index - 1}, size=${paging.pageSize})}">
+						                    <a class="page-link" th:classappend="${paging.pageNumber ==  (index-1)} ? bg-primary : bg-secondary" th:href="@{/board/list(categoryName=${categoryName}, page=${index - 1}, size=${paging.pageSize}, tab=${tab})}">
 											    <span class="text-white" th:text="${index}"></span>
 											</a>
 						                </li>

@@ -52,6 +52,17 @@ public interface BoardRepository extends JpaRepository<BoardEntity, Long> {
     static final String UPDATE_BOARD_DOWNVOTECOUNT_CANCEL = "UPDATE board "
     		+ "SET downvote_count = downvote_count - 1 "
     		+ "WHERE id = :id";
+    
+    // 카테고리별 공지사항 게시글 조회를 위한 문자열
+    static final String SELECT_BOARD_NOTICES = "SELECT * FROM board "
+            + "WHERE category_id = (SELECT id FROM category WHERE name = :categoryName) "
+            + "AND is_notice = 1";
+    
+    // 카테고리별 추천수 10개 이상 게시글 조회를 위한 문자열
+    static final String SELECT_BOARD_BEST = "SELECT * FROM board "
+            + "WHERE category_id = (SELECT id FROM category WHERE name = :categoryName) "
+            + "AND upvote_count >= 10 "
+            + "AND is_notice = 0";
 
     // 게시글 업데이트를 위한 메소드
     @Transactional
@@ -94,8 +105,17 @@ public interface BoardRepository extends JpaRepository<BoardEntity, Long> {
     @Modifying
     @Query(value = UPDATE_BOARD_DOWNVOTECOUNT_CANCEL, nativeQuery = true)
     void cancelDownvote(@Param("id") Long id);
+    
+    // 카테고리별 공지사항 게시글 조회하기 위한 메소드
+    @Query(value = SELECT_BOARD_NOTICES, nativeQuery = true)
+    Page<BoardEntity> findNoticesByCategoryName(Pageable pageable, @Param("categoryName") String categoryName);
+    
+    // 카테고리별 추천수 10개 이상 게시글 조회하기 위한 메소드
+    @Query(value = SELECT_BOARD_BEST, nativeQuery = true)
+    Page<BoardEntity> findBestBoardByCategoryName(Pageable pageable, @Param("categoryName") String categoryName);
 
     List<BoardEntity> findByCategoryName(String category);
 
     Page<BoardEntity> findByCategoryName(Pageable pageable, String categoryId);
+    
 }
