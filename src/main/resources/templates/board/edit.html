@@ -9,6 +9,7 @@
 		    <!-- 게시글 수정 화면 -->
 			<form id="boardEditForm" action="/board/edit/action" method="post" th:with="info=${resultMap.info}" enctype="multipart/form-data">
 				<input type="hidden" name="id" th:value="${info.id}">
+				<input type="hidden" name="categoryName" th:value="${categoryName}">
 				<!-- 게시글 작성자 -->
 				<div class="mb-3">
 				    <label class="form-label font-weight-bold"><span class="text-danger">* </span>Writer.</label>

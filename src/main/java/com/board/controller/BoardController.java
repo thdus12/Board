@@ -258,6 +258,7 @@ public class BoardController {
      */
     @GetMapping("/board/edit")
     public String getBoardEditPage(Model model, 
+    							   @RequestParam("categoryName") String categoryName,
     							   HttpServletRequest request) throws Exception {
 
         HashMap<String, Object> resultMap = new HashMap<String, Object>();
@@ -270,6 +271,7 @@ public class BoardController {
 		        resultMap.put("info", info);
 		        resultMap.put("fileList", fileList);
 				model.addAttribute("resultMap", resultMap);
+				model.addAttribute("categoryName", categoryName);
             } 
         } catch (Exception e) {
             throw new Exception(e.getMessage()); 
@@ -290,6 +292,7 @@ public class BoardController {
      */
     @PostMapping("/board/edit/action")
     public String boardEditAction(Model model,
+    							  @RequestParam("categoryName") String categoryName,
                                   @RequestParam(value = "deletedFileIds", required = false) String deletedFileIdsJson,
                                   BoardRequestDto boardRequestDto, 
                                   MultipartHttpServletRequest multiRequest) throws Exception {
@@ -307,7 +310,7 @@ public class BoardController {
         } catch (Exception e) {
             throw new Exception(e.getMessage()); 
         }
-        return "redirect:/board/view?id=" + id;
+        return "redirect:/board/view?id=" + id + "&categoryName=" + categoryName;
     }
     
     /**
